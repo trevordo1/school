@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSC Midterm Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAF8F3; --ink:#1C1C2E; --accent:#1B6CA8; --accent-10:rgba(27,108,168,.10);
+  --cue:#EEF2F7; --line:#DDD; --muted:#5a5a6e; --warn:#8a5a00; --warn-bg:#fff5e0; --gap:#7B2D42; --gap-bg:#f8e9ed;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Source Sans 3","Source Sans Pro",system-ui,sans-serif;font-size:17px;line-height:1.55}
+h1,h2,h3,h4{font-family:Lora,Georgia,serif;line-height:1.25;margin:0 0 .5em}
+header{position:fixed;top:0;left:0;right:0;z-index:20;background:#fff;border-bottom:2px solid var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.bar{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:14px;padding:8px 16px}
+.logo{font-family:Lora,serif;font-weight:700;color:var(--accent);white-space:nowrap;font-size:18px}
+nav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:thin;padding-bottom:2px}
+nav button{flex:0 0 auto;border:1px solid transparent;background:none;color:var(--ink);font:600 14px "Source Sans 3",sans-serif;padding:6px 10px;border-radius:6px;cursor:pointer;transition:all .2s ease;white-space:nowrap}
+nav button:hover{background:var(--accent-10)}
+nav button.active{background:var(--accent);color:#fff}
+main{max-width:960px;margin:0 auto;padding:80px 16px 60px}
+.section{display:none;animation:fade .2s ease}
+.section.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.sec-head{margin:10px 0 18px}
+.sec-head .src{color:var(--muted);font-size:14px}
+.block{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:18px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.block h3{font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-family:"Source Sans 3",sans-serif;font-weight:700}
+/* outline */
+.outline ul{list-style:none;margin:0;padding-left:20px;border-left:1px dashed #c9d3df}
+.outline>ul{padding-left:0;border-left:none}
+.outline li{margin:3px 0}
+.node{cursor:pointer;display:inline-flex;align-items:baseline;gap:6px;user-select:none;transition:color .2s ease}
+.node:hover{color:var(--accent)}
+.caret{display:inline-block;width:12px;font-size:11px;color:var(--accent);transition:transform .2s ease}
+.open>.node .caret{transform:rotate(90deg)}
+.leaf .caret{visibility:hidden}
+.outline li>ul{display:none}
+.outline li.open>ul{display:block}
+.outline .toggle-all{float:right;font-size:13px;border:1px solid var(--line);background:#fff;border-radius:5px;padding:2px 8px;cursor:pointer}
+/* cornell */
+.cornell{display:grid;grid-template-columns:30% 70%;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;margin-bottom:0}
+.cornell .hd{font:700 13px "Source Sans 3",sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:8px 14px;color:var(--accent);border-bottom:1px solid var(--line)}
+.cornell .hd.c{background:var(--cue)}
+.cue{background:var(--cue);padding:12px 14px;border-bottom:1px solid #dfe5ee;font-weight:600;font-size:15px;color:#2b3550}
+.note{padding:12px 16px;border-bottom:1px solid #eee}
+.note p{margin:0 0 .5em}.note p:last-child{margin:0}
+.note ul{margin:.3em 0 .3em 1.1em;padding:0}
+.note li{margin:.15em 0}
+.summary{background:var(--accent-10);border:1px solid var(--line);border-top:none;border-radius:0 0 10px 10px;padding:14px 18px;margin-bottom:18px}
+.summary h4{font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-family:"Source Sans 3",sans-serif}
+.cornell-wrap .cornell{border-radius:10px 10px 0 0}
+.key-term{color:var(--accent);font-weight:700;background:linear-gradient(transparent 62%,rgba(27,108,168,.14) 62%)}
+.tip,.warn,.gap{border-radius:8px;padding:8px 12px;margin:.5em 0;font-size:15.5px}
+.tip{background:#eaf4ec;border-left:4px solid #2D6A4F}
+.warn{background:var(--warn-bg);border-left:4px solid #d39b2a}
+.gap{background:var(--gap-bg);border-left:4px solid var(--gap)}
+.formula{font-family:ui-monospace,Menlo,Consolas,monospace;background:#f4f6f9;border:1px solid #e1e6ee;border-radius:6px;padding:6px 10px;display:block;margin:.4em 0;font-size:14.5px;overflow-x:auto;white-space:pre-wrap}
+table{border-collapse:collapse;width:100%;font-size:15px;margin:.4em 0}
+th,td{border:1px solid #e3e3e3;padding:5px 8px;text-align:left;vertical-align:top}
+th{background:#f4f6f9}
+.tbl-wrap{overflow-x:auto}
+/* glossary */
+.gl-tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.gl-tools input{flex:1;min-width:200px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;font:inherit}
+.letters{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}
+.letters a{font-weight:700;color:var(--accent);text-decoration:none;padding:2px 7px;border-radius:4px}
+.letters a:hover{background:var(--accent-10)}
+.gl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;box-shadow:0 1px 4px rgba(0,0,0,.06);transition:box-shadow .2s ease}
+.card:hover{box-shadow:0 3px 10px rgba(0,0,0,.09)}
+.card .t{font-family:Lora,serif;font-weight:700;color:var(--accent)}
+.card .s{color:var(--muted);font-size:13px;margin-top:4px}
+.gl-letter{grid-column:1/-1;font-family:Lora,serif;font-size:22px;color:var(--accent);border-bottom:1px solid var(--line);margin-top:6px}
+/* practice */
+.pq-group{margin-bottom:22px}
+.pq{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px;transition:background .2s ease}
+.pq.done{background:#f2f8f3}
+.pq-top{display:flex;gap:10px;align-items:flex-start}
+.pq-top input{margin-top:5px;width:18px;height:18px;accent-color:var(--accent);flex:0 0 auto}
+.pq .type{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.pq button{margin-top:8px;border:1px solid var(--accent);background:#fff;color:var(--accent);font:600 14px "Source Sans 3",sans-serif;padding:4px 12px;border-radius:6px;cursor:pointer;transition:all .2s ease}
+.pq button:hover{background:var(--accent);color:#fff}
+.ans{max-height:0;overflow:hidden;transition:max-height .25s ease,margin .2s ease;border-left:3px solid var(--accent);padding-left:12px}
+.ans.show{max-height:900px;margin-top:10px}
+.progress{position:sticky;top:58px;background:var(--bg);padding:6px 0;z-index:5;font-weight:600}
+.progress .barx{height:8px;background:#e5e9ef;border-radius:5px;overflow:hidden;margin-top:4px}
+.progress .fill{height:100%;background:var(--accent);width:0;transition:width .2s ease}
+#top{position:fixed;right:18px;bottom:18px;background:var(--accent);color:#fff;border:none;border-radius:22px;padding:9px 14px;font:700 14px "Source Sans 3",sans-serif;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s ease;box-shadow:0 3px 10px rgba(0,0,0,.2)}
+#top.show{opacity:1;pointer-events:auto}
+@media (max-width:700px){
+  body{font-size:16px}
+  .cornell{grid-template-columns:1fr}
+  .cornell .hd.c{display:none}
+  .cue{border-bottom:none;padding-bottom:4px}
+  .cue::before{content:"Cue: ";color:var(--accent)}
+  .bar{flex-direction:column;align-items:stretch;gap:4px}
+  main{padding-top:104px}
+  .progress{top:92px}
+}
+@media print{header,#top{display:none}main{padding-top:0}.section{display:block!important;page-break-after:always}.ans{max-height:none!important;margin-top:8px}.outline li>ul{display:block!important}}
+</style>
+</head>
+<body>
+<header><div class="bar"><div class="logo">CSC Vol. 1 · Midterm</div><nav id="nav"></nav></div></header>
+<main id="main"></main>
+<button id="top" onclick="window.scrollTo({top:0})">↑ Top</button>
+
+<script>
+/* ---------- CONTENT (hint-sheet topics only) ---------- */
+const SECTIONS = [
+{
+id:"guide", tab:"Exam Map", title:"Exam Map & Coverage Check",
+src:"Every line of your exam hint sheet, checked against ~/Documents/school/CSC",
+outline:["Midterm: 75 MC questions · 2 hours",[
+  ["Pacing",[["~1½ min per question"],["Leave time to review"]]],
+  ["Hint-sheet topics",[["Industry, markets, regulation, conduct"],["Indicators, cycle, economy, policy"],["Bonds & calculations"]]],
+  ["Watch out",[["Use the TEXTBOOK's operating band"],["Check denominators & units"],["25 bp = 0.25 percentage points"]]]
+]],
+rows:[
+{c:"What's on the exam and how long do I get?",n:`<p><b>75 multiple-choice questions in two hours.</b> The hint sheet says to allow about <b>1½ minutes per question</b> (75 × 1.5 = 112.5 min), which leaves about 7 minutes to review.</p>`},
+{c:"Which tab covers each hint-sheet line?",n:`<div class="tbl-wrap"><table>
+<tr><th>Hint-sheet line</th><th>Tab</th></tr>
+<tr><td>Principal vs agent, dealer types, front/middle/back office</td><td>Dealers</td></tr>
+<tr><td>Clearing, settlement, netting, firewalls, financial intermediaries</td><td>Clearing</td></tr>
+<tr><td>Primary vs secondary, money markets, auction vs dealer, debt vs equity</td><td>Markets</td></tr>
+<tr><td>CIRO, CSA, OSFI; CIPF vs CDIC; coverage limits and account grouping</td><td>Regulators</td></tr>
+<tr><td>Disclosure, product knowledge, complaint handling, regulatory standards</td><td>Conduct</td></tr>
+<tr><td>Leading / coincident / lagging indicators; expansion, peak, contraction, trough, recovery</td><td>Indicators</td></tr>
+<tr><td>Equilibrium, productivity, unemployment types, inflation, exchange-rate effects</td><td>Economy</td></tr>
+<tr><td>Fiscal vs monetary, easing vs tightening, deficits, debt, crowding out</td><td>Policy</td></tr>
+<tr><td>Money supply → interest rates & inflation; QE; the textbook's operating band</td><td>Money & Band</td></tr>
+<tr><td>Bond quotes, coupons, strips, calls, retractions, convertibles, floating rates, sinking & purchase funds, credit ratings</td><td>Bonds</td></tr>
+<tr><td>GDP, unemployment, participation, inflation, real-rate, bond-price, coupon, conversion-value calculations; denominators & units</td><td>Calculations</td></tr>
+</table></div>`},
+{c:"What on the hint sheet is NOT in my CSC folder?",n:`<div class="gap"><b>Quantitative easing (QE): not in the folder at all.</b> The term doesn't appear anywhere in the 2026 textbook, the 12 slide decks or the Ch 5 quiz. The Money & Band tab has a short general explanation, clearly marked as coming from outside the course. Ask your instructor which source the exam uses.</div>
+<div class="gap"><b>Complaint handling: only partly covered.</b> The textbook covers resolving the complaint with the firm first, the arbitration brochure, arbitration (binding, up to $500,000) and OBSI (non-binding, refusals are made public). It also says complaint procedures must be in the relationship disclosure document. It gives no detailed complaint-handling procedure (no deadlines or acknowledgement steps).</div>
+<div class="gap"><b>"How money supply affects interest rates and inflation": covered only in pieces.</b> The folder never spells out the full chain in one place. The Money & Band tab puts the pieces together.</div>
+<p>Everything else on the hint sheet is in the textbook. One wording difference: the lagging indicator "business investment" appears in the textbook as <b>private sector plant and equipment spending</b>.</p>`},
+{c:"Which operating band do I use?",n:`<div class="warn">Your slides and Ch 5 quiz describe an older <b>50 bp</b> band with the target at the midpoint. The hint sheet says "the <b>textbook's</b> operating band", so use the 2026 textbook: <b>25 bp wide, target overnight rate at the bottom, Bank Rate at the top.</b></div>`},
+{c:"What do 'check denominators and units' and '25 bp' mean?",n:`<ul>
+<li><b>1 basis point = 0.01 percentage point.</b> 25 bp = 0.25 pp, 50 bp = 0.50 pp, 100 bp = 1 pp.</li>
+<li><b>Unemployment rate ÷ labour force</b>, NOT ÷ working-age population.</li>
+<li><b>Participation rate ÷ working-age population.</b></li>
+<li><b>Inflation ÷ the PREVIOUS period's CPI.</b></li>
+<li><b>Coupon dollars are based on par</b>, never on the market price.</li>
+<li><b>Bond quotes are per $100 of par</b>: a quote of 97 on a $1,000 bond = $970.</li>
+<li><b>Semi-annual bonds:</b> halve the coupon and the yield, double the number of years.</li>
+</ul>`}
+],
+summary:"The exam is 75 multiple-choice questions in two hours, about 1½ minutes each. Every tab in this guide matches a line on your hint sheet. Quantitative easing is the only hint-sheet topic missing from your folder entirely, and complaint handling and the money-supply chain are only partly covered. For the operating band, use the textbook's 25 bp version."
+},
+
+{
+id:"dealers", tab:"Dealers", title:"Principal vs Agent · Dealer Types · Front, Middle & Back Office",
+src:"Textbook Ch 1",
+outline:["How investment dealers work",[
+  ["Principal vs agent",[["Principal: owns securities, earns a spread"],["Agent: never owns, earns a commission"]]],
+  ["Dealer types",[["Retail: full-service or self-directed"],["Institutional: large-volume clients"],["Integrated: both"]]],
+  ["Firm organization",[["Front: PM, trading, sales, marketing"],["Middle: compliance, accounting, audit, legal"],["Back: trade settlement"]]]
+]],
+rows:[
+{c:"Principal vs agent: who owns the security, and how is profit earned?",n:`<div class="tbl-wrap"><table><tr><th></th><th><b>Principal</b> (dealer)</th><th><b>Agent</b> (broker)</th></tr>
+<tr><td>Owns the securities?</td><td>Yes, holds them in its own inventory</td><td><b>Never</b> takes ownership</td></tr>
+<tr><td>Profit</td><td>Spread (sell price − buy price)</td><td>Commission</td></tr>
+<tr><td>Risk</td><td>The dealer's own capital is at risk</td><td>The client bears the risk</td></tr>
+<tr><td>Examples</td><td><b>Underwriting</b> new issues; selling bonds from inventory</td><td>Executing a client's stock order on an exchange</td></tr></table></div>
+<p><b>Underwriting</b> means buying a new issue from a government or company at a set price and reselling it. Most secondary bond trading is done as principal. "Broker" is often used loosely for a dealer acting in either role.</p>`},
+{c:"What are the three types of investment dealers?",n:`<ul>
+<li><b>Retail firm</b>: serves individuals. It may be <i>full-service</i> (products plus advice) or a <b>self-directed broker</b> / <b>discount broker</b> (cheaper trades, <u>no advice</u>).</li>
+<li><b>Institutional firm</b>: serves only institutions that trade in large volumes, such as pension funds and mutual funds.</li>
+<li><b>Integrated firm</b>: does both retail and institutional business, and underwrites government and corporate debt and equity.</li>
+</ul>`},
+{c:"What do the front, middle and back offices do?",n:`<div class="tbl-wrap"><table><tr><th>Office</th><th>Purpose</th><th>Functions</th></tr>
+<tr><td><b>Front office</b></td><td>Work tied directly to portfolio management and clients</td><td>Portfolio management, trading, <b>sales</b>, marketing</td></tr>
+<tr><td><b>Middle office</b></td><td>Keeps the firm running properly</td><td>Compliance, accounting, audits, legal</td></tr>
+<tr><td><b>Back office</b></td><td>Settles the firm's trades</td><td>Trade settlement</td></tr></table></div>
+<div class="tip"><b>Memory hook:</b> Front <b>faces clients</b>, Middle <b>monitors</b> (compliance and legal), Back <b>books the settlement</b>.</div>`}
+],
+summary:"A dealer acting as principal buys securities for its own inventory and profits from the spread. A dealer acting as agent never owns the securities and earns a commission. Dealers are retail, institutional or integrated, and are organized into a front office (sales and trading), a middle office (compliance, accounting, legal) and a back office (settlement)."
+},
+
+{
+id:"clearing", tab:"Clearing", title:"Clearing, Settlement, Netting, Firewalls & Financial Intermediaries",
+src:"Textbook Ch 1 (settlement timing: Ch 7)",
+outline:["Moving money & information safely",[
+  ["Clearing → settlement",[["Clearing: confirm & match trade details"],["Settlement: cash & securities change hands"],["CDS runs CDSX"]]],
+  ["Netting",[["One net position per dealer per day"],["Far less cash & securities moved"]]],
+  ["Firewall",[["Bank Act barrier"],["Client info kept between business units"]]],
+  ["Financial intermediaries",[["Move funds from savers to borrowers"],["Dealers, banks, credit unions, trusts, insurers, funds"]]]
+]],
+rows:[
+{c:"What is the difference between clearing and settlement?",n:`<ul>
+<li><b>Clearing</b>: confirming and matching the details of a trade.</li>
+<li><b>Settlement</b>: the <i>irrevocable</i> moment when cash and securities actually change hands.</li>
+<li><b>CDS Clearing and Depository Services Inc.</b> runs <b>CDSX</b>, which clears and settles Canadian equity and debt trades. CDS is <u>not</u> a financial intermediary.</li>
+<li>Timing (textbook): <b>T-bills settle the same day</b>; bonds and shares settle on the first clearing day after the trade.</li>
+</ul>`},
+{c:"What is netting?",n:`<p><b>Netting</b>: instead of settling every trade one by one, CDS works out each dealer's single net credit or debit position (in cash or securities) for the day. This sharply cuts how much cash and how many securities have to move.</p><span class="formula">Dealer buys 1,000 XYZ from A and sells 800 XYZ to B the same day
+→ net position: receives 200 XYZ (one settlement, not two)</span>`},
+{c:"What is a firewall?",n:`<p>A <b>firewall</b> is a barrier, required under the <b>Bank Act</b>, that stops client information from being shared between a bank's different business units.</p><p>Example: a bank branch can't see a client's trades at the bank-owned dealer, and the dealer can't see the client's loan balances.</p>`},
+{c:"What is a financial intermediary?",n:`<p>A <b>financial intermediary</b> is an institution that moves money from <b>suppliers of capital</b> (savers and investors) to <b>users of capital</b> (borrowers).</p><ul>
+<li><b>Investment dealers</b>: underwrite and trade securities.</li>
+<li><b>Banks</b>: take deposits and lend, earning the spread between the two rates.</li>
+<li><b>Credit unions / caisses populaires</b>: member-owned banking.</li>
+<li><b>Trust companies</b>: the only corporations allowed to act as trustee.</li>
+<li><b>Insurance companies</b>: pool and price risk.</li>
+<li><b>Investment funds</b> (e.g. <b>mutual funds</b>): pool investors' money.</li></ul>`}
+],
+summary:"Clearing matches a trade's details, and settlement is when cash and securities actually change hands, through CDS. Netting cuts what moves by settling only each dealer's net position for the day. Firewalls keep client information separate between a bank's business units, and financial intermediaries such as dealers, banks and insurers move money from savers to borrowers."
+},
+
+{
+id:"markets", tab:"Markets", title:"Primary vs Secondary · Money Market · Auction vs Dealer · Debt vs Equity",
+src:"Textbook Ch 2",
+outline:["Where & how securities trade",[
+  ["By who receives the money",[["Primary: new issues, issuer gets the money"],["Secondary: investors trade, issuer gets nothing"]]],
+  ["By term",[["Money market: debt ≤ 1 year"],["Capital market: longer term"]]],
+  ["By how trades happen",[["Auction: central, dealers as agents"],["Dealer / OTC: negotiated, dealers as principals"]]],
+  ["By what you own",[["Debt = loan, you're a creditor"],["Equity = ownership"]]]
+]],
+rows:[
+{c:"Primary vs secondary market: where does the money go?",n:`<ul><li><b>Primary market</b>: <u>new</u> securities sold by the issuer to investors (IPOs and other new issues). <b>The money goes to the issuer.</b></li>
+<li><b>Secondary market</b>: investors trade securities that are <u>already issued</u> with each other, e.g. on the TSX. <b>The issuer receives nothing.</b></li></ul><p>A liquid secondary market makes the primary market work, because buyers know they can resell.</p>`},
+{c:"What is the money market?",n:`<p>The <b>money market</b> is for short-term debt with <b>one year or less to maturity</b>: T-bills, commercial paper, and bonds with under a year left (however long ago they were issued). It is debt only, with no equities.</p>`},
+{c:"How does an auction market work?",n:`<p>In an <b>auction market</b>, all buy orders (bids) and sell orders (offers) go to <u>one central market</u> and compete there. Dealers usually act as <b>agents</b>. A trade happens when a bid matches an ask. A <b>stock exchange</b> is an auction market.</p>
+<ul><li><b>Bid price</b>: the highest price a buyer will pay. <b>Ask price</b>: the lowest price a seller will accept.</li>
+<li><b>Bid-ask spread</b> = ask − bid.</li></ul>`},
+{c:"How is a dealer (OTC) market different?",n:`<p>A <b>dealer market</b>, also called the <b>over-the-counter market</b>, is a <i>negotiated</i> network of banks and dealers. <b>Market makers</b> post bid and ask quotes, and dealers usually act as <b>principals</b>. There is <u>no central marketplace</u>.</p><p><b>Almost all bonds trade over the counter.</b></p>`},
+{c:"Debt vs equity: what do you get?",n:`<div class="tbl-wrap"><table><tr><th></th><th><b>Debt</b> (fixed income)</th><th><b>Equity</b></th></tr>
+<tr><td>What it is</td><td>A loan to the issuer</td><td>Ownership in the company</td></tr>
+<tr><td>Holder is a…</td><td><b>Creditor</b></td><td>Owner (shareholder)</td></tr>
+<tr><td>Returns</td><td>Interest, plus principal back at maturity</td><td>Dividends and capital gains as the company grows</td></tr>
+<tr><td>Examples</td><td>T-bills, bonds</td><td><b>Common shares</b>, <b>preferred shares</b></td></tr></table></div>`}
+],
+summary:"New securities are sold in the primary market, where the issuer gets the money. Investors then trade them in the secondary market, where the issuer gets nothing. The money market handles debt with a year or less to maturity. Stocks trade mainly in auction markets, where dealers act as agents, while almost all bonds trade in negotiated dealer markets, where dealers act as principals. Debt makes you a creditor; equity makes you an owner."
+},
+
+{
+id:"regs", tab:"Regulators", title:"CIRO, CSA & OSFI · CIPF vs CDIC · Limits & Grouping",
+src:"Textbook Ch 3",
+outline:["Who regulates & who protects",[
+  ["CSA",[["Umbrella of the 13 provincial/territorial regulators"],["Harmonizes rules, monitors the SRO"]]],
+  ["CIRO (the SRO)",[["IIROC + MFDA, Jan 1 2023"],["Dealers, mutual fund dealers, marketplace trading"]]],
+  ["OSFI",[["Federal banks, insurers, trusts, pensions"],["NOT the securities industry"]]],
+  ["CIPF",[["Dealer insolvency"],["$1M general + $1M per separate group"]]],
+  ["CDIC",[["Deposits at banks, trust & loan cos."],["$100K per category, per institution"]]]
+]],
+rows:[
+{c:"What is the CSA?",n:`<p>Securities are regulated by the <b>provinces and territories</b>; there is no federal securities regulator. The <b>Canadian Securities Administrators</b> is the <i>umbrella organization</i> of the 10 provincial and 3 territorial regulators. It coordinates and harmonizes rules, issues national policies, and <b>monitors the SRO</b>.</p>`},
+{c:"What does CIRO do?",n:`<p>The <b>Canadian Investment Regulatory Organization</b> is Canada's national <b>self-regulatory organization</b> (SRO), formed when <b>IIROC and the MFDA merged on January 1, 2023</b>. It oversees <u>all investment dealers, mutual fund dealers, and trading on debt and equity marketplaces</u>. Its functions:</p>
+<ul><li><b>Financial compliance</b>: checks that dealers have enough capital.</li><li><b>Business conduct compliance</b>: checks that client accounts are properly supervised.</li><li><b>Registration</b>: sets proficiency and education standards.</li><li><b>Enforcement</b>: enforces the rules and investigates complaints.</li><li><b>Market surveillance</b>: monitors trading in real time.</li></ul>`},
+{c:"What does OSFI regulate, and what doesn't it?",n:`<p>The <b>Office of the Superintendent of Financial Institutions</b> is an independent <i>federal</i> agency that supervises <b>federally regulated financial institutions</b>: banks, trust and loan companies, insurance companies, and federally regulated pension plans.</p><div class="warn"><b>OSFI does NOT regulate the securities industry.</b> This is a classic trick answer.</div>`},
+{c:"CIPF: what does it cover, and how are accounts grouped?",n:`<p>The <b>Canadian Investor Protection Fund</b> protects eligible clients if a <b>CIRO dealer member becomes insolvent</b>. It is sponsored by CIRO and funded by dealer members.</p>
+<ul><li><b>Does NOT cover</b> losses from falling market values, or accounts at banks or other non-member firms.</li>
+<li><b>General account</b>: cash, margin, short-sale, options, futures, <b>TFSA</b> and foreign-currency accounts are <u>combined</u> into one, with a <b>$1 million</b> limit.</li>
+<li><b>Separate accounts</b>: registered retirement accounts (RRSP and RRIF <u>combined</u> with each other), RESPs, and trusts each get their own <b>$1 million</b>.</li></ul>
+<span class="formula">Example: cash $20K + margin $85K → general = $105,000
+RRSP $940K + RRIF $200K = $1.14M → capped at $1,000,000
+RESP $65K (separate) → $65,000
+Total protected = $1,170,000  (of $1,310,000 held)</span>`},
+{c:"CDIC: what does it cover, and how are deposits grouped?",n:`<p>The <b>Canada Deposit Insurance Corporation</b> is a <i>federal Crown corporation</i> that insures <b>eligible deposits up to $100,000 per depositor, per member institution, per category</b>. Members are banks, trust companies and loan companies.</p>
+<ul><li>Eligible deposits: savings and chequing accounts, <b>GICs</b> and other term deposits, and foreign currency deposits.</li>
+<li><b>9 separate categories</b>, each up to $100,000: one name, joint, RRSP, RRIF, RESP, TFSA, FHSA, trusts, RDSP.</li>
+<li><b>Different branches of the same bank are NOT insured separately.</b></li></ul>
+<span class="formula">Example: $80,000 in own name + $120,000 RRSP at the same bank
+→ $80,000 + $100,000 (cap) = $180,000 insured</span>`},
+{c:"CIPF vs CDIC side by side?",n:`<div class="tbl-wrap"><table><tr><th></th><th>CIPF</th><th>CDIC</th></tr>
+<tr><td>Protects against</td><td>Insolvency of a <b>dealer member</b></td><td>Failure of a <b>deposit-taking</b> member (bank, trust or loan company)</td></tr>
+<tr><td>Limit</td><td><b>$1,000,000</b> general + $1M per separate group</td><td><b>$100,000</b> per category, per institution</td></tr>
+<tr><td>Who runs it</td><td>Sponsored by CIRO, funded by dealers</td><td>Federal Crown corporation</td></tr>
+<tr><td>TFSA</td><td>Part of the <b>general</b> account</td><td>Its <b>own</b> category</td></tr>
+<tr><td>RRSP & RRIF</td><td><b>Combined</b> into one $1M group</td><td><b>Separate</b> categories ($100K each)</td></tr>
+<tr><td>Market losses?</td><td>Not covered</td><td>n/a (deposits only)</td></tr></table></div>`}
+],
+summary:"The CSA coordinates the provincial regulators, CIRO is the national SRO that regulates dealers and trading day to day, and OSFI supervises federal banks and insurers but not the securities industry. CIPF covers you if your dealer goes insolvent: up to $1 million for the general account and $1 million for each separate group. CDIC covers bank deposits up to $100,000 per category, per institution."
+},
+
+{
+id:"conduct", tab:"Conduct", title:"Disclosure · Product Knowledge · Complaint Handling · Regulatory Standards",
+src:"Textbook Ch 3",
+outline:["Rules of conduct",[
+  ["Disclosure",[["Full, true and plain"],["Relationship disclosure"],["Conflicts disclosed, but that's not enough"]]],
+  ["Product knowledge (KYP)",[["Understand every product offered"],["Firm assesses, approves, monitors"]]],
+  ["Complaint handling",[["Firm first"],["Arbitration: binding, ≤ $500K"],["OBSI: not binding"]]],
+  ["Regulatory standards",[["Principles-based"],["Client Focused Reforms: client first"],["KYC + KYP → suitability"]]]
+]],
+rows:[
+{c:"What is the core disclosure principle?",n:`<p><b>Full, true, and plain disclosure</b> of all relevant facts by anyone selling securities to the public, usually in a <b>prospectus</b>. Until the regulator accepts that disclosure, selling the securities is illegal.</p><p>Securities acts protect investors in <b>three ways</b>: <b>registration</b>, <b>disclosure</b>, and <b>enforcement</b>.</p>`},
+{c:"What goes in the relationship disclosure document?",n:`<p>Clients must receive relationship disclosure covering: the account type; products and services offered; investment risks; the risks of borrowing to invest; conflicts of interest; operating and transaction charges; <b>the firm's complaint handling procedures</b>; that the firm must ensure suitability and put the client first; and what reports the client gets and when.</p>`},
+{c:"How must conflicts of interest be disclosed?",n:`<p>Firms must identify material conflicts, <b>address them in the client's best interest</b>, <b>avoid</b> any they can't address, and disclose them prominently and in plain language. <u>Disclosure alone is not enough.</u></p>`},
+{c:"What is Know Your Product?",n:`<p>Under <b>Know Your Product</b> (KYP), registrants must understand every product they offer: its structure, features, risks, costs and likely performance. Firms must take "reasonable steps" and have policies to <b>assess, approve and monitor</b> every security they offer. You can't judge suitability or explain a product you don't understand.</p>`},
+{c:"How are client complaints handled?",n:`<ol style="margin-left:1.1em;padding:0"><li><b>Try to resolve it with the firm first.</b> The firm's complaint procedures must be in the relationship disclosure document.</li>
+<li><b>Arbitration</b>: an independent arbitrator decides. Clients get an <b>arbitration brochure at account opening</b> and again <b>whenever a written complaint is received</b>. The client must have tried the dealer first, and the claim must be <b>≤ $500,000</b> (more only if both sides agree). If the client requests it, the dealer must accept. <b>The decision is binding.</b></li>
+<li><b>Ombudsman for Banking Services and Investments</b> (OBSI): independent of the industry. Its recommendations are <b>not binding</b>, but firms that refuse them are <b>publicly named</b>.</li></ol>
+<p>CIRO can discipline its members but cannot order them to pay clients back, which is why arbitration and OBSI exist.</p>
+<div class="gap"><b>Not in your folder:</b> detailed complaint-handling procedures (deadlines, acknowledgement steps). The textbook covers only what's above.</div>`},
+{c:"What regulatory standards apply to advisors?",n:`<ul><li><b>Principles-based regulation</b>: regulators set the objectives and firms decide how to meet them, then must prove their due diligence with records.</li>
+<li><b>Client Focused Reforms</b> (2021): <b>the client's interest comes first</b>.</li>
+<li><b>Know Your Client</b> (KYC): personal and financial circumstances, investment knowledge, needs and objectives, <b>risk profile</b> (the lower of <b>risk tolerance</b> and <b>risk capacity</b>) and time horizon. Review at least <b>every 36 months</b>.</li>
+<li><b>Suitability</b>: KYC + KYP must support every trade and recommendation, and suitability is rechecked when there's a material change.</li>
+<li><b>Registration</b> standards: CIRO sets the proficiency and education requirements.</li></ul>`}
+],
+summary:"Anyone selling securities must give full, true and plain disclosure, and clients get a relationship disclosure document that includes the firm's complaint procedures. Advisors must know every product they sell (KYP) and put the client first under the Client Focused Reforms. Complaints go to the firm first, then to binding arbitration (up to $500,000) or to OBSI, which is non-binding."
+},
+
+{
+id:"cycle", tab:"Indicators", title:"Leading, Coincident & Lagging Indicators · Business Cycle Phases",
+src:"Textbook Ch 4",
+outline:["Reading the economy",[
+  ["Leading (before)",[["Housing starts, new orders"],["Stock prices, commodity prices"],["Hours worked, money supply"]]],
+  ["Coincident (with)",[["GDP, industrial production"],["Retail sales, personal income"]]],
+  ["Lagging (after)",[["Unemployment, inflation"],["Labour costs, business investment"]]],
+  ["Business cycle",[["Expansion → Peak → Contraction"],["→ Trough → Recovery"],["Recession = 2+ quarters of decline"]]]
+]],
+rows:[
+{c:"Leading vs coincident vs lagging: which indicators go where?",n:`<div class="tbl-wrap"><table>
+<tr><th><b>Leading indicators</b><br><small>turn BEFORE the economy</small></th><th><b>Coincident indicators</b><br><small>move WITH the economy</small></th><th><b>Lagging indicators</b><br><small>change AFTER, confirming the trend</small></th></tr>
+<tr><td>• Housing starts<br>• Manufacturers' new orders<br>• Stock prices<br>• Commodity prices<br>• Average hours worked<br>• Money supply</td><td>• GDP<br>• Industrial production<br>• Retail sales<br>• Personal income</td><td>• Unemployment<br>• Inflation<br>• Labour costs<br>• Business investment (textbook: private sector plant & equipment spending)</td></tr></table></div>
+<div class="tip"><b>Memory hooks.</b> Leading = <i>plans and expectations</i>: permits, orders, hours, stock prices, money. Coincident = <i>what's being produced and spent right now</i>. Lagging = <i>what firms do once they're sure</i>: hire, raise wages, build plants. <b>Trick:</b> stock prices lead, but unemployment and inflation lag.</div>`},
+{c:"What clues identify each business cycle phase?",n:`<p>The <b>business cycle</b> has five phases: <b>expansion → peak → contraction → trough → recovery</b>.</p><div class="tbl-wrap"><table>
+<tr><th>Phase</th><th>Clues to recognize it</th></tr>
+<tr><td><b>Expansion</b></td><td>Stable inflation; inventories and capacity built up; profits rise; start-ups outnumber bankruptcies; stocks strong; unemployment steady or falling</td></tr>
+<tr><td><b>Peak</b></td><td>Demand outstrips capacity; shortages push up <b>wages and inflation</b>; <b>interest rates rise and bond prices fall</b>; sales slow and inventory piles up; stocks start to fall</td></tr>
+<tr><td><b>Contraction</b></td><td>Real GDP falls; production cut, hiring frozen, layoffs; bankruptcies outnumber start-ups; consumers save more; stocks fall further. <b>2+ consecutive quarters of decline = recession</b></td></tr>
+<tr><td><b>Trough</b></td><td>Lowest point: <b>interest rates fall and bonds rally</b>; inflation falls; consumers start spending again; <b>stocks rally</b></td></tr>
+<tr><td><b>Recovery</b></td><td>GDP climbs back to the previous peak; buying of houses and cars (rate-sensitive) resumes; firms rebuild inventory but are slow to hire; <b>unemployment still high</b></td></tr></table></div>
+<div class="tip"><b>Exam clue words:</b> "bonds rally + stocks rally + inflation falling" = trough. "Rising wages + rising rates + unwanted inventory" = peak. "Unemployment still high but house and car buying picking up" = recovery.</div>`}
+],
+summary:"Leading indicators (housing starts, new orders, stock prices, commodity prices, hours worked, money supply) turn before the economy does. Coincident indicators (GDP, industrial production, retail sales, personal income) move with it, and lagging indicators (unemployment, inflation, labour costs, business investment) confirm the trend afterwards. The cycle runs through expansion, peak, contraction, trough and recovery, and each phase has telltale clues in rates, inventory, hiring and markets."
+},
+
+{
+id:"econ", tab:"Economy", title:"Equilibrium · Productivity · Unemployment Types · Inflation · Exchange Rates",
+src:"Textbook Ch 4",
+outline:["Core economic ideas",[
+  ["Equilibrium",[["Quantity demanded = quantity supplied"]]],
+  ["Productivity",[["Output per unit of input"],["Tech, population, education"]]],
+  ["Unemployment types",[["Cyclical, seasonal"],["Frictional, structural"],["Natural rate = frictional + structural"]]],
+  ["Inflation",[["Sustained rise in prices"],["Measured by CPI"],["Demand-pull vs cost-push"]]],
+  ["Exchange rates",[["Strong C$ hurts exporters"],["Weak C$ helps exporters"]]]
+]],
+rows:[
+{c:"What is equilibrium price?",n:`<p><b>Demand</b>: the higher the price, the lower the quantity demanded. <b>Supply</b>: the higher the price, the higher the quantity supplied.</p><p>The <b>equilibrium price</b> is where quantity demanded equals quantity supplied. Above it there's unsold inventory and the price falls; below it demand goes unmet and the price rises.</p><p>Applied to markets: poor company results → more shares for sale → price falls. Foreign demand for Canadian lumber → demand for C$ rises → C$ rises.</p>`},
+{c:"What is productivity, and what drives it?",n:`<p><b>Productivity</b> is output (e.g. GDP) per unit of input (labour and capital). Higher productivity means more output at lower cost. The key drivers are <b>technological advances</b>, <b>population growth</b>, and <b>better training, education and skills</b>.</p>`},
+{c:"What are the four types of unemployment?",n:`<ul><li><b>Cyclical unemployment</b>: rises and falls with the business cycle.</li><li><b>Seasonal unemployment</b>: in industries that run only part of the year (e.g. farm work from June to October).</li><li><b>Frictional unemployment</b>: normal, short-term turnover between jobs or after school.</li><li><b>Structural unemployment</b>: a <i>mismatch</i> of skills, location or wage expectations with the available jobs. It lasts longer and needs retraining or relocation.</li></ul><p>The <b>natural unemployment rate</b> = frictional + structural, so it is never zero.</p>`},
+{c:"What is inflation, and what causes it?",n:`<p><b>Inflation</b> is a <u>sustained</u> rise in prices across the whole economy. A one-time jump, or a rise in a single product's price, is <i>not</i> inflation. It is measured with the <b>Consumer Price Index</b> (CPI), which tracks a basket of consumer goods.</p>
+<ul><li><b>Demand-pull inflation</b>: demand exceeds what the economy can produce.</li><li><b>Cost-push inflation</b>: production costs (wages, raw materials) rise and firms pass them on.</li><li><b>Deflation</b>: prices actually fall. <b>Disinflation</b>: inflation slows but prices still rise.</li></ul>`},
+{c:"How does the exchange rate affect the economy?",n:`<p>The <b>exchange rate</b> is the price of one currency in terms of another.</p><ul><li><b>A stronger C$ (appreciation)</b> makes exports pricier abroad and imports cheaper, which hurts exporters. A C$1,000 machine costs US$700 at 0.70 but US$800 at 0.80.</li><li><b>A weaker C$ (depreciation)</b> helps exporters and makes imports pricier.</li></ul>
+<p>What moves the C$: <b>commodity prices</b> (Canada is a resource exporter), <b>interest rates</b> (higher rates attract capital and lift the C$), <b>inflation</b> (low inflation means a stronger currency over time), and <b>trade</b> (exports raise demand for C$).</p>`}
+],
+summary:"Equilibrium is the price at which buyers and sellers want the same quantity. Productivity is output per unit of input and drives long-run growth. Unemployment can be cyclical, seasonal, frictional or structural. Inflation is a sustained rise in prices caused by excess demand or rising costs, and a stronger Canadian dollar hurts exporters while a weaker one helps them."
+},
+
+{
+id:"policy", tab:"Policy", title:"Fiscal vs Monetary · Easing vs Tightening · Deficits, Debt & Crowding Out",
+src:"Textbook Ch 5",
+outline:["Economic policy",[
+  ["Fiscal (government)",[["Spending & taxation"],["Expansionary vs contractionary"]]],
+  ["Monetary (Bank of Canada)",[["Interest rates & money supply"],["Inflation target 1–3%"]]],
+  ["Easing vs tightening",[["Easing: lower rates"],["Tightening: higher rates"]]],
+  ["Deficits & debt",[["Deficit = one year's shortfall"],["Debt = accumulated deficits − surpluses"]]],
+  ["Crowding out",[["Government borrowing raises rates"],["Less capital for business"]]]
+]],
+rows:[
+{c:"Fiscal vs monetary policy: who does what?",n:`<div class="tbl-wrap"><table><tr><th></th><th><b>Fiscal policy</b></th><th><b>Monetary policy</b></th></tr>
+<tr><td>Who</td><td>The federal government (budget)</td><td>The <b>Bank of Canada</b></td></tr>
+<tr><td>Tools</td><td><b>Spending and taxation</b></td><td>Short-term interest rates and the money supply</td></tr>
+<tr><td>To stimulate (recession)</td><td><b>Spend more, tax less</b> (expansionary)</td><td><b>Lower rates</b> (easing)</td></tr>
+<tr><td>To cool down (inflation)</td><td><b>Spend less, tax more</b> (contractionary)</td><td><b>Raise rates</b> (tightening)</td></tr></table></div>
+<p>The goal of <b>monetary policy</b> is to keep inflation within the <b>1% to 3%</b> target range.</p><div class="warn">The Bank of Canada does <b>not</b> set the budget. Spending and taxes are fiscal policy.</div>`},
+{c:"Easing vs tightening?",n:`<ul><li><b>Easing</b>: <i>lower</i> the target overnight rate (e.g. 1.00% → 0.75%). Borrowing gets cheaper, so borrowing and spending rise and the economy is stimulated.</li><li><b>Tightening</b>: <i>raise</i> the target. Borrowing costs more, so people save more and spend less, and inflation cools.</li></ul>`},
+{c:"Surplus, deficit, balanced budget and national debt?",n:`<ul><li>Revenue > spending: <b>budget surplus</b></li><li>Revenue < spending: <b>budget deficit</b></li><li>Revenue = spending: <b>balanced budget</b></li></ul><p><b>National debt</b> = accumulated past deficits − accumulated past surpluses. A deficit is one year's shortfall; the debt is the running total. Deficits are financed by issuing bonds and T-bills. Debt-to-GDP is the best measure of the debt burden.</p>`},
+{c:"What is crowding out?",n:`<p><b>Crowding out</b>: the supply of capital is limited, so heavy government borrowing leaves less for businesses. With demand for capital above supply, <b>interest rates rise</b>, borrowing costs more, and private investment falls.</p><p>A high national debt also limits fiscal flexibility, because large interest payments leave less room to spend or cut taxes.</p>`}
+],
+summary:"Fiscal policy is the government's spending and taxing, and monetary policy is the Bank of Canada steering interest rates to keep inflation between 1% and 3%. Easing lowers rates to stimulate the economy, and tightening raises them to cool it. A deficit is one year's shortfall and the national debt is the running total. Heavy government borrowing can crowd out business borrowing by pushing up interest rates."
+},
+
+{
+id:"money", tab:"Money & Band", title:"Money Supply → Rates & Inflation · Quantitative Easing · The Textbook's Operating Band",
+src:"Textbook Ch 4–5 (QE: not in course materials)",
+outline:["How the Bank moves rates",[
+  ["Money supply chain",[["More money → lower rates → more spending → inflation ↑"],["Less money → higher rates → inflation ↓"]]],
+  ["Operating band (textbook)",[["25 bp wide"],["Target overnight = bottom"],["Bank Rate = top"]]],
+  ["Keeping rates in the band",[["Overnight repo ↓ rates"],["Overnight reverse repo ↑ rates"],["Redeposit ↓ / drawdown ↑"]]],
+  ["Quantitative easing",[["Not in folder"],["Buy bonds when rates near zero"]]]
+]],
+rows:[
+{c:"How does the money supply affect interest rates and inflation?",n:`<span class="formula">More money in the system (easing, repo, redeposit)
+  → banks have more to lend → interest rates FALL
+  → borrowing & spending rise → growth, and eventually inflation, ↑
+
+Less money (tightening, reverse repo, drawdown)
+  → interest rates RISE → borrowing & spending fall → inflation ↓</span>
+<ul><li>The textbook lists the <b>money supply</b> as a <i>leading indicator</i> because it represents available liquidity and affects interest rates.</li><li>The Ch 4 slides say inflation is "usually an indication of growth in the money supply."</li><li>Monetarists argue that money-supply changes drive economic swings and inflation.</li></ul>
+<div class="gap">The folder never states this chain in one place. This combines the pieces listed above.</div>`},
+{c:"What is the textbook's operating band?",n:`<p>The <b>overnight rate</b> is the rate major institutions charge each other on one-day loans. The Bank's main tool is its <b>target for the overnight rate</b>.</p>
+<span class="formula">TEXTBOOK OPERATING BAND = 25 basis points wide
+  Bank Rate (upper limit) ........ 2.50%   ← Bank lends here
+  Target overnight rate (lower) .. 2.25%   ← Bank borrows here
+  Target = BOTTOM of band = Bank Rate − 0.25%</span>
+<p>The <b>Bank Rate</b> is the rate the Bank charges on one-day loans to members of Payments Canada; it is the top of the band. <b>Basis points</b>: 1 bp = 0.01 percentage point, so 25 bp = 0.25 pp.</p>
+<div class="warn">Your slides and Ch 5 quiz use an older 50 bp band with the target at the midpoint. The hint sheet says to use the textbook's band.</div>`},
+{c:"How does the Bank keep the overnight rate in the band?",n:`<div class="tbl-wrap"><table><tr><th></th><th><b>Overnight repo</b> → pushes rates <u>DOWN</u></th><th><b>Overnight reverse repo</b> → pushes rates <u>UP</u></th></tr>
+<tr><td>When</td><td>Overnight rate trading <b>above</b> the band</td><td>Overnight rate trading <b>below</b> the target</td></tr>
+<tr><td>Bank does</td><td><b>Lends</b> at the top of the band (buys T-bills overnight)</td><td><b>Borrows</b> at the bottom of the band (sells T-bills overnight)</td></tr>
+<tr><td>Money in the system</td><td>Increases</td><td>Decreases</td></tr></table></div>
+<ul><li><b>Redeposit</b>: government deposits move from the Bank to the chartered banks. More money, so <b>lower rates</b>.</li><li><b>Drawdown</b>: deposits move from the chartered banks to the Bank. Less money, so <b>higher rates</b>.</li></ul>`},
+{c:"What is quantitative easing?",n:`<div class="gap"><b>Not covered anywhere in your CSC folder</b> (textbook, slides or quiz). The short general explanation below is <u>not from your course materials</u>. Ask your instructor which source the exam uses.</div>
+<p><i>General background:</i> <b>quantitative easing</b> (QE) is an <b>unconventional easing</b> tool used when the policy rate is already near zero. The central bank creates money and uses it to <b>buy large amounts of longer-term government bonds</b>. That <b>increases the money supply</b>, pushes bond prices up, <b>lowers longer-term interest rates</b>, and encourages borrowing and spending. Reversing it (letting the bonds mature or selling them) is <i>quantitative tightening</i>. The Bank of Canada used QE in 2020–21.</p>`}
+],
+summary:"More money in the system pushes interest rates down and spending up, which eventually raises inflation; less money does the opposite. Under the textbook, the operating band is 25 bp wide, with the target overnight rate at the bottom and the Bank Rate at the top. Repos and redeposits push rates down, and reverse repos and drawdowns push them up. Quantitative easing isn't in your folder."
+},
+
+{
+id:"bonds", tab:"Bonds", title:"Bond Quotes, Coupons, Strips, Calls, Retractions, Convertibles, Floaters, Sinking & Purchase Funds, Ratings",
+src:"Textbook Ch 6",
+outline:["Bond features",[
+  ["Basics & quotes",[["Par, coupon, maturity"],["Quoted per $100 of par"],["Issuer, coupon, maturity, bid, ask, yield"]]],
+  ["Coupons & strips",[["Coupon % of par, paid semi-annually"],["Strip = zero-coupon, sold at a discount"]]],
+  ["Options",[["Callable: issuer's option"],["Retractable: holder's option"],["Convertible: holder swaps for shares"]]],
+  ["Floating rate",[["Coupon resets with market rates"]]],
+  ["Retiring debt",[["Sinking fund: mandatory"],["Purchase fund: only if price ≤ set level"]]],
+  ["Credit ratings",[["DBRS, Moody's, S&P"],["Baa3 / BBB− and up = investment grade"]]]
+]],
+rows:[
+{c:"Par, coupon and price: what do they mean?",n:`<ul><li><b>Par value</b> (<b>face value</b>): the amount repaid at maturity.</li><li><b>Coupon rate</b>: annual interest as a % of <i>par</i>, fixed at issue and usually <b>paid semi-annually</b>.</li><li><b>Market price</b>: quoted per $100 of par. 100 = at par; below 100 = at a <b>discount</b>; above 100 = at a <b>premium</b>.</li></ul>
+<span class="formula">$1,000, 6% semi-annual bond → $60/yr = $30 every 6 months
+Quote 107.491 → $1,074.91 per $1,000</span>`},
+{c:"How do I read a bond quote?",n:`<div class="tbl-wrap"><table><tr><th>Issuer</th><th>Coupon</th><th>Maturity</th><th>Bid</th><th>Ask</th><th>Yield</th></tr><tr><td>ABC Company</td><td>11.5%</td><td>July 1, 2028</td><td>99.25</td><td>99.75</td><td>11.78%</td></tr></table></div>
+<p>You <b>sell</b> at the bid ($99.25 per $100) and <b>buy</b> at the ask ($99.75). Buying $5,000 of face value costs $5,000 × 0.9975 = <b>$4,987.50</b> plus accrued interest. This bond is at a discount, so its yield is above its coupon.</p>`},
+{c:"How do strip bonds work?",n:`<p>A <b>strip bond</b> (<b>zero-coupon bond</b>) is made when a dealer separates a high-quality bond's coupons from its principal (the <b>bond residue</b>) and sells each piece separately <b>at a discount</b>. It pays <b>no interest</b> along the way and matures at par.</p><span class="formula">$10M of a 5-yr, 5.5% semi-annual bond → 10 coupon strips
+each worth $10M × 0.055 × 0.5 = $275,000, plus a $10M residue</span><p>Strips are taxed as interest income every year even though no cash arrives until maturity, so they suit an <b>RRSP</b>.</p>`},
+{c:"How do callable bonds work?",n:`<p>A <b>callable bond</b> (<b>redeemable bond</b>) gives the <i>issuer</i> the right to repay early, usually when rates fall. The call price is usually <b>above par</b> plus accrued interest. The period when it can't yet be called is the <b>call protection period</b>.</p><p><b>Government of Canada bonds are usually non-callable.</b></p>`},
+{c:"How do retractable bonds work?",n:`<p>A <b>retractable bond</b> has a <i>long</i> maturity (10+ years), but the <b>holder</b> may <b>redeem it early at par</b> on a retraction date. <u>If the holder does nothing, it stays long-term.</u></p><div class="tip">Holders retract when rates are <b>rising</b>, so they can reinvest at the higher rates. <b>Callable = the issuer's option; retractable = the holder's option.</b></div>`},
+{c:"How do convertibles and conversion value work?",n:`<p>A <b>convertible bond</b> lets the <i>holder</i> exchange the bond for common shares (the <b>conversion privilege</b>) at a set <b>conversion price</b>. It pays fixed interest and offers upside if the stock rises.</p>
+<span class="formula">Conversion price  = Par ÷ shares per bond     $1,000 ÷ 44.033 = $22.71
+Conversion value  = Shares × stock price       40 × $22 = $880
+  Stock rises to $27 → 40 × $27 = $1,080 → bond trades at ≥ $1,080</span>
+<p>Below the conversion price, it behaves like a regular bond; above it, the bond price tracks the stock. Its <b>floor is the conversion value</b>.</p>
+<p><b>Forced conversion</b>: once the stock has stayed high enough, the issuer calls the bonds so holders convert into shares.</p>`},
+{c:"What is a floating-rate bond?",n:`<p><b>Floating-rate securities</b> (<b>variable-rate securities</b>) have a coupon that resets with market interest rates, often every 6 months. They suit investors who expect rates to <b>rise</b>.</p>`},
+{c:"Sinking fund vs purchase fund?",n:`<ul><li><b>Sinking fund</b>: money set aside from earnings each year to retire part or all of the debt by maturity. It is <b>mandatory and binding</b>: the issuer buys in the market at or below a set price, or <i>calls</i> bonds if it can't.</li><li><b>Purchase fund</b>: retires bonds <u>only through market purchases at or below a set price</u>. It is <b>not forced</b>, so it may retire less.</li></ul>`},
+{c:"How do credit ratings work?",n:`<p>The rating agencies are <b>DBRS, Moody's and S&P</b>. A downgrade lowers a bond's price; a high rating lets an issuer pay a lower coupon.</p><p>Moody's scale: <b>Aaa</b> (highest) › Aa › A › <b>Baa</b> › Ba › B › Caa › Ca › C (in default). Modifiers 1, 2, 3 mark the high, middle and low end of a grade.</p><div class="tip"><b>Investment grade = Baa3 (Moody's) / BBB− (S&P) / BBB (DBRS) or higher.</b> Anything below is speculative, or high-yield.</div>`}
+],
+summary:"A bond pays a fixed coupon (a percentage of par, usually twice a year) and returns par at maturity, with prices quoted per $100 of par. Strips pay no coupons and are sold at a discount. A call is the issuer's option, while retraction and conversion are the holder's. Floaters reset their coupon with market rates, sinking funds force repayment while purchase funds don't, and Baa3/BBB− or higher counts as investment grade."
+},
+
+{
+id:"calc", tab:"Calculations", title:"Calculations: Every Formula on the Hint Sheet",
+src:"Worked examples from textbook Ch 4, 6 and 7. All numbers re-checked.",
+outline:["Calculations to practise",[
+  ["Economy",[["GDP"],["Unemployment & participation"],["Inflation (CPI), real rate"]]],
+  ["Bonds",[["Coupon $ & quotes"],["Bond price"],["Conversion value"]]],
+  ["Units",[["25 bp = 0.25 percentage points"]]]
+]],
+rows:[
+{c:"GDP",n:`<span class="formula">GDP = C + I + G + (X − M)
+C = consumer spending · I = business investment · G = government spending · X − M = net exports
+C 1,200 + I 400 + G 500 + (X 600 − M 550) = 2,150</span><div class="tip">Imports are <b>subtracted</b>. Count only <b>final</b> goods. Real growth ≈ nominal growth − inflation (4.4% − 1.1% = 3.3%).</div>`},
+{c:"Unemployment & participation",n:`<span class="formula">Labour force   = Employed + Unemployed (actively looking)
+Unemployment   = Unemployed ÷ LABOUR FORCE × 100
+Participation  = Labour force ÷ Working-age population (15+) × 100
+
+25M working-age; 19M employed; 1M looking; 5M not looking
+Labour force = 20M · Participation = 20 ÷ 25 = 80% · Unemployment = 1 ÷ 20 = 5% (NOT 1 ÷ 25)</span><div class="tip"><b>Discouraged workers</b> (stopped looking) are <b>not</b> in the labour force.</div>`},
+{c:"Inflation from CPI",n:`<span class="formula">Inflation = (CPI now − CPI previous) ÷ CPI PREVIOUS × 100
+(154.5 − 146.8) ÷ 146.8 × 100 = 5.2%</span>`},
+{c:"Real interest rate",n:`<span class="formula">Real rate ≈ Nominal rate − Inflation      Nominal = Real + Inflation
+7% − 3% = 4% real   ·   need 6% real at 3% inflation → 9% nominal</span>`},
+{c:"Coupon dollars & quotes",n:`<span class="formula">Annual coupon $ = Coupon % × PAR      (never the market price)
+Semi-annual payment = annual ÷ 2
+$1,000 at 6% → $60/yr → $30 each half-year
+Quote → dollars: price ÷ 100 × par
+  97 on $1,000 = $970  ·  99.75 on $5,000 = $4,987.50</span>`},
+{c:"Bond price",n:`<span class="formula">Price = PV(coupons) + PV(principal)
+Semi-annual: N = years × 2 · I/Y = yield ÷ 2 · PMT = coupon ÷ 2 · FV = par
+4-yr, 9%, $100 par, 10% yield:  N 8 · I/Y 5 · PMT 4.50 · FV 100 → PV = 96.77
+6-yr, 8%, $10,000 par, 6% yield: N 12 · I/Y 3 · PMT 400 · FV 10,000 → PV = $10,995.40</span><div class="tip"><b>Price and yield move inversely.</b> Yield > coupon → discount (below 100). Yield < coupon → premium (above 100). Yield = coupon → par.</div>`},
+{c:"Conversion value",n:`<span class="formula">Shares per bond = Par ÷ Conversion price
+Conversion price = $1,000 ÷ 44.033 shares = $22.71
+Conversion value = Shares × Current stock price
+  40 × $22 = $880   ·   40 × $27 = $1,080</span>`},
+{c:"Basis points & the band",n:`<span class="formula">1 bp = 0.01 percentage point  ·  25 bp = 0.25 pp  ·  100 bp = 1 pp
+Textbook band: Target overnight (bottom) = Bank Rate (top) − 0.25
+Bank Rate 2.50% → target 2.25%   ·   lower band 3.25% → Bank Rate 3.50%</span>`}
+],
+summary:"Most mistakes come from using the wrong denominator: the labour force (not the population) for unemployment, the previous CPI for inflation, and par (not the price) for coupon dollars. For semi-annual bonds, halve the rate and double the periods. A basis point is one hundredth of a percentage point, so 25 bp is 0.25 pp."
+}
+];
+
+/* ---------- GLOSSARY ---------- */
+const GLOSSARY = [
+["agent","A dealer that executes trades for a client without ever owning the securities, earning a commission.","Dealers"],
+["arbitration","An independent arbitrator settles a client–dealer dispute. Binding, for claims up to $500,000.","Conduct"],
+["ask price","The lowest price a seller will accept.","Markets"],
+["auction market","A market where all bids and offers meet centrally and compete, e.g. a stock exchange. Dealers usually act as agents.","Markets"],
+["back office","The part of a dealer that handles trade settlement.","Dealers"],
+["balanced budget","Government revenue equals spending.","Policy"],
+["Bank Rate","The rate the Bank of Canada charges on one-day loans to Payments Canada members. The top of the operating band.","Money & Band"],
+["basis points","Hundredths of a percentage point. 25 bp = 0.25 pp.","Money & Band"],
+["bid price","The highest price a buyer will pay.","Markets"],
+["bid-ask spread","The ask price minus the bid price.","Markets"],
+["bond residue","The principal portion left after a bond's coupons are stripped off.","Bonds"],
+["budget deficit","Government spending exceeds revenue for the year.","Policy"],
+["budget surplus","Government revenue exceeds spending for the year.","Policy"],
+["business cycle","The recurring sequence of expansion, peak, contraction, trough and recovery.","Indicators"],
+["call protection period","The period before a callable bond's first possible call date.","Bonds"],
+["callable bond","A bond the issuer may repay before maturity, usually above par. Also called a redeemable bond.","Bonds"],
+["Canada Deposit Insurance Corporation","CDIC: federal Crown corporation insuring eligible deposits up to $100,000 per category per member institution.","Regulators"],
+["Canadian Investment Regulatory Organization","CIRO: Canada's national SRO (IIROC + MFDA, 2023), overseeing dealers, mutual fund dealers and marketplace trading.","Regulators"],
+["Canadian Investor Protection Fund","CIPF: protects clients of insolvent CIRO dealer members, up to $1M per account group. Doesn't cover market losses.","Regulators"],
+["Canadian Securities Administrators","CSA: umbrella group of the 13 provincial and territorial regulators. Harmonizes rules and monitors the SRO.","Regulators"],
+["CDS Clearing and Depository Services Inc.","Canada's clearing and depository organization. It runs CDSX and is not a financial intermediary.","Clearing"],
+["clearing","Confirming and matching the details of a trade.","Clearing"],
+["Client Focused Reforms","2021 rules requiring registrants to put the client's interest first.","Conduct"],
+["coincident indicators","Indicators that move with the economy: GDP, industrial production, retail sales, personal income.","Indicators"],
+["conversion price","The price per share at which a convertible bond converts (par ÷ shares received).","Bonds"],
+["conversion privilege","The holder's right to exchange a convertible bond for common shares.","Bonds"],
+["conversion value","Shares received × current stock price. The floor for a convertible's price.","Bonds"],
+["convertible bond","A bond the holder may exchange for the issuer's common shares.","Bonds"],
+["Consumer Price Index","CPI: tracks the price of a basket of consumer goods, used to measure inflation.","Economy"],
+["cost-push inflation","Inflation caused by rising production costs such as wages and raw materials.","Economy"],
+["coupon rate","Annual interest as a percentage of par, fixed at issue.","Bonds"],
+["credit ratings","DBRS, Moody's and S&P grades of a bond's quality. Baa3/BBB− and up is investment grade.","Bonds"],
+["crowding out","Heavy government borrowing absorbs capital and raises interest rates for businesses.","Policy"],
+["cyclical unemployment","Unemployment that rises and falls with the business cycle.","Economy"],
+["dealer market","A negotiated OTC network where market makers quote prices and dealers act as principals. Almost all bonds trade here.","Markets"],
+["debt securities","Loans to an issuer that pay interest and return principal. The holder is a creditor.","Markets"],
+["deflation","A sustained fall in the general price level.","Economy"],
+["demand-pull inflation","Inflation caused by demand exceeding what the economy can produce.","Economy"],
+["discount","A bond price below par (below 100).","Bonds"],
+["discouraged workers","People who want work but have stopped looking. Excluded from the labour force.","Calculations"],
+["disinflation","A slowdown in the rate of inflation, with prices still rising.","Economy"],
+["drawdown","Moving government deposits from the chartered banks to the Bank of Canada. Drains money and raises rates.","Money & Band"],
+["easing","Lowering the target overnight rate to stimulate the economy.","Policy"],
+["equilibrium price","The price at which quantity demanded equals quantity supplied.","Economy"],
+["equity securities","Stocks or shares, which represent ownership in a company.","Markets"],
+["exchange rate","The price of one currency in terms of another.","Economy"],
+["face value","Same as par value: the amount repaid at maturity.","Bonds"],
+["financial intermediary","An institution that channels funds from suppliers of capital to users of capital.","Clearing"],
+["firewall","A Bank Act barrier that stops client information being shared between a bank's business units.","Clearing"],
+["fiscal policy","Government use of spending and taxation to influence the economy.","Policy"],
+["floating-rate securities","Debt whose coupon resets periodically with market rates. Also called variable-rate securities.","Bonds"],
+["forced conversion","An issuer's call designed to force convertible holders into shares.","Bonds"],
+["frictional unemployment","Normal, short-term unemployment between jobs or after school.","Economy"],
+["front office","The part of a dealer that handles portfolio management, trading, sales and marketing.","Dealers"],
+["full, true, and plain disclosure","The core principle of securities law: all relevant facts must be disclosed, usually in a prospectus.","Conduct"],
+["gross domestic product","GDP: the market value of all final goods and services produced in a country over a period.","Calculations"],
+["inflation","A sustained rise in the general price level.","Economy"],
+["institutional firm","An investment dealer serving only institutional clients.","Dealers"],
+["integrated firm","An investment dealer active in both retail and institutional business.","Dealers"],
+["investment grade","A credit rating of Baa3 (Moody's), BBB− (S&P) or BBB (DBRS) or higher.","Bonds"],
+["Know Your Client","KYC: collecting a client's circumstances, objectives, risk profile and time horizon.","Conduct"],
+["Know Your Product","KYP: understanding every product offered; firms must assess, approve and monitor them.","Conduct"],
+["labour force","Employed people plus unemployed people actively looking for work.","Calculations"],
+["lagging indicators","Indicators that change after the economy: unemployment, inflation, labour costs, business investment.","Indicators"],
+["leading indicators","Indicators that turn before the economy: housing starts, new orders, stock prices, commodity prices, hours worked, money supply.","Indicators"],
+["market maker","A dealer that posts bids and offers to provide liquidity.","Markets"],
+["middle office","The part of a dealer that handles compliance, accounting, audits and legal.","Dealers"],
+["monetary policy","The Bank of Canada's management of interest rates and the money supply to keep inflation at 1–3%.","Policy"],
+["money market","The market for debt with one year or less to maturity.","Markets"],
+["national debt","Accumulated federal deficits minus accumulated surpluses.","Policy"],
+["natural unemployment rate","Frictional plus structural unemployment. Never zero.","Economy"],
+["netting","CDS offsets each dealer's trades into one net cash or securities position per day.","Clearing"],
+["Office of the Superintendent of Financial Institutions","OSFI: federal supervisor of banks, insurers, trust and loan companies and federal pension plans. Not the securities industry.","Regulators"],
+["Ombudsman for Banking Services and Investments","OBSI: independent complaint service. Non-binding, but refusals are made public.","Conduct"],
+["over-the-counter market","Same as a dealer market: a negotiated market with no central exchange.","Markets"],
+["overnight rate","The rate on one-day loans between major financial institutions.","Money & Band"],
+["overnight repo","The Bank lends overnight (buying T-bills) to push the overnight rate down.","Money & Band"],
+["overnight reverse repo","The Bank borrows overnight (selling T-bills) to push the overnight rate up.","Money & Band"],
+["par value","The principal repaid at maturity, quoted as 100.","Bonds"],
+["participation rate","The labour force divided by the working-age population.","Calculations"],
+["premium","A bond price above par (above 100).","Bonds"],
+["primary market","Where new securities are sold by the issuer, so the issuer receives the money.","Markets"],
+["principal","(1) A dealer trading from its own inventory, earning a spread. (2) The face amount of a debt.","Dealers"],
+["productivity","Output per unit of input (labour and capital).","Economy"],
+["purchase fund","A fund that retires bonds only through market purchases at or below a set price. Not mandatory.","Bonds"],
+["quantitative easing","Central bank buying of long-term bonds to add money when rates are near zero. Not in your course folder.","Money & Band"],
+["real interest rate","The nominal rate minus inflation.","Calculations"],
+["redeposit","Moving government deposits from the Bank of Canada to the chartered banks. Adds money and lowers rates.","Money & Band"],
+["retail firm","An investment dealer serving individuals, either full-service or self-directed.","Dealers"],
+["retractable bond","A long-term bond the holder may redeem early at par.","Bonds"],
+["risk profile","The lower of a client's risk tolerance and risk capacity.","Conduct"],
+["seasonal unemployment","Unemployment in industries that operate only part of the year.","Economy"],
+["secondary market","Where investors trade securities already issued. The issuer receives nothing.","Markets"],
+["self-directed broker","A discount broker that executes trades cheaply and gives no advice.","Dealers"],
+["self-regulatory organization","A private industry body allowed to regulate its own members (CIRO).","Regulators"],
+["settlement","The irrevocable exchange of cash and securities.","Clearing"],
+["sinking fund","A mandatory, binding fund set aside from earnings to retire debt before maturity.","Bonds"],
+["strip bond","A zero-coupon piece (a coupon or the residue) sold at a discount and maturing at par.","Bonds"],
+["structural unemployment","Unemployment from a mismatch of skills, location or wages with available jobs.","Economy"],
+["tightening","Raising the target overnight rate to cool the economy and inflation.","Policy"],
+["underwriting","Buying a new issue from the issuer at a set price and reselling it. Done as principal.","Dealers"],
+["unemployment rate","Unemployed (looking) divided by the labour force.","Calculations"],
+["zero-coupon bond","A bond that pays no coupons, bought at a discount (e.g. a strip).","Bonds"]
+];
+
+/* ---------- SELF-CHECK (short-answer, not a mock exam) ---------- */
+const PRACTICE = {
+dealers:[
+["Recall","When a dealer acts as agent, does it own the securities, and how does it earn money?","No, an agent never takes ownership. It earns a commission."],
+["Recall","Which office handles compliance and legal, and which handles trade settlement?","The middle office handles compliance, accounting, audit and legal. The back office handles trade settlement."],
+["Application","A dealer buys a new bond issue from a province and resells it to clients. Principal or agent?","Principal. It owns the bonds in between (underwriting) and earns the spread."]
+],
+clearing:[
+["Comprehension","Explain how netting at CDS reduces what dealers must exchange each day.","CDS offsets each dealer's buys and sells into one net cash or securities position, so only net amounts move instead of every trade settling separately."],
+["Recall","What's the difference between clearing and settlement?","Clearing confirms and matches the trade details. Settlement is when cash and securities actually change hands."],
+["Application","A bank branch employee wants to see a customer's trades at the bank's brokerage subsidiary. What prevents this?","A firewall under the Bank Act, which keeps client information separate between a bank's business units."]
+],
+markets:[
+["Recall","In which market does the issuer receive the money?","The primary market (new issues). In the secondary market, money changes hands only between investors."],
+["Comprehension","Contrast auction and dealer markets, including the dealer's usual role in each.","Auction: orders compete in one central market and dealers act as agents. Dealer/OTC: negotiated network, market makers quote prices and dealers act as principals. Most bonds trade there."],
+["Recall","Does a 10-year bond with 8 months left to maturity trade in the money market?","Yes. The money market covers debt with one year or less remaining, however long ago it was issued."],
+["Comprehension","Is a bondholder an owner or a creditor?","A creditor. Debt is a loan; equity is ownership."]
+],
+regs:[
+["Recall","Does OSFI regulate investment dealers?","No. OSFI supervises federally regulated financial institutions (banks, insurers, trust and loan companies, federal pensions), not the securities industry."],
+["Application","At an insolvent CIRO dealer: cash $30K, margin $50K, TFSA $40K, RRSP $700K, RRIF $450K. How much does CIPF protect?","General: 30 + 50 + 40 = $120K (TFSA is in the general account). RRSP + RRIF combined = $1.15M, capped at $1M. Total = $1,120,000."],
+["Application","At one bank: $60K chequing in own name, $40K savings in own name at another branch, $90K TFSA. What does CDIC insure?","Same-name deposits combine across branches: $100K, capped at $100K. TFSA is its own category: $90K. Total = $190,000."],
+["Recall","What is CIRO, and which two organizations formed it?","Canada's national SRO for investment dealers, mutual fund dealers and marketplace trading. It was formed from IIROC and the MFDA on January 1, 2023."]
+],
+conduct:[
+["Recall","What disclosure standard applies to anyone selling securities to the public?","Full, true and plain disclosure of all relevant facts, usually in a prospectus."],
+["Recall","Name two conditions for arbitration and say whether the result is binding.","The client must first try to resolve it with the dealer, and the claim must be ≤ $500,000 (higher only if both agree). Binding."],
+["Comprehension","How does OBSI differ from arbitration?","OBSI's recommendations aren't binding, but firms that refuse are publicly named. Arbitration decisions are binding."],
+["Comprehension","Why does Know Your Product matter for suitability?","You can't judge whether a product suits a client, or explain its risks, if you don't understand it."]
+],
+cycle:[
+["Recall","Classify: housing starts, retail sales, unemployment, stock prices, labour costs, personal income.","Leading: housing starts, stock prices. Coincident: retail sales, personal income. Lagging: unemployment, labour costs."],
+["Application","Interest rates are falling, bonds are rallying, inflation is easing and stocks have started to rally. Which phase?","Trough."],
+["Application","Wages and inflation are rising, interest rates are climbing and unsold inventory is piling up. Which phase?","Peak."],
+["Recall","Is the money supply leading, coincident or lagging?","Leading."]
+],
+econ:[
+["Recall","Which type of unemployment usually lasts longest and why?","Structural, because workers need to retrain or relocate to fill the available jobs."],
+["Comprehension","Wages and raw-material costs jump and firms raise prices. What type of inflation is that?","Cost-push inflation."],
+["Comprehension","How does a rising Canadian dollar affect Canadian exporters?","Their goods become more expensive in foreign currency, so they're less competitive and sales tend to fall."],
+["Application","At $50 there's unsold inventory piling up. Is $50 above or below the equilibrium price?","Above. Quantity supplied exceeds quantity demanded, so the price will fall toward equilibrium."]
+],
+policy:[
+["Application","Recession with rising unemployment: name one fiscal and one monetary response.","Fiscal: increase spending and/or cut taxes. Monetary: lower the target overnight rate (easing)."],
+["Comprehension","Explain crowding out.","Large government borrowing absorbs limited capital, pushing interest rates up, so private borrowing and investment fall."],
+["Comprehension","What's the difference between a deficit and the national debt?","A deficit is one year's shortfall. The national debt is accumulated deficits minus accumulated surpluses."]
+],
+money:[
+["Recall","Under the textbook, if the Bank Rate is 3.00%, what is the target overnight rate?","2.75%. The band is 25 bp and the target is at the bottom."],
+["Comprehension","Overnight money is trading above the band. Which tool does the Bank use, and what happens to the money supply?","An overnight repo: the Bank lends at the top of the band. Money in the system rises, pushing rates down."],
+["Recall","Does a drawdown raise or lower interest rates?","It raises them, because money is drained from the chartered banks."],
+["Comprehension","Trace how an increase in the money supply affects interest rates and inflation.","More money to lend → interest rates fall → borrowing and spending rise → growth and, eventually, inflation rise."]
+],
+bonds:[
+["Comprehension","Who holds the option in a callable bond vs a retractable bond?","Callable: the issuer. Retractable: the holder."],
+["Application","A $1,000 convertible converts into 25 shares; the stock is $48. Conversion price and conversion value?","Conversion price = 1,000/25 = $40. Conversion value = 25 × $48 = $1,200."],
+["Comprehension","Sinking fund vs purchase fund: which is binding?","The sinking fund (it will call bonds if needed). The purchase fund buys only at or below a set price."],
+["Recall","What is the lowest Moody's rating that is still investment grade?","Baa3 (BBB− at S&P, BBB at DBRS)."],
+["Application","Quote: XYZ 5% Jun 1/2031, bid 98.40, ask 98.90. Cost to buy $10,000 face value, before accrued interest?","$10,000 × 0.9890 = $9,890."]
+],
+calc:[
+["Application","30M working age, 20M employed, 1.5M unemployed and looking. Participation and unemployment rates?","Labour force = 21.5M. Participation = 21.5/30 = 71.7%. Unemployment = 1.5/21.5 = 7.0%."],
+["Application","CPI rose from 150.0 to 154.5. Inflation rate? If a GIC pays 4.5%, what's the real return?","Inflation = 4.5/150 = 3.0%. Real ≈ 4.5 − 3.0 = 1.5%."],
+["Application","5-yr, 4% semi-annual, $100 par, yield 4%. Price? If yield rises, does price rise or fall?","100 (yield = coupon, so at par). If yield rises, the price falls."],
+["Application","How many percentage points is 75 bp? If the target goes from 2.25% to 2.75%, how many bp is that?","0.75 pp. 2.75 − 2.25 = 0.50 pp = 50 bp."],
+["Application","C = 900, I = 300, G = 350, X = 400, M = 450. GDP?","900 + 300 + 350 + (400 − 450) = 1,500."]
+]
+};
+
+/* ---------- RENDER ---------- */
+const kt = s => s.replace(/<b>(.*?)<\/b>/g,'<span class="key-term">$1</span>');
+function outlineHTML(node){
+  const [label, kids] = node;
+  if(!kids || !kids.length) return `<li class="leaf"><span class="node"><span class="caret">▶</span>${label}</span></li>`;
+  return `<li><span class="node"><span class="caret">▶</span><b>${label}</b></span><ul>${kids.map(outlineHTML).join('')}</ul></li>`;
+}
+const main = document.getElementById('main'), nav = document.getElementById('nav');
+const tabs = [...SECTIONS.map(s=>({id:s.id,tab:s.tab})),{id:'glossary',tab:'Glossary'},{id:'practice',tab:'Self-Check Qs'}];
+nav.innerHTML = tabs.map(t=>`<button data-id="${t.id}">${t.tab}</button>`).join('');
+
+main.innerHTML = SECTIONS.map(s=>`
+<section class="section" id="${s.id}">
+ <div class="sec-head"><h2>${s.title}</h2><div class="src">${s.src}</div></div>
+ <div class="block outline"><button class="toggle-all">Expand all</button><h3>Concept Outline</h3><ul class="root-ul">${outlineHTML(s.outline)}</ul></div>
+ <div class="cornell-wrap"><div class="cornell"><div class="hd c">Cues</div><div class="hd">Notes</div>
+ ${s.rows.map(r=>`<div class="cue">${r.c}</div><div class="note">${kt(r.n)}</div>`).join('')}
+ </div><div class="summary"><h4>Section Summary</h4>${s.summary}</div></div>
+</section>`).join('') + `
+<section class="section" id="glossary">
+ <div class="sec-head"><h2>Glossary</h2><div class="src">${GLOSSARY.length} key terms from the hint-sheet topics, alphabetized</div></div>
+ <div class="gl-tools"><input id="glq" placeholder="Search terms or definitions…"></div>
+ <div class="letters" id="letters"></div>
+ <div class="gl-grid" id="glgrid"></div>
+</section>
+<section class="section" id="practice">
+ <div class="sec-head"><h2>Self-Check Questions</h2><div class="src">Short-answer recall prompts for each section (not a mock exam). Tick a box once you can answer without peeking.</div></div>
+ <div class="progress"><span id="ptext"></span><div class="barx"><div class="fill" id="pfill"></div></div></div>
+ <div id="pq"></div>
+</section>`;
+
+/* outline toggles */
+main.querySelectorAll('.outline').forEach(o=>{
+  o.querySelector('.root-ul>li')?.classList.add('open');
+  o.addEventListener('click',e=>{
+    const n=e.target.closest('.node'); if(n){const li=n.parentElement; if(!li.classList.contains('leaf')) li.classList.toggle('open');}
+    if(e.target.classList.contains('toggle-all')){
+      const all=[...o.querySelectorAll('li:not(.leaf)')]; const expand=e.target.textContent.startsWith('Expand');
+      all.forEach(li=>li.classList.toggle('open',expand)); e.target.textContent=expand?'Collapse all':'Expand all';
+    }
+  });
+});
+
+/* glossary */
+const gl=[...GLOSSARY].sort((a,b)=>a[0].localeCompare(b[0],'en',{sensitivity:'base'}));
+function renderGl(q=''){
+  q=q.toLowerCase(); let html='',cur='';
+  gl.filter(g=>!q||g[0].toLowerCase().includes(q)||g[1].toLowerCase().includes(q)).forEach(g=>{
+    const L=g[0][0].toUpperCase(); if(L!==cur){cur=L;html+=`<div class="gl-letter" id="L-${L}">${L}</div>`;}
+    html+=`<div class="card"><div class="t">${g[0]}</div><div>${g[1]}</div><div class="s">(${g[2]})</div></div>`;
+  });
+  document.getElementById('glgrid').innerHTML=html||'<p>No matches.</p>';
+}
+const letters=[...new Set(gl.map(g=>g[0][0].toUpperCase()))];
+document.getElementById('letters').innerHTML=letters.map(l=>`<a href="#L-${l}">${l}</a>`).join('');
+document.getElementById('glq').addEventListener('input',e=>renderGl(e.target.value));
+renderGl();
+
+/* practice */
+let store={}; try{store=JSON.parse(localStorage.getItem('csc2-pq')||'{}')}catch(e){}
+const pqEl=document.getElementById('pq'); let total=0;
+pqEl.innerHTML=SECTIONS.filter(s=>PRACTICE[s.id]).map(s=>`<div class="pq-group"><h3>${s.title}</h3>${PRACTICE[s.id].map((q,i)=>{total++;const k=s.id+'-'+i;return `
+<div class="pq ${store[k]?'done':''}" data-k="${k}"><div class="pq-top"><input type="checkbox" ${store[k]?'checked':''} aria-label="Mark as mastered"><div><div class="type">${q[0]}</div><div>${q[1]}</div>
+<button>Show Answer</button><div class="ans">${q[2]}</div></div></div></div>`}).join('')}</div>`).join('');
+function prog(){const d=pqEl.querySelectorAll('input:checked').length;document.getElementById('ptext').textContent=`Mastered: ${d} / ${total}`;document.getElementById('pfill').style.width=(d/total*100)+'%';}
+pqEl.addEventListener('click',e=>{
+  if(e.target.tagName==='BUTTON'){const a=e.target.nextElementSibling;a.classList.toggle('show');e.target.textContent=a.classList.contains('show')?'Hide Answer':'Show Answer';}
+});
+pqEl.addEventListener('change',e=>{const card=e.target.closest('.pq');card.classList.toggle('done',e.target.checked);store[card.dataset.k]=e.target.checked;try{localStorage.setItem('csc2-pq',JSON.stringify(store))}catch(err){}prog();});
+prog();
+
+/* tabs */
+function show(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===id));
+  nav.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.id===id));
+  try{localStorage.setItem('csc2-tab',id)}catch(e){}
+  window.scrollTo({top:0});
+}
+nav.addEventListener('click',e=>{if(e.target.dataset.id)show(e.target.dataset.id)});
+let start='guide'; try{start=localStorage.getItem('csc2-tab')||'guide'}catch(e){}
+show(document.getElementById(start)?start:'guide');
+
+/* top button */
+const topBtn=document.getElementById('top');
+window.addEventListener('scroll',()=>topBtn.classList.toggle('show',window.scrollY>200));
+</script>
+</body>
+</html>

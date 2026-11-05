@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz 1 Practice – Financial Statement Analysis (Ch. 1–3)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 24px 16px 32px;
+        }
+
+        .quiz-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: none;
+            max-width: 520px;
+            width: 100%;
+            padding: 18px 16px 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 640px;
+        }
+
+        .quiz-header {
+            text-align: left;
+            margin-bottom: 16px;
+        }
+
+        .quiz-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #232323;
+            margin-bottom: 4px;
+        }
+
+        .quiz-subtitle {
+            font-size: 13px;
+            color: #9d9d9d;
+        }
+
+        .progress-text {
+            text-align: left;
+            font-size: 13px;
+            color: #9d9d9d;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .question-text {
+            font-size: 16px;
+            font-weight: 500;
+            color: #2a2a2a;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .options::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .options::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 3px;
+        }
+
+        .options::-webkit-scrollbar-thumb {
+            background: #c0c0c0;
+            border-radius: 3px;
+        }
+
+        .options::-webkit-scrollbar-thumb:hover {
+            background: #a0a0a0;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            border: 1px solid #f0f0f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #f8f8f8;
+        }
+
+        .option:hover:not(.selected):not(.disabled) {
+            border-color: #e6e6e6;
+            background: #f6f6f6;
+        }
+
+        .option.selected {
+            border-color: #d0d0d0;
+            background: #dedede;
+        }
+
+        .option.correct,
+        .option.wrong {
+            border-color: #f0f0f0;
+            background: #f8f8f8;
+        }
+
+        .option.disabled {
+            cursor: default;
+        }
+
+        .option-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            margin-right: 10px;
+            flex-shrink: 0;
+            color: #9d9d9d;
+            width: 22px;
+        }
+
+        .option.selected .option-label {
+            color: #3a3a3a;
+        }
+
+        .option.disabled .option-text {
+            color: #bdbdbd;
+        }
+
+        .option.disabled .option-label {
+            color: #bdbdbd;
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 15px;
+            color: #3a3a3a;
+        }
+
+
+        .feedback-card {
+            padding: 14px 16px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .feedback-card.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feedback-card.correct {
+            background: #bfeacb;
+        }
+
+        .feedback-card.wrong {
+            background: #fff7f7;
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .feedback-header.correct {
+            color: #697b6e;
+        }
+
+        .feedback-header.wrong {
+            color: #a42d22;
+        }
+
+        .feedback-icon {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .feedback-answer {
+            font-size: 15px;
+            color: #2a2a2a;
+        }
+
+        .feedback-text {
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .feedback-card.correct .feedback-text {
+            color: #444443;
+        }
+
+        .feedback-card.wrong .feedback-text {
+            color: #2e2e2f;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 24px;
+            min-height: 52px;
+        }
+
+        .btn {
+            padding: 10px 22px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            min-width: 120px;
+        }
+
+        .btn-secondary {
+            background: #ffffff;
+            color: #6b7280;
+            border: 1px solid #e2e2e2;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #e5e5e5;
+        }
+
+        .btn-secondary:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #424cf7;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            opacity: 0.95;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(66, 76, 247, 0.25);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+
+        .completion-container {
+            text-align: center;
+            display: none;
+        }
+
+        .completion-container.show {
+            display: block;
+        }
+
+        .completion-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .completion-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+
+        .completion-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .stat-card.score {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .stat-card.score .stat-label {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .stat-card.score .stat-value {
+            color: white;
+        }
+
+        .completion-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .hint-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #4e4e4e;
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .hint-toggle .chevron {
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+
+        .hint-toggle.open .chevron {
+            transform: rotate(180deg);
+        }
+
+        .hint-panel {
+            padding: 12px 14px;
+            background: #ebecf8;
+            border-radius: 12px;
+            display: none;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .hint-panel.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hint-title {
+            font-weight: 600;
+            font-size: 13px;
+            color: #4e4e4e;
+            margin-bottom: 6px;
+        }
+
+        .hint-text {
+            font-size: 13px;
+            color: #474749;
+            line-height: 1.5;
+        }
+
+        .hint-slot {
+            min-height: 72px;
+        }
+
+        .quiz-footer {
+            margin-top: auto;
+        }
+
+        .question-container {
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.18/dist/katex.min.css">
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <div class="quiz-title">Quiz 1 Practice – Financial Statement Analysis (Ch. 1–3)</div>
+            <div class="quiz-subtitle">Based on 3 sources (Ch. 1–3 slides)</div>
+        </div>
+
+        <div id="quiz-content">
+            <!-- Questions will be rendered here -->
+        </div>
+
+        <div id="completion-screen" class="completion-container">
+            <div class="completion-icon">🎉</div>
+            <div class="completion-title">You did it! Quiz Complete.</div>
+            <div class="completion-subtitle">Here's how you performed</div>
+
+            <div class="stats-grid">
+                <div class="stat-card score">
+                    <div class="stat-label">Score</div>
+                    <div class="stat-value" id="score-value">0/15</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Accuracy</div>
+                    <div class="stat-value" id="accuracy-value">0%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Right</div>
+                    <div class="stat-value" id="right-value">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Wrong</div>
+                    <div class="stat-value" id="wrong-value">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Skipped</div>
+                    <div class="stat-value" id="skipped-value">0</div>
+                </div>
+            </div>
+
+            <div class="completion-buttons">
+                <button class="btn btn-secondary" onclick="reviewQuiz()">Review Quiz</button>
+                <button class="btn btn-primary" onclick="retakeQuiz()">Retake Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.18/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.18/dist/contrib/auto-render.min.js"></script>
+    <script>
+        const questions = [{"question": "An auditor concludes that a company's financial statements materially depart from accounting standards and are not fairly presented. The auditor will most likely issue:", "options": ["an unqualified opinion.", "a qualified opinion.", "an adverse opinion.", "a disclaimer of opinion."], "correctIndex": 2, "hint": "Think about which opinion says the statements themselves are wrong, rather than that the auditor could not finish the job.", "correctExplanation": "An adverse opinion is issued when the statements materially depart from accounting standards and are not fairly presented.", "wrongExplanation": "This is an adverse opinion. An unqualified (clean) opinion means the statements are fairly presented, a qualified opinion means there is a scope limitation or an exception to accounting standards, and a disclaimer means the auditors are unable to issue an opinion at all."}, {"question": "An analyst wants details on management and director compensation and on the matters to be voted on at the annual shareholder meeting. This information is most likely found in the:", "options": ["proxy statement.", "auditor's report.", "notes to the financial statements.", "interim report."], "correctIndex": 0, "hint": "Which document is sent to shareholders before a vote?", "correctExplanation": "Proxy statements are distributed to shareholders about matters to be put to a vote at the annual (or special) meeting, including management and director compensation.", "wrongExplanation": "The proxy statement covers voting matters and compensation. The auditor's report gives an opinion on fair presentation, the notes discuss accounting policies, methods and estimates, and interim reports are unaudited semiannual or quarterly financial reports."}, {"question": "Which of the following is a regulatory authority rather than a standard-setting body?", "options": ["The Accounting Standards Board (AcSB)", "The International Accounting Standards Board (IASB)", "The Financial Accounting Standards Board (FASB)", "The Canadian Securities Administrators (CSA)"], "correctIndex": 3, "hint": "Standard setters write the standards; regulators recognize and enforce them.", "correctExplanation": "The CSA is Canada's regulatory body: it harmonizes rules and oversees enforcement of reporting standards. The AcSB and IASB are standard-setting bodies.", "wrongExplanation": "The CSA is the regulator. The IASB sets IFRS, the FASB sets US GAAP and the AcSB sets accounting standards for Canadian entities outside the public sector, so all three are standard-setting bodies."}, {"question": "Under the IASB Conceptual Framework, the two fundamental qualitative characteristics that make financial information useful are:", "options": ["comparability and verifiability.", "relevance and faithful representation.", "timeliness and understandability.", "relevance and materiality."], "correctIndex": 1, "hint": "The other four characteristics are called 'enhancing'.", "correctExplanation": "Relevance (including materiality) and faithful representation (complete, neutral, free from error) are the two fundamental characteristics.", "wrongExplanation": "The fundamental characteristics are relevance and faithful representation. Materiality is an aspect of relevance, not a separate characteristic. Comparability, verifiability, timeliness and understandability are the enhancing characteristics, which is also where tradeoffs are most likely made."}, {"question": "The amount of cash or cash equivalents that could currently be obtained by selling an asset in an orderly disposal is best described as the asset's:", "options": ["historical cost.", "current cost.", "present value.", "realizable value."], "correctIndex": 3, "hint": "One base looks at what you would pay to buy the asset today; another looks at what you would get for selling it.", "correctExplanation": "Realizable value is the amount that could currently be obtained by selling the asset in an orderly disposal.", "wrongExplanation": "This is realizable value. Historical cost is what was originally paid, current cost is what would have to be paid to buy the same or an equivalent asset today, and present value is the discounted value of the future net cash inflows the asset is expected to generate."}, {"question": "Which of the following statements comparing IFRS and US GAAP is most accurate?", "options": ["LIFO is a permitted inventory valuation method under IFRS.", "Reversal of inventory write-downs is prohibited under IFRS.", "Development costs may be capitalized under IFRS if certain conditions are satisfied.", "IFRS is rules-based, whereas US GAAP is principles-based."], "correctIndex": 2, "hint": "IFRS is principles-based and is generally the more permissive of the two here, except on one inventory method.", "correctExplanation": "Under IFRS, development costs are capitalized only if certain conditions are satisfied; under US GAAP they are treated as an expense.", "wrongExplanation": "Development costs can be capitalized under IFRS when conditions are met. LIFO is allowed under US GAAP but not IFRS, reversals of inventory write-downs are prohibited under US GAAP but permissible under IFRS, and it is IFRS that is principles-based while US GAAP is rules-based."}, {"question": "A manufacturing company sells surplus land it no longer needs for $380,000. The land's carrying value is $300,000. On its income statement, the company will most likely report:", "options": ["revenue of $80,000.", "revenue of $380,000.", "a gain of $80,000.", "a gain of $380,000."], "correctIndex": 2, "hint": "Selling land is not part of a manufacturer's ordinary activities.", "correctExplanation": "A sale outside ordinary activities is reported as a gain or loss equal to sale price minus carrying value: $380,000 − $300,000 = $80,000.", "wrongExplanation": "The sale is reported as a gain, not revenue, because it is not part of the company's ordinary activities. The gain is sale price minus carrying value: $380,000 − $300,000 = $80,000."}, {"question": "A builder signs a contract to construct a building for $1,500,000 plus a $200,000 bonus if it is completed within two years. The builder has limited experience with similar contracts and delays outside its control are possible. Expected total costs are $1,000,000 and costs incurred in Year 1 are $400,000. If costs incurred are an appropriate measure of progress, Year 1 revenue is closest to:", "options": ["$400,000.", "$600,000.", "$680,000.", "$800,000."], "correctIndex": 1, "hint": "Work out the percentage complete first, then decide whether the bonus belongs in the transaction price yet.", "correctExplanation": "Progress is $400,000 / $1,000,000 = 40%. The bonus is excluded because the builder cannot conclude it will not have to reverse it, so revenue is 40% × $1,500,000 = $600,000.", "wrongExplanation": "Progress is $400,000 / $1,000,000 = 40%. Variable consideration is recognized only if it will not have to be reversed, so the bonus is excluded: 40% × $1,500,000 = $600,000. $680,000 wrongly includes 40% of the bonus, $800,000 adds the whole bonus, and $400,000 is just the costs incurred."}, {"question": "Continuing the previous question: at the start of Year 2 the contract is modified. Consideration increases by $300,000, expected costs increase by $250,000, and the builder now concludes the $200,000 bonus meets the criteria for inclusion in revenue. The builder has recognized $600,000 of revenue so far. The cumulative catch-up adjustment to revenue on the modification date is closest to:", "options": ["$40,000.", "$160,000.", "$200,000.", "$640,000."], "correctIndex": 0, "hint": "Update both the transaction price and the measure of progress, then compare with what has already been recognized.", "correctExplanation": "New transaction price = $1,500,000 + $300,000 + $200,000 = $2,000,000. New progress = $400,000 / $1,250,000 = 32%. Cumulative revenue = 32% × $2,000,000 = $640,000, less $600,000 already recognized = $40,000.", "wrongExplanation": "New transaction price = $1,500,000 + $300,000 + $200,000 = $2,000,000. New progress = $400,000 / $1,250,000 = 32%. Cumulative revenue = $640,000, less the $600,000 already recognized = $40,000. $640,000 forgets to subtract prior revenue, while $160,000 and $200,000 apply the new (32%) or old (40%) progress only to the $500,000 of added consideration and bonus."}, {"question": "A company runs a website where customers buy goods from independent suppliers. Suppliers ship directly to customers and set the prices, and the company keeps a 12% commission. During the year, customers bought $800,000 of goods through the site. The revenue the company should report is closest to:", "options": ["$96,000.", "$704,000.", "$800,000.", "$896,000."], "correctIndex": 0, "hint": "Is the company acting as a principal or as an agent?", "correctExplanation": "The company is an agent: it does not fulfil the contract, bears no inventory risk and does not set prices. Agents report revenue net, so 12% × $800,000 = $96,000.", "wrongExplanation": "The company is an agent (no fulfilment responsibility, no inventory risk, no pricing discretion, paid by commission), so it reports only its commission: 12% × $800,000 = $96,000. Reporting $800,000 gross would apply only to a principal."}, {"question": "A company with no beginning inventory makes these purchases during the year: Q1: 1,000 units at $20; Q2: 1,500 units at $22; Q3: 2,000 units at $24; Q4: 1,500 units at $26. It sells 4,000 units. Cost of goods sold under the LIFO method is closest to:", "options": ["$89,000.", "$93,333.", "$98,000.", "$104,000."], "correctIndex": 2, "hint": "Under LIFO the newest purchases are assumed to be sold first.", "correctExplanation": "LIFO takes the newest units first: (1,500 × $26) + (2,000 × $24) + (500 × $22) = $39,000 + $48,000 + $11,000 = $98,000.", "wrongExplanation": "LIFO: (1,500 × $26) + (2,000 × $24) + (500 × $22) = $98,000. $89,000 is FIFO: (1,000 × $20) + (1,500 × $22) + (1,500 × $24). $93,333 is weighted average: 4,000 × ($140,000 / 6,000). $104,000 prices all 4,000 units at the latest cost of $26, but only 1,500 units were bought at that price."}, {"question": "Using the same data (purchases of 1,000 units at $20, 1,500 at $22, 2,000 at $24 and 1,500 at $26; 4,000 units sold), ending inventory under the weighted average cost method is closest to:", "options": ["$42,000.", "$46,667.", "$51,000.", "$93,333."], "correctIndex": 1, "hint": "Find the total cost of goods available for sale and divide by total units.", "correctExplanation": "Total cost = $20,000 + $33,000 + $48,000 + $39,000 = $140,000 over 6,000 units = $23.33 per unit. Ending inventory = 2,000 × $23.33 = $46,667.", "wrongExplanation": "Total cost is $140,000 over 6,000 units, or $23.33 per unit. The 2,000 units left are worth 2,000 × $23.33 = $46,667. $42,000 is LIFO ending inventory (oldest units remain), $51,000 is FIFO ending inventory (newest units remain), and $93,333 is weighted average cost of goods sold, not ending inventory."}, {"question": "In a period of rising inventory prices, which inventory cost method will result in the highest reported gross profit?", "options": ["LIFO", "Weighted average cost", "All three methods report the same gross profit", "FIFO"], "correctIndex": 3, "hint": "Highest gross profit means lowest cost of goods sold.", "correctExplanation": "When prices are rising, FIFO sends the oldest, cheapest costs to cost of goods sold, giving the lowest COGS and therefore the highest gross profit.", "wrongExplanation": "FIFO gives the highest gross profit when prices rise, because the oldest and cheapest costs flow to cost of goods sold. LIFO gives the highest COGS and lowest gross profit, and weighted average falls in the middle. The methods only give the same result when unit costs do not change."}, {"question": "A company buys equipment for $48,000. It estimates a useful life of 7 years and a residual value of $6,000. Annual depreciation expense under the straight-line method is closest to:", "options": ["$6,000.", "$6,857.", "$7,714.", "$42,000."], "correctIndex": 0, "hint": "Only the depreciable amount is spread over the useful life.", "correctExplanation": "Straight-line depreciation = (Cost − Residual value) / Useful life = ($48,000 − $6,000) / 7 = $6,000.", "wrongExplanation": "Straight-line depreciation = (Cost − Residual value) / Useful life = ($48,000 − $6,000) / 7 = $6,000. $6,857 ignores the residual value, $7,714 adds it instead of subtracting it, and $42,000 is the total depreciable amount rather than one year's expense."}, {"question": "A company buys computer equipment for $50,000 with an estimated residual value of $5,000 and a useful life of 5 years. Using the double-declining balance method, depreciation expense in Year 2 is closest to:", "options": ["$9,000.", "$10,800.", "$12,000.", "$20,000."], "correctIndex": 2, "hint": "The rate is applied to net book value at the start of each year, and residual value is not subtracted first.", "correctExplanation": "Straight-line rate = 100% / 5 = 20%, doubled to 40%. Year 1 = 40% × $50,000 = $20,000, leaving a net book value of $30,000. Year 2 = 40% × $30,000 = $12,000.", "wrongExplanation": "The rate is 2 × 20% = 40%, applied to net book value. Year 1 = 40% × $50,000 = $20,000, so net book value is $30,000 and Year 2 = 40% × $30,000 = $12,000. $9,000 is straight-line depreciation, $20,000 is the Year 1 amount, and $10,800 wrongly subtracts the residual value before applying the rate; residual value only acts as a floor on net book value."}];
+        const totalQuestions = questions.length;
+        let currentQuestionIndex = 0;
+        let userAnswers = []; // Store user's answers {questionIndex, selectedIndex, isCorrect}
+        let isReviewMode = false;
+
+        function renderMath(target) {
+            if (!target || typeof renderMathInElement !== 'function') return;
+            renderMathInElement(target, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    
+                    {left: '\(', right: '\)', display: false},
+                    {left: '\[', right: '\]', display: true}
+                ],
+                throwOnError: false
+            });
+        }
+
+        function initQuiz() {
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const quizContent = document.getElementById('quiz-content');
+            const question = questions[currentQuestionIndex];
+            const userAnswer = userAnswers[currentQuestionIndex];
+
+            const isAnswered = userAnswer !== undefined;
+
+            // Determine button states
+            const showPrevious = currentQuestionIndex > 0;
+            const showNext = isAnswered && currentQuestionIndex < totalQuestions - 1;
+            const showFinish = isAnswered && currentQuestionIndex === totalQuestions - 1 && !isReviewMode;
+            const showFinishReview = isReviewMode && currentQuestionIndex === totalQuestions - 1;
+            const showHint = !!question.hint;
+
+            let optionsHtml = '';
+            question.options.forEach((option, index) => {
+                const letter = String.fromCharCode(65 + index); // A, B, C, D
+
+                if (isAnswered) {
+                    if (index === question.correctIndex) {
+                        const correctExplain = question.correctExplanation || question.explanation || '';
+                        optionsHtml += `
+                            <div class="feedback-card correct show">
+                                <div class="feedback-answer">${letter}. ${option}</div>
+                                <div class="feedback-header correct">
+                                    <span class="feedback-icon">✓</span>
+                                    <span>Right answer</span>
+                                </div>
+                                <div class="feedback-text">${correctExplain}</div>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    if (!userAnswer.isCorrect && index === userAnswer.selectedIndex) {
+                        const wrongExplain = question.wrongExplanation || question.explanation || '';
+                        optionsHtml += `
+                            <div class="feedback-card wrong show">
+                                <div class="feedback-answer">${letter}. ${option}</div>
+                                <div class="feedback-header wrong">
+                                    <span class="feedback-icon">✕</span>
+                                    <span>Not quite</span>
+                                </div>
+                                <div class="feedback-text">${wrongExplain}</div>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    optionsHtml += `
+                        <div class="option disabled" data-index="${index}">
+                            <span class="option-label">${letter}.</span>
+                            <span class="option-text">${option}</span>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const optionClass = index === (userAnswer ? userAnswer.selectedIndex : -1) ? 'option selected' : 'option';
+                optionsHtml += `
+                    <div class="${optionClass}" onclick="selectAnswer(${index})" data-index="${index}">
+                        <span class="option-label">${letter}.</span>
+                        <span class="option-text">${option}</span>
+                    </div>
+                `;
+            });
+
+            let hintHtml = '';
+            if (showHint) {
+                hintHtml = `
+                    <button class="hint-toggle" id="hint-toggle" onclick="toggleHint()">
+                        <span>Hint</span>
+                        <span class="chevron">⌃</span>
+                    </button>
+                    <div id="hint-panel" class="hint-panel">
+                        <div class="hint-title">Hint</div>
+                        <div class="hint-text">${question.hint}</div>
+                    </div>
+                `;
+            }
+
+            let buttonsHtml = `
+                <div class="quiz-footer">
+                    <div class="buttons">
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn btn-secondary" onclick="previousQuestion()" ${showPrevious ? '' : 'disabled'}>
+                                Previous
+                            </button>
+                        </div>
+                        <div>
+                            ${showNext ? '<button class="btn btn-primary" onclick="nextQuestion()">Next</button>' : ''}
+                            ${showFinish ? '<button class="btn btn-primary" onclick="finishQuiz()">Finish Quiz</button>' : ''}
+                            ${showFinishReview ? '<button class="btn btn-primary" onclick="finishReview()">Finish Review</button>' : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            quizContent.innerHTML = `
+                <div class="progress-text">${currentQuestionIndex + 1} / ${totalQuestions}</div>
+                <div class="question-text">${question.question}</div>
+                <div class="options">
+                    ${optionsHtml}
+                </div>
+                <div class="hint-slot">
+                    ${hintHtml}
+                </div>
+                ${buttonsHtml}
+            `;
+            renderMath(quizContent);
+        }
+
+        function selectAnswer(selectedIndex) {
+            const question = questions[currentQuestionIndex];
+            const isCorrect = selectedIndex === question.correctIndex;
+
+            // Store the answer
+            userAnswers[currentQuestionIndex] = {
+                questionIndex: currentQuestionIndex,
+                selectedIndex: selectedIndex,
+                isCorrect: isCorrect
+            };
+
+            // Re-render to show feedback
+            renderQuestion();
+        }
+
+        function toggleHint() {
+            const hintPanel = document.getElementById('hint-panel');
+            const hintToggle = document.getElementById('hint-toggle');
+            if (hintPanel) {
+                hintPanel.classList.toggle('show');
+            }
+            if (hintToggle) {
+                hintToggle.classList.toggle('open');
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < totalQuestions - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion();
+            }
+        }
+
+        function finishQuiz() {
+            showCompletionScreen();
+        }
+
+        function showCompletionScreen() {
+            const quizContent = document.getElementById('quiz-content');
+            const completionScreen = document.getElementById('completion-screen');
+
+            // Calculate stats
+            const answeredQuestions = userAnswers.filter(a => a !== undefined);
+            const correctAnswers = userAnswers.filter(a => a && a.isCorrect).length;
+            const wrongAnswers = userAnswers.filter(a => a && !a.isCorrect).length;
+            const skipped = totalQuestions - answeredQuestions.length;
+            const accuracy = answeredQuestions.length > 0
+                ? Math.round((correctAnswers / answeredQuestions.length) * 100)
+                : 0;
+
+            // Update stats
+            document.getElementById('score-value').textContent = `${correctAnswers}/${totalQuestions}`;
+            document.getElementById('accuracy-value').textContent = `${accuracy}%`;
+            document.getElementById('right-value').textContent = correctAnswers;
+            document.getElementById('wrong-value').textContent = wrongAnswers;
+            document.getElementById('skipped-value').textContent = skipped;
+
+            // Show completion screen
+            quizContent.style.display = 'none';
+            completionScreen.classList.add('show');
+        }
+
+        function reviewQuiz() {
+            isReviewMode = true;
+            currentQuestionIndex = 0;
+            const quizContent = document.getElementById('quiz-content');
+            const completionScreen = document.getElementById('completion-screen');
+
+            quizContent.style.display = 'block';
+            completionScreen.classList.remove('show');
+            renderQuestion();
+        }
+
+        function finishReview() {
+            showCompletionScreen();
+        }
+
+        function retakeQuiz() {
+            isReviewMode = false;
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            const quizContent = document.getElementById('quiz-content');
+            const completionScreen = document.getElementById('completion-screen');
+
+            quizContent.style.display = 'block';
+            completionScreen.classList.remove('show');
+            renderQuestion();
+        }
+
+        // Initialize quiz on page load
+        initQuiz();
+    </script>
+</body>
+</html>

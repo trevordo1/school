@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FMGT 3444 Midterm Notes</title>
+<style>
+:root{
+  --bg:#f7f6f2;--surface:#ffffff;--surface-2:#f0eee8;--text:#1d1d1b;--muted:#5d5b55;--border:#dedbd2;
+  --accent:#1f5f8b;--accent-soft:#e3eef6;--good:#2f6b3a;--good-soft:#e5f1e6;--warn:#8a5a00;--warn-soft:#fbf0d9;--bad:#9b2c2c;--bad-soft:#f8e3e3;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#151513;--surface:#1f1f1c;--surface-2:#282825;--text:#ecebe6;--muted:#a8a69e;--border:#3a3935;
+  --accent:#7db5de;--accent-soft:#1d3141;--good:#8fcf98;--good-soft:#1e3121;--warn:#e9bf6b;--warn-soft:#3a2f17;--bad:#ee9a9a;--bad-soft:#3d2020;
+}}
+:root[data-theme="dark"]{
+  --bg:#151513;--surface:#1f1f1c;--surface-2:#282825;--text:#ecebe6;--muted:#a8a69e;--border:#3a3935;
+  --accent:#7db5de;--accent-soft:#1d3141;--good:#8fcf98;--good-soft:#1e3121;--warn:#e9bf6b;--warn-soft:#3a2f17;--bad:#ee9a9a;--bad-soft:#3d2020;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{display:grid;grid-template-columns:230px minmax(0,1fr);gap:32px;max-width:1180px;margin:0 auto;padding:24px 16px 80px}
+nav{position:sticky;top:16px;align-self:start;font-size:14px}
+nav a{display:block;padding:6px 10px;border-radius:6px;color:var(--muted);text-decoration:none}
+nav a:hover{background:var(--surface-2);color:var(--text)}
+nav .t{font-weight:700;color:var(--text);padding:0 10px 8px;font-size:13px;letter-spacing:.04em;text-transform:uppercase}
+header h1{font-size:28px;line-height:1.2;margin:0 0 6px}
+header p{color:var(--muted);margin:0 0 4px}
+section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-top:24px}
+h2{font-size:22px;margin:0 0 12px}
+h3{font-size:17px;margin:22px 0 8px}
+p,li{max-width:76ch}
+ul,ol{padding-left:22px}
+li{margin:3px 0}
+table{width:100%;border-collapse:collapse;margin:10px 0 14px;font-size:15px}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--border)}
+th{background:var(--surface-2);font-weight:600}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl{overflow-x:auto}
+.box{border-radius:8px;padding:12px 14px;margin:12px 0;border-left:4px solid}
+.key{background:var(--accent-soft);border-color:var(--accent)}
+.trap{background:var(--warn-soft);border-color:var(--warn)}
+.ex{background:var(--good-soft);border-color:var(--good)}
+.box b:first-child{display:block;margin-bottom:2px}
+.src{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 8px;border-radius:999px;margin-left:6px;vertical-align:2px;white-space:nowrap}
+.src.c{background:var(--accent-soft);color:var(--accent)}
+.src.h{background:var(--warn-soft);color:var(--warn)}
+.calc{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14.5px;background:var(--surface-2);border-radius:8px;padding:12px 14px;white-space:pre-wrap;overflow-x:auto}
+details{border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin:8px 0;background:var(--surface)}
+details summary{cursor:pointer;font-weight:600}
+details[open] summary{margin-bottom:6px}
+.ans{color:var(--good);font-weight:700}
+.legend{font-size:14px;color:var(--muted)}
+.toggle{background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font:inherit;font-size:13px;cursor:pointer;margin:8px 10px}
+@media (max-width:820px){.wrap{grid-template-columns:1fr}nav{position:static;display:flex;flex-wrap:wrap;gap:4px}nav .t{width:100%}section{padding:18px}}
+@media print{nav,.toggle{display:none}.wrap{display:block}section{break-inside:avoid-page;border:none;padding:0}details{border:none}details>*{display:block}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+  <div class="t">FMGT 3444 Midterm</div>
+  <a href="#map">0 · Exam map</a>
+  <a href="#fund">1 · Tax system fundamentals</a>
+  <a href="#cra">2 · Filing &amp; CRA admin</a>
+  <a href="#forms">3 · Income &amp; forms</a>
+  <a href="#ded">4 · Deductions &amp; credits</a>
+  <a href="#inv">5 · Investment &amp; family planning</a>
+  <a href="#wr">6 · Written responses</a>
+  <a href="#mc">7 · Self-check MC</a>
+  <a href="#cram">8 · Last-minute cram list</a>
+  <button class="toggle" onclick="var r=document.documentElement;r.dataset.theme=(r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches))?'light':'dark'">Toggle theme</button>
+</nav>
+<main>
+<header>
+  <h1>FMGT 3444 Income Tax: midterm study notes</h1>
+  <p>These notes cover only the topics on the hint sheet. The exam has 50 multiple-choice questions and 3 written responses.</p>
+  <p class="legend">Source tags: <span class="src c">Course M1</span> = from your Module 1–6 notes or slides · <span class="src h">Hint sheet only</span> = on the hint sheet but not in your course files, so it's filled in from the hint sheet and standard CRA rules (check it against your textbook).</p>
+</header>
+
+<!-- ============ 0 EXAM MAP ============ -->
+<section id="map">
+<h2>0 · Exam map: hint sheet → where it's covered</h2>
+<div class="tbl"><table>
+<tr><th>Hint-sheet topic</th><th>Section</th><th>Source</th></tr>
+<tr><td>Progressive system; marginal, average and effective marginal rates</td><td>1</td><td><span class="src c">M1, M2</span></td></tr>
+<tr><td>Purpose of tax; municipalities and property tax</td><td>1</td><td><span class="src c">M1</span></td></tr>
+<tr><td>Avoidance vs evasion; GAAR</td><td>1</td><td><span class="src c">M1</span></td></tr>
+<tr><td>April 30 / June 15 deadlines</td><td>2</td><td><span class="src c">M2 (concept)</span><span class="src h">dates: hint sheet</span></td></tr>
+<tr><td>Why file even with no tax owing</td><td>2</td><td><span class="src c">M6</span></td></tr>
+<tr><td>Review vs audit vs assessment vs reassessment; 3-year period; adjustment request</td><td>2</td><td><span class="src c">M2 (partial)</span><span class="src h">audit, 3 yrs</span></td></tr>
+<tr><td>T4, T5, T3</td><td>3</td><td><span class="src c">M3, M4</span></td></tr>
+<tr><td>T2200, T777, T1-M, Schedule 3, Schedule 7</td><td>3</td><td><span class="src h">Hint sheet only</span></td></tr>
+<tr><td>Taxable vs non-taxable receipts</td><td>3</td><td><span class="src c">M3</span></td></tr>
+<tr><td>Deduction vs credit; non-refundable credits</td><td>4</td><td><span class="src c">M1, M5</span></td></tr>
+<tr><td>Donations and tuition credits</td><td>4</td><td><span class="src c">M5</span></td></tr>
+<tr><td>Political contribution credit</td><td>4</td><td><span class="src h">Hint sheet only</span></td></tr>
+<tr><td>Childcare, moving, employment, spousal and child support; home office; personal expenses and commuting</td><td>4</td><td><span class="src h">Hint sheet only</span> (commuting: <span class="src c">M3</span>)</td></tr>
+<tr><td>Interest income; capital losses</td><td>5</td><td><span class="src c">M4</span></td></tr>
+<tr><td>RRSP vs TFSA</td><td>5</td><td><span class="src c">M3, M4, M6</span></td></tr>
+<tr><td>Attribution; prescribed-rate loan</td><td>5</td><td><span class="src c">M1</span> (Jan 30 date: <span class="src h">hint sheet</span>)</td></tr>
+<tr><td>Written-response structure; RRSP and tuition answer</td><td>6</td><td><span class="src c">M5</span></td></tr>
+</table></div>
+<div class="box trap"><b>Left out on purpose (not on the hint sheet)</b>Residency, instalments, NOA section-by-section detail, taxable employee benefits (cars, wage-loss plans and so on), dividend gross-up, superficial loss, principal residence, CCA recapture, medical credit, CCB/CWB/OAS/RRIF/RESP, and the life-stage cases. If your instructor brings any of these up in class, add them.</div>
+</section>
+
+<!-- ============ 1 FUNDAMENTALS ============ -->
+<section id="fund">
+<h2>1 · Tax system fundamentals</h2>
+
+<h3>Why tax? Who collects what? <span class="src c">M1</span></h3>
+<ul>
+<li><b>Main purpose of taxation:</b> to pay for government programs and public services such as health care, education, infrastructure, public safety and social programs. A second purpose is to influence behaviour (saving, working, investing).</li>
+<li>Main tax types:
+  <ul>
+  <li><b>Income tax:</b> collected by the federal government and the provinces.</li>
+  <li><b>Sales tax:</b> GST/PST/HST.</li>
+  <li><b>Excise tax:</b> on alcohol, tobacco, fuel and similar goods.</li>
+  <li><b>Property tax:</b> on land and buildings. <b>Municipalities</b> mainly collect property tax.</li>
+  </ul></li>
+<li>The federal <i>Income Tax Act</i> is the main legislation. The CRA administers federal tax and the personal tax of every province and territory except Quebec (Revenu Québec handles Quebec).</li>
+</ul>
+
+<h3>Progressive taxation <span class="src c">M1, M2</span></h3>
+<p>Income is split into brackets. Each bracket's rate applies only to the income inside that bracket. <b>Moving into a higher bracket does not tax all of your income at the higher rate.</b></p>
+<div class="tbl"><table>
+<tr><th>Rate</th><th>Definition</th><th>Formula / use</th></tr>
+<tr><td><b>Marginal</b></td><td>The rate on the <b>next (or last) dollar</b> earned</td><td>Use it to value deductions and to find the tax on extra income</td></tr>
+<tr><td><b>Average</b></td><td>The overall tax burden</td><td>Total income tax ÷ total income</td></tr>
+<tr><td><b>Effective marginal (EMTR)</b></td><td>The marginal rate <b>plus</b> income-tested benefits or credits lost when you earn one more dollar</td><td>(Extra tax + benefits lost) ÷ extra income</td></tr>
+</table></div>
+<div class="box ex"><b>Worked example (M1)</b>
+<div class="calc">Brackets: 15% on first $50,000; 25% on the next band
+Income $60,000
+  $50,000 × 15% = $7,500
+  $10,000 × 25% = $2,500
+  Total tax     = $10,000
+Marginal rate = 25%
+Average rate  = $10,000 ÷ $60,000 = 16.67%</div>
+M2 version: $80,000 of income → $7,500 + ($30,000 × 25%) = $15,000 of tax. The average rate is 18.75%. An extra $1,000 of income costs $250 because it stays in the 25% bracket.</div>
+<div class="box ex"><b>EMTR example (illustrative)</b>
+<div class="calc">Earn an extra $1,000 at a 30% marginal rate → $300 more tax
+That same $1,000 reduces an income-tested benefit by $150
+EMTR = ($300 + $150) ÷ $1,000 = 45%   (higher than the 30% bracket)</div></div>
+<div class="box trap"><b>MC traps</b>The tax bracket a person is "in" is their <i>marginal</i> rate, not their average rate. The average rate is always at or below the top marginal rate. The EMTR can be <i>higher</i> than the stated bracket rate.</div>
+
+<h3>Tax planning, avoidance, evasion and GAAR <span class="src c">M1</span></h3>
+<div class="tbl"><table>
+<tr><th>Concept</th><th>Legal?</th><th>Example</th></tr>
+<tr><td><b>Tax planning</b>: arranging your affairs within the law</td><td>Legal</td><td>Contributing to an RRSP</td></tr>
+<tr><td><b>Tax avoidance</b>: using legal planning to gain a tax advantage</td><td>Technically legal, but can be denied if it abuses the law</td><td>A contrived series of transactions with little commercial purpose</td></tr>
+<tr><td><b>Tax evasion</b>: <b>deliberately breaking the law</b> by hiding income, inventing expenses or giving false information</td><td>Illegal</td><td>Not reporting cash income; fake receipts</td></tr>
+<tr><td><b>GAAR</b> (General Anti-Avoidance Rule)</td><td>A CRA tool</td><td>Can deny a tax benefit from a transaction that <b>follows the wording of the law but abuses its purpose</b> ("object and spirit")</td></tr>
+</table></div>
+<div class="box key"><b>One-line distinction</b>Avoidance follows the letter of the law, and GAAR can catch it when it abuses the law's purpose. Evasion breaks the law outright.</div>
+</section>
+
+<!-- ============ 2 FILING & CRA ============ -->
+<section id="cra">
+<h2>2 · Filing and CRA administration</h2>
+
+<h3>Deadlines <span class="src h">dates: hint sheet</span> <span class="src c">concept: M2</span></h3>
+<div class="tbl"><table>
+<tr><th>Who</th><th>Filing deadline</th><th>Balance owing due</th></tr>
+<tr><td>Most individuals</td><td><b>April 30</b></td><td><b>April 30</b></td></tr>
+<tr><td>Self-employed individuals <b>and their spouses or partners</b></td><td><b>June 15</b></td><td><b>Still April 30</b></td></tr>
+</table></div>
+<div class="box trap"><b>Classic trap (M2 "Priya" case)</b>Filing and paying are <b>separate obligations</b>. A self-employed person who files on June 15 but pays on June 15 is charged interest from May 1. A later filing date does not extend the payment date.</div>
+<p>Canada uses <b>self-assessment</b> <span class="src c">M2</span>. Taxpayers report their income, claim deductions and credits, calculate their tax and keep records. Tax withheld at source is a <b>prepayment</b>, not the final liability.</p>
+
+<h3>Why file even when no tax is owed <span class="src c">M6</span> <span class="src h">list: hint sheet</span></h3>
+<p>Filing a return can establish or keep:</p>
+<ul>
+<li><b>Refunds</b>: for example, when tax was withheld and isn't owed.</li>
+<li><b>Benefits and refundable credits</b>: GST/HST credit, Canada Child Benefit, and others. These are based on the return.</li>
+<li><b>Credits</b>: for example, tuition credits carried forward.</li>
+<li><b>RRSP contribution room</b>: earned income must be reported to generate room. It appears on the NOA.</li>
+<li><b>Loss balances</b>: for example, net capital losses carried forward.</li>
+</ul>
+
+<h3>Review vs audit vs assessment vs reassessment <span class="src c">M2</span> <span class="src h">audit &amp; 3 yrs</span></h3>
+<div class="tbl"><table>
+<tr><th>Term</th><th>What it is</th></tr>
+<tr><td><b>Assessment</b></td><td>The CRA's <b>first</b> processing of the return and its determination of tax, a refund or a balance owing. It results in a <b>Notice of Assessment (NOA)</b>.</td></tr>
+<tr><td><b>Review</b></td><td>A routine check of specific claims, often a request for receipts or a matching of slips. It can happen before or after assessment. <b>It is not an accusation of wrongdoing</b> (M2).</td></tr>
+<tr><td><b>Audit</b></td><td>A deeper, broader examination of a taxpayer's books, records and returns. It is usually risk-based and may lead to a reassessment.</td></tr>
+<tr><td><b>Reassessment</b></td><td>The CRA <b>changes an earlier assessment</b> and issues a Notice of Reassessment. This can follow a review, an audit or the taxpayer's own adjustment request.</td></tr>
+</table></div>
+<ul>
+<li><b>Normal reassessment period:</b> for most individuals, generally <b>3 years</b> from the date of the original NOA. There's no time limit when there was misrepresentation from carelessness, neglect or wilful default, or fraud.</li>
+<li><b>Correcting an omitted amount</b> (a missed slip or a forgotten receipt): <b>request a return adjustment</b>, through "Change my return" in CRA My Account, ReFILE or Form T1-ADJ. Don't file a second return.</li>
+<li><b>Adjustment vs objection</b> (M2): an adjustment corrects your own return. A <b>notice of objection</b> formally <i>disputes</i> the CRA's assessment. If you agree that you missed something, request an adjustment.</li>
+</ul>
+</section>
+
+<!-- ============ 3 INCOME & FORMS ============ -->
+<section id="forms">
+<h2>3 · Income and important forms</h2>
+
+<h3>Slips and forms to memorize</h3>
+<div class="tbl"><table>
+<tr><th>Form</th><th>What it's for</th><th>Who prepares it</th><th>Source</th></tr>
+<tr><td><b>T4</b></td><td>Employment income (salary, bonus, taxable benefits) and payroll deductions (tax withheld, CPP, EI)</td><td>Employer</td><td><span class="src c">M3</span></td></tr>
+<tr><td><b>T5</b></td><td><b>Interest</b> and certain <b>dividend</b> income</td><td>Bank or corporation</td><td><span class="src c">M4</span></td></tr>
+<tr><td><b>T3</b></td><td><b>Trust and mutual-fund</b> distributions</td><td>Trust or fund</td><td><span class="src c">M4</span></td></tr>
+<tr><td><b>T2200</b></td><td>Declaration of Conditions of Employment. The <b>employer certifies</b> that the employee had to pay certain expenses (home office, car and so on).</td><td><b>Employer</b> signs it</td><td><span class="src h">Hint sheet</span></td></tr>
+<tr><td><b>T777</b></td><td>Statement of Employment Expenses. The <b>employee calculates and claims</b> eligible employment expenses.</td><td><b>Employee</b></td><td><span class="src h">Hint sheet</span></td></tr>
+<tr><td><b>T1-M</b></td><td>Moving-expense calculation</td><td>Taxpayer</td><td><span class="src h">Hint sheet</span></td></tr>
+<tr><td><b>Schedule 3</b></td><td>Capital gains and losses</td><td>Taxpayer</td><td><span class="src h">Hint sheet</span></td></tr>
+<tr><td><b>Schedule 7</b></td><td>RRSP contributions and deductions (also unused contributions and HBP/LLP repayments)</td><td>Taxpayer</td><td><span class="src h">Hint sheet</span></td></tr>
+</table></div>
+<div class="box key"><b>Memory hook: T2200 vs T777</b>The <b>T2200</b> is the boss's form: the employer certifies the job conditions. The <b>T777</b> is the employee's form: the employee does the math and makes the claim. You need the T2200 before you can claim on the T777.</div>
+
+<h3>Taxable vs non-taxable <span class="src c">M3, M4</span></h3>
+<div class="tbl"><table>
+<tr><th>Generally taxable</th><th>Generally non-taxable</th></tr>
+<tr><td>Salary and wages · bonuses · commissions · <b>tips</b> (even when received directly) · interest · dividends · rental income · <b>RRSP withdrawals</b></td><td>Qualifying <b>inheritances</b> and most gifts · <b>lottery winnings</b> · <b>life-insurance death benefits</b> · <b>TFSA withdrawals</b></td></tr>
+</table></div>
+<div class="box trap"><b>Key rule: non-taxable capital vs taxable earnings</b>The <i>original</i> amount may be tax-free, but <b>income earned by investing it is taxable</b>.
+<div class="calc">Noah inherits $60,000 → not taxable
+Invests in a GIC, earns $2,700 interest → taxable property income (T5)</div>
+Labels don't decide tax treatment. Calling something a "gift" or "honorarium" doesn't change it; the facts and the applicable rule do.</div>
+</section>
+
+<!-- ============ 4 DEDUCTIONS & CREDITS ============ -->
+<section id="ded">
+<h2>4 · Deductions, credits and expenses</h2>
+
+<h3>Deduction vs credit: the most-tested idea <span class="src c">M1, M5</span></h3>
+<div class="tbl"><table>
+<tr><th></th><th>Deduction</th><th>Tax credit</th></tr>
+<tr><td>What it reduces</td><td><b>Income</b> subject to tax (taxable income)</td><td><b>Tax payable</b> directly</td></tr>
+<tr><td>Value</td><td>Amount × <b>marginal tax rate</b>, so it's worth more to high earners</td><td>Amount × <b>credit rate</b> (federal base rate 15%), the same for everyone</td></tr>
+<tr><td>Examples</td><td>RRSP contributions · qualifying childcare · moving expenses · employment expenses · deductible spousal support</td><td>Charitable donations · tuition · eligible political contributions · basic personal amount</td></tr>
+</table></div>
+<div class="box ex"><b>M5 slide example</b>
+<div class="calc">$1,000 RRSP deduction at 30% marginal → saves $300
+$1,000 tuition credit at 15%          → saves $150</div></div>
+<ul>
+<li><b>Non-refundable credit:</b> can reduce tax payable to zero but <b>not below zero</b>, so it can't create a refund on its own. Unused tuition can be carried forward. Examples: tuition, donations, BPA.</li>
+<li><b>Refundable credit</b> (for contrast): can create a refund even when no tax is owed. Example: the GST/HST credit.</li>
+</ul>
+
+<h3>Credits on the hint sheet</h3>
+<div class="tbl"><table>
+<tr><th>Credit</th><th>Key rule</th><th>Source</th></tr>
+<tr><td><b>Tuition</b></td><td>Non-refundable. Federal credit = eligible tuition × 15%. Fees must be over $100 at a qualifying institution. Unused amounts carry forward indefinitely, or up to <b>$5,000</b> of the current year's amount can be transferred to a spouse, parent or grandparent. Schedule 11.</td><td><span class="src c">M5</span></td></tr>
+<tr><td><b>Charitable donations</b></td><td>15% on the first $200; 29% (33% for top-bracket income) on the rest. Spouses can pool donations. Unused donations carry forward 5 years. Schedule 9.</td><td><span class="src c">M5</span></td></tr>
+<tr><td><b>Political contributions</b></td><td>Non-refundable federal credit: 75% of the first $400, 50% of the next $350, 33⅓% of the next $525. Maximum credit $650 (reached at $1,275).</td><td><span class="src h">Hint sheet</span></td></tr>
+</table></div>
+<div class="box ex"><b>Donation example (M5)</b>
+<div class="calc">$2,000 donated → 15% × $200 + 29% × $1,800 = $30 + $522 = $552</div>
+The slide says $558, but the math gives $552. Expect the method to be tested, not that number.</div>
+<div class="box trap"><b>Watch out: slide inconsistency (M5 slide 15)</b>The slide transfers "$8,000 × 15% = $1,200" of tuition to a parent. Slide 6 and CRA rules cap the transfer at <b>$5,000</b> of current-year tuition, which is <b>$750</b> federally. The student must also use what they need first. Give the $5,000 cap on the exam.</div>
+
+<h3>Deductions on the hint sheet <span class="src h">Hint sheet only</span></h3>
+<div class="tbl"><table>
+<tr><th>Item</th><th>Rule</th><th>Form</th></tr>
+<tr><td><b>RRSP contributions</b></td><td>Deductible up to your deduction limit (shown on the NOA)</td><td>Schedule 7</td></tr>
+<tr><td><b>Qualifying childcare</b></td><td>Deductible. It's generally claimed by the lower-income spouse and is subject to limits.</td><td>T778</td></tr>
+<tr><td><b>Moving expenses</b></td><td>Deductible when you move to start work, a business or full-time post-secondary study and the new home is at least 40 km closer to the new location. They're deducted against income earned at the new location.</td><td><b>T1-M</b></td></tr>
+<tr><td><b>Employment expenses</b></td><td>Deductible only when the employment contract requires them and the employer certifies it</td><td><b>T2200</b> (employer) → <b>T777</b> (employee)</td></tr>
+<tr><td><b>Spousal support</b></td><td>Deductible to the payer and taxable to the recipient only if all three conditions are met (below)</td><td></td></tr>
+</table></div>
+
+<h3>Support payments <span class="src h">Hint sheet only</span></h3>
+<div class="tbl"><table>
+<tr><th></th><th>Payer</th><th>Recipient</th></tr>
+<tr><td><b>Child support</b></td><td>Not deductible</td><td>Not taxable</td></tr>
+<tr><td><b>Spousal support</b> (meeting the conditions)</td><td><b>Deductible</b></td><td><b>Taxable</b></td></tr>
+</table></div>
+<p><b>Spousal support conditions:</b></p>
+<ol>
+<li>It's paid under a <b>written agreement or court order</b>.</li>
+<li>The payments are <b>periodic</b> (a lump sum generally doesn't qualify).</li>
+<li>The spouses are <b>living separate and apart</b>.</li>
+</ol>
+
+<h3>Not deductible <span class="src c">M3</span> <span class="src h">hint sheet</span></h3>
+<ul>
+<li><b>Personal expenses</b>, such as clothing, groceries and personal phone use.</li>
+<li><b>Ordinary commuting</b> between home and your regular workplace. This is personal travel, even though you have to get to work (M3).</li>
+</ul>
+
+<h3>Home-office expenses <span class="src h">Hint sheet only</span></h3>
+<p>The workspace must meet <b>one</b> of these two tests:</p>
+<ol>
+<li><b>Principal place of work:</b> the space is where the employee <b>mainly</b> works (more than 50% of the time over at least 4 consecutive weeks), <b>or</b></li>
+<li>The space is used <b>exclusively</b> to earn employment income <b>and</b> used on a <b>regular and continuous</b> basis to meet clients or others.</li>
+</ol>
+<p>Employees also need a signed <b>T2200</b>, and they claim the expenses on the <b>T777</b>.</p>
+</section>
+
+<!-- ============ 5 INVESTMENT & FAMILY ============ -->
+<section id="inv">
+<h2>5 · Investment and family tax planning</h2>
+
+<h3>Interest income <span class="src c">M4</span></h3>
+<ul>
+<li>Interest is <b>fully included</b> in income and taxed at your marginal rate. It gets no special treatment.</li>
+<li>It must be reported even when no slip is issued. Multi-year investments may require <b>annual accrual</b>, which means you pay tax before you receive the cash.</li>
+<li>Principal returned at maturity is <b>not</b> income.</li>
+</ul>
+<div class="box ex"><b>Example (M4, Lauro)</b>
+<div class="calc">$5,000 GIC at 4.5% → receives $5,225
+Interest income = $225   (the $5,000 principal is not income)
+Tax at 40% marginal = $225 × 40% = $90</div></div>
+
+<h3>Capital gains and losses <span class="src c">M4</span></h3>
+<div class="calc">Capital gain (loss) = Proceeds − ACB − selling costs
+Taxable capital gain   = Capital gain × inclusion rate (50%)
+Allowable capital loss = Capital loss × inclusion rate</div>
+<div class="box key"><b>Key rule</b>Allowable capital losses offset <b>taxable capital gains only</b>, <b>not employment or other income</b>. Unused net capital losses carry <b>back 3 years</b> and <b>forward indefinitely</b>. Report them on <b>Schedule 3</b>.</div>
+<div class="box ex"><b>Example (M4)</b>
+<div class="calc">Proceeds $42,000 − ACB $30,000 − commission $500 = $11,500 capital gain
+Taxable capital gain = $11,500 × 50% = $5,750</div>
+Your notes say "apply the current inclusion rule". The proposed increase to 2/3 was cancelled in 2025, so the rate is 50%. Use whatever rate your instructor uses.</div>
+
+<h3>RRSP vs TFSA <span class="src c">M3, M4, M6</span></h3>
+<div class="tbl"><table>
+<tr><th></th><th>RRSP</th><th>TFSA</th></tr>
+<tr><td>Contribution</td><td><b>Deductible</b>, which reduces taxable income (Schedule 7)</td><td><b>Not deductible</b> (made with after-tax dollars)</td></tr>
+<tr><td>Growth inside</td><td>Tax-deferred</td><td>Tax-free</td></tr>
+<tr><td>Withdrawal</td><td><b>Taxable</b> income</td><td><b>Tax-free</b>; room is restored the following January 1</td></tr>
+<tr><td>Best when</td><td>Your marginal rate now is higher than it will be at withdrawal</td><td>You need flexibility, or your rate now is low (early career)</td></tr>
+<tr><td>2024 limit (M6)</td><td>18% of earned income, up to $31,560</td><td>$7,000/year</td></tr>
+</table></div>
+<p><b>RRSP tax saving ≈ contribution × marginal tax rate.</b> M6 "Maya" example: at $40,000 of income, a $2,000 RRSP contribution saves about $300 of tax.</p>
+
+<h3>Income attribution <span class="src c">M1, M3</span></h3>
+<p><b>Definition:</b> attribution rules can send investment income or capital gains <b>back to the person who transferred or loaned the property</b> to a spouse or common-law partner, or to certain family members such as minor children. They exist to stop a high earner from simply handing money to a lower-income relative to shift investment income to a lower tax rate.</p>
+<div class="box ex"><b>M1 "Morgan and Alex" case</b> (Morgan earns $180,000, Alex earns $35,000, and Morgan has $80,000 to invest)
+<div class="tbl"><table>
+<tr><th>Option</th><th>Result</th></tr>
+<tr><td>1. Gift to Alex for a non-registered account</td><td><b>Attribution applies.</b> Income and gains are taxed to Morgan, so splitting doesn't work.</td></tr>
+<tr><td>2. Gift so Alex funds Alex's own TFSA</td><td>Works. Growth inside the TFSA is tax-free, so there's nothing to attribute. Alex needs TFSA room.</td></tr>
+<tr><td>3. Prescribed-rate loan to Alex</td><td>Works <b>if</b> the loan is documented, charges at least the prescribed rate and the interest is paid by Jan 30. Income is then taxed to Alex.</td></tr>
+</table></div></div>
+
+<h3>Prescribed-rate loan rules <span class="src c">M1</span> <span class="src h">Jan 30: hint sheet</span></h3>
+<ol>
+<li>The loan must be <b>properly documented</b> in a written loan agreement.</li>
+<li>It must charge interest of <b>at least the prescribed rate in effect when the loan is made</b>. That rate stays locked in for the life of the loan.</li>
+<li>Interest for each year must be <b>paid no later than January 30 of the following year</b>. If a payment is missed, attribution applies for that year <b>and every later year</b>.</li>
+<li>Tax reporting:
+  <ul>
+  <li>The <b>lender</b> reports the interest received as income.</li>
+  <li>The <b>borrower</b> reports the investment income.</li>
+  <li>The borrower can generally <b>deduct the interest paid</b>, because the money was borrowed to earn investment income.</li>
+  </ul></li>
+</ol>
+<div class="box ex"><b>Illustration (assume a 3% prescribed rate; check the current rate)</b>
+<div class="calc">Morgan lends Alex $80,000 at 3% → Alex pays Morgan $2,400 by Jan 30
+Alex invests and earns $4,800
+  Alex:   reports $4,800 − deducts $2,400 interest = $2,400 net (taxed at Alex's LOW rate)
+  Morgan: reports $2,400 interest income (taxed at Morgan's high rate)
+Net effect: $2,400 of investment income moves from Morgan's rate to Alex's</div></div>
+</section>
+
+<!-- ============ 6 WRITTEN RESPONSE ============ -->
+<section id="wr">
+<h2>6 · Written-response preparation</h2>
+<div class="box key"><b>Use this 5-step structure for every answer</b>
+<ol style="margin:4px 0 0">
+<li><b>Define</b> the concept.</li>
+<li>State the <b>rule</b>.</li>
+<li><b>Apply</b> it to the facts.</li>
+<li>Give an <b>example or calculation</b>.</li>
+<li>Explain the <b>planning importance</b>.</li>
+</ol></div>
+
+<h3>Model answer A: RRSP and tuition (flagged on the hint sheet)</h3>
+<p><i>Question: Sam has a 30% marginal tax rate, contributes $3,000 to an RRSP and pays $6,000 of eligible tuition. Explain how each affects Sam's taxes.</i></p>
+<ol>
+<li><b>Define:</b>
+  <ul>
+  <li>An RRSP contribution is a <b>deduction</b>: it reduces taxable income.</li>
+  <li>Tuition generates a <b>non-refundable tax credit</b>: it reduces tax payable. Tuition is <b>not</b> an income deduction.</li>
+  </ul></li>
+<li><b>Rule:</b>
+  <ul>
+  <li>A deduction's value depends on the marginal rate: saving ≈ contribution × marginal rate.</li>
+  <li>The federal tuition credit = eligible tuition × 15%.</li>
+  <li>A non-refundable credit can't reduce tax below zero. Unused tuition carries forward indefinitely, or up to $5,000 can be transferred.</li>
+  </ul></li>
+<li><b>Apply:</b>
+  <ul>
+  <li>Sam deducts the $3,000 RRSP contribution, which lowers taxable income.</li>
+  <li>Sam then claims the tuition credit against the federal tax calculated.</li>
+  </ul></li>
+<li><b>Calculation:</b>
+<div class="calc">RRSP:    $3,000 × 30% ≈ $900 tax saved  (taxable income falls by $3,000)
+Tuition: $6,000 × 15% = $900 federal credit (federal tax payable falls by $900)</div></li>
+<li><b>Planning importance:</b>
+  <ul>
+  <li>RRSP deductions are worth more to higher earners, so it can pay to contribute now and deduct in a higher-income year.</li>
+  <li>Tuition credits are worth the same 15% to everyone. A student with little tax can carry the credit forward or transfer it.</li>
+  <li><b>Remember:</b> a deduction reduces <u>taxable income</u>; a credit reduces <u>tax payable</u>.</li>
+  </ul></li>
+</ol>
+
+<h3>Model answer B: income attribution and prescribed-rate loans</h3>
+<ol>
+<li><b>Define:</b> attribution rules return investment income or gains on property that was transferred or loaned to a spouse or certain family members back to the transferor.</li>
+<li><b>Rule:</b>
+  <ul>
+  <li>A gift to a spouse for non-registered investing → the income is attributed back to the giver.</li>
+  <li>Exception: a documented loan at a rate of at least the prescribed rate set at inception, with the interest paid by January 30 of the following year.</li>
+  </ul></li>
+<li><b>Apply:</b> use the Morgan ($180,000) and Alex ($35,000) facts from section 5.</li>
+<li><b>Calculation:</b> use the $80,000-at-3% illustration in section 5.</li>
+<li><b>Planning importance:</b> this legally shifts investment income to the lower-rate spouse. Missing the Jan 30 deadline even once brings attribution back permanently. Funding the spouse's TFSA is a simpler alternative.</li>
+</ol>
+
+<h3>Model answer C: avoidance, evasion and GAAR</h3>
+<ol>
+<li><b>Define:</b>
+  <ul>
+  <li><b>Avoidance:</b> legal planning to reduce tax.</li>
+  <li><b>Evasion:</b> deliberately breaking the law to avoid tax that is legally owed.</li>
+  </ul></li>
+<li><b>Rule:</b> GAAR lets the CRA deny a tax benefit when a transaction technically follows the legislation but abuses its object, spirit or purpose.</li>
+<li><b>Apply and example:</b>
+  <ul>
+  <li>An RRSP contribution is legitimate planning.</li>
+  <li>A contrived series of transactions with no commercial purpose risks GAAR.</li>
+  <li>Not reporting cash tips is evasion.</li>
+  </ul></li>
+<li><b>Planning importance:</b>
+  <ul>
+  <li>Advisors should recommend only planning with genuine purpose and proper documentation.</li>
+  <li>They should never assist with concealment.</li>
+  <li>Evasion brings penalties and possible prosecution.</li>
+  </ul></li>
+</ol>
+
+<h3>Other likely prompts (practice these yourself)</h3>
+<ul>
+<li>Explain marginal, average and effective marginal tax rates with a calculation.</li>
+<li>Compare an RRSP and a TFSA for a 25-year-old earning $40,000.</li>
+<li>A self-employed client files on June 15 and pays the same day. What's the problem?</li>
+<li>When are spousal and child support deductible or taxable? Why?</li>
+<li>Can an employee claim home-office expenses? Which tests apply, and which forms?</li>
+</ul>
+</section>
+
+<!-- ============ 7 MC ============ -->
+<section id="mc">
+<h2>7 · Self-check multiple choice</h2>
+<p class="legend">Click a question to see the answer.</p>
+<div id="quiz"></div>
+</section>
+
+<!-- ============ 8 CRAM ============ -->
+<section id="cram">
+<h2>8 · Last-minute cram list</h2>
+<ul>
+<li>Marginal = next dollar · Average = tax ÷ income · EMTR = tax + lost benefits</li>
+<li>Municipalities → property tax. The main purpose of tax is to fund government programs.</li>
+<li>Avoidance is legal (but GAAR can deny it if it abuses the law's purpose) · Evasion is illegal</li>
+<li>Filing deadline April 30; self-employed and their spouses June 15, <b>but balances owing are due April 30</b></li>
+<li>Filing with $0 tax still gets you refunds, benefits, credits, RRSP room and loss balances</li>
+<li>Normal reassessment period ≈ 3 years · to fix an omitted amount → <b>adjustment request</b></li>
+<li>T4 employment · T5 interest and dividends · T3 trusts and mutual funds · T2200 employer certifies · T777 employee claims · T1-M moving · Sched 3 capital gains · Sched 7 RRSP</li>
+<li>Non-taxable: inheritance, lottery, life-insurance death benefit, TFSA withdrawal. <b>The earnings on them are taxable.</b></li>
+<li>Deduction → taxable income (× marginal rate) · Credit → tax payable (× 15%) · Non-refundable credits can't go below $0</li>
+<li>Child support: neither deductible nor taxable · Spousal support needs a written agreement or court order, periodic payments and living apart</li>
+<li>Home office: principal place of work (&gt;50%) OR exclusive use with regular and continuous client meetings</li>
+<li>Interest is 100% included · Capital losses offset capital gains only, not employment income</li>
+<li>RRSP: deductible in, taxable out · TFSA: not deductible in, tax-free out</li>
+<li>Prescribed-rate loan: written, at least the prescribed rate at inception, interest paid by <b>Jan 30</b>. The lender reports the interest; the borrower reports the income and deducts the interest.</li>
+</ul>
+</section>
+</main>
+</div>
+
+<script>
+const Q=[
+["A taxpayer's \"marginal tax rate\" is the rate applied to:",["Total income","The next or last dollar earned","Taxable income after credits","Only employment income"],1,"Marginal = next/last dollar. Total tax ÷ total income is the average rate."],
+["Tax is $10,000 on income of $60,000, and the top bracket reached is 25%. The average tax rate is:",["25%","15%","16.67%","20%"],2,"$10,000 ÷ $60,000 = 16.67%."],
+["The effective marginal tax rate differs from the marginal rate because it includes:",["Provincial tax only","CPP and EI premiums only","Income-tested benefits lost on extra income","The basic personal amount"],2,"EMTR = additional tax + benefits or credits clawed back."],
+["Which level of government primarily collects property taxes?",["Federal","Provincial","Municipal","CRA"],2,"Municipalities collect property tax on land and buildings."],
+["The main purpose of taxation is to:",["Redistribute wealth only","Fund government programs and public services","Penalize high earners","Control inflation"],1,"Funding programs and services is the primary purpose."],
+["A taxpayer deliberately omits cash income from their return. This is:",["Tax planning","Tax avoidance","Tax evasion","A GAAR transaction"],2,"Deliberately breaking the law is evasion."],
+["GAAR may deny a tax benefit when a transaction:",["Is illegal","Technically follows the legislation but abuses its purpose","Is filed late","Involves an RRSP"],1,"GAAR targets abusive avoidance that follows the letter but not the spirit of the law."],
+["A self-employed individual's balance owing for the year is generally due:",["June 15","April 30","March 1","December 31"],1,"The filing deadline is June 15, but payment is due April 30."],
+["The spouse of a self-employed individual generally has a filing deadline of:",["April 30","June 15","March 31","No deadline"],1,"Self-employed individuals and their spouses both get June 15."],
+["Which is NOT a reason to file a return when no tax is owed?",["Establish RRSP contribution room","Qualify for benefits like the GST/HST credit","Record capital-loss balances","Extend the reassessment period"],3,"Filing establishes refunds, benefits, credits, RRSP room and loss balances."],
+["The CRA's initial determination of tax after processing a return is a(n):",["Audit","Reassessment","Assessment","Objection"],2,"The assessment results in the Notice of Assessment."],
+["The normal reassessment period for most individuals is generally:",["1 year","3 years","6 years","Unlimited"],1,"Three years from the original NOA (unlimited for misrepresentation or fraud)."],
+["A taxpayer finds a T5 slip they forgot to report. The best step is to:",["File a notice of objection","File a second T1 return","Request a return adjustment","Wait for an audit"],2,"An adjustment corrects your own return. An objection disputes the CRA's assessment."],
+["A T5 slip reports:",["Employment income","Interest and certain dividends","Trust distributions","RRSP contributions"],1,"T5 = investment income: interest and dividends."],
+["Mutual-fund distributions are typically reported on a:",["T4","T5","T3","T2200"],2,"T3 = trust and mutual-fund distributions."],
+["Which form is completed and signed by the EMPLOYER to certify employment conditions?",["T777","T2200","T1-M","Schedule 7"],1,"The T2200 is the employer's certification. The T777 is the employee's claim."],
+["Capital gains and losses are reported on:",["Schedule 7","Schedule 3","T1-M","T777"],1,"Schedule 3 = capital gains and losses."],
+["RRSP contributions and deductions are reported on:",["Schedule 3","Schedule 9","Schedule 7","Schedule 11"],2,"Schedule 7 = RRSP."],
+["Which is generally TAXABLE?",["Lottery winnings","An inheritance","A TFSA withdrawal","Tips"],3,"Tips are employment income even when received directly."],
+["Noah inherits $60,000 and earns $2,700 of GIC interest on it. What is taxable?",["$62,700","$60,000","$2,700","Nothing"],2,"The inheritance is non-taxable, but the interest earned on it is taxable."],
+["A $2,000 RRSP contribution for a taxpayer with a 30% marginal rate saves approximately:",["$300","$600","$2,000","$140"],1,"Deduction value = $2,000 × 30% = $600."],
+["A non-refundable tax credit:",["Can create a refund","Reduces taxable income","Cannot reduce tax payable below zero","Is worth more to high earners"],2,"Non-refundable = it can reduce tax payable to zero, but not below."],
+["Tuition generally produces:",["A deduction from income","A non-refundable tax credit","A refundable credit","No tax benefit"],1,"Tuition is a non-refundable credit (federal 15%), not a deduction."],
+["The federal tuition credit on $6,000 of eligible tuition is:",["$600","$900","$1,800","$6,000"],1,"$6,000 × 15% = $900."],
+["Which generally generates a tax CREDIT rather than a deduction?",["Childcare expenses","Moving expenses","Charitable donations","Spousal support paid"],2,"Donations, tuition and political contributions → credits."],
+["Child support paid under a post-1997 agreement is:",["Deductible to the payer, taxable to the recipient","Neither deductible nor taxable","Taxable to the payer","Deductible but not taxable"],1,"Child support is neutral for tax purposes."],
+["Which is NOT a condition for spousal support to be deductible?",["Written agreement or court order","Periodic payments","Living separate and apart","A single lump-sum payment"],3,"Lump sums generally don't qualify. Payments must be periodic."],
+["An employee's daily drive from home to the regular office is:",["Deductible on the T777","Deductible on the T1-M","Personal commuting, not deductible","A taxable benefit"],2,"Ordinary commuting is personal."],
+["Home-office expenses require the workspace to be:",["Any room in the home","The principal place of work, or used exclusively and regularly and continuously to meet clients","Used at least once a month","Approved by the CRA in advance"],1,"Either the principal-place-of-work test or the client-meeting test."],
+["Interest income in a non-registered account is:",["50% included","Fully included","Tax-free up to $1,000","Eligible for the dividend tax credit"],1,"Interest is 100% included at the marginal rate."],
+["An allowable capital loss can normally be used to offset:",["Employment income","Taxable capital gains","Interest income","Tax payable directly"],1,"Capital losses offset capital gains, not employment income."],
+["TFSA contributions are ______ and qualifying withdrawals are ______.",["deductible / taxable","not deductible / tax-free","deductible / tax-free","not deductible / taxable"],1,"TFSA: after-tax in, tax-free out."],
+["Morgan gifts $80,000 to their spouse, who invests it in a non-registered account. The income is likely:",["Taxed to the spouse","Tax-free","Attributed back to Morgan","Split 50/50"],2,"Spousal attribution applies to gifted property."],
+["For a prescribed-rate loan, the required interest must be paid by:",["December 31 of the same year","January 30 of the following year","April 30 of the following year","The loan's maturity"],1,"Jan 30 of the following year, or attribution applies."],
+["Under a valid prescribed-rate loan, who reports the interest paid on the loan as income?",["The borrower","The lender","Neither","Both"],1,"The lender reports the interest. The borrower reports the investment income and generally deducts the interest."]
+];
+const box=document.getElementById('quiz');
+Q.forEach((q,i)=>{
+  const d=document.createElement('details');
+  const s=document.createElement('summary');s.textContent=(i+1)+'. '+q[0];d.appendChild(s);
+  const ol=document.createElement('ol');ol.type='a';
+  q[1].forEach((o,j)=>{const li=document.createElement('li');li.textContent=o;if(j===q[2])li.className='ans';ol.appendChild(li)});
+  d.appendChild(ol);
+  const p=document.createElement('p');p.innerHTML='<b>Answer: '+'abcd'[q[2]]+'.</b> '+q[3];d.appendChild(p);
+  box.appendChild(d);
+});
+</script>
+</body>
+</html>

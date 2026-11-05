@@ -1,0 +1,1164 @@
+<title>FMGT 3510 Midterm Notes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: sticky tab strip over a 960px column; each tab = outline → Cornell grid (cue | notes) → summary strip */
+:root{
+  --bg:#FAF8F3; --fg:#1C1C2E; --muted:#5b5f66; --accent:#2D6A4F; --accent-soft:rgba(45,106,79,.10);
+  --cue:#EEF2F7; --card:#ffffff; --line:#dcdcd6; --warn:#8a5a00; --warn-bg:#fff4dc; --good:#2d7a4b; --bad:#a33a3a;
+  --key:#f1f1ee; --keyline:#b9b9b2; --shift:#d9771f;
+  --f-display:"Lora",Georgia,serif; --f-body:"Source Sans 3","Source Sans Pro",system-ui,sans-serif; --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141817; --fg:#e7e6df; --muted:#a3a7a2; --accent:#74c49c; --accent-soft:rgba(116,196,156,.12);
+  --cue:#1d2524; --card:#1b201f; --line:#2f3836; --warn:#f0c26a; --warn-bg:#2b2516; --good:#74c49c; --bad:#e58a8a;
+  --key:#262c2b; --keyline:#4a5351; --shift:#f0a050; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141817; --fg:#e7e6df; --muted:#a3a7a2; --accent:#74c49c; --accent-soft:rgba(116,196,156,.12);
+  --cue:#1d2524; --card:#1b201f; --line:#2f3836; --warn:#f0c26a; --warn-bg:#2b2516; --good:#74c49c; --bad:#e58a8a;
+  --key:#262c2b; --keyline:#4a5351; --shift:#f0a050; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16.5px;line-height:1.6}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:960px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding-block:12px 4px}
+.brand h1{font-family:var(--f-display);font-size:1.3rem;margin:0;text-wrap:balance}
+.brand span{color:var(--muted);font-size:.9rem}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;padding-block:6px 10px;scrollbar-width:thin}
+nav.tabs button{flex:0 0 auto;font:600 .86rem var(--f-body);border:1px solid var(--line);background:var(--card);color:var(--fg);padding:6px 11px;border-radius:999px;cursor:pointer;transition:all .2s ease;white-space:nowrap}
+nav.tabs button:hover{border-color:var(--accent)}
+nav.tabs button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+nav.tabs button:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+main{padding-block:24px 80px}
+section.page h2{font-family:var(--f-display);font-size:1.75rem;line-height:1.25;margin:0 0 4px;text-wrap:balance}
+.chap{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.lede{color:var(--muted);margin:4px 0 20px;max-width:65ch}
+h3.blk{font-family:var(--f-display);font-size:1.05rem;margin:28px 0 10px;color:var(--fg)}
+.label{font-size:.74rem;letter-spacing:.09em;text-transform:uppercase;font-weight:700;color:var(--muted);margin:0 0 8px}
+/* outline */
+.outline{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:14px 16px}
+.tree,.tree ul{list-style:none;margin:0;padding-left:18px}
+.tree{padding-left:0}
+.tree li{margin:3px 0;position:relative}
+.tree ul{border-left:1px dashed var(--line);margin-left:6px;padding-left:14px}
+.tree .node{cursor:default}
+.tree li.has>.node{cursor:pointer;font-weight:600}
+.tree li.has>.node::before{content:"▶";display:inline-block;font-size:.7em;margin-right:6px;color:var(--accent);transition:transform .2s ease}
+.tree li.has.open>.node::before{transform:rotate(90deg)}
+.tree li.has:not(.open)>ul{display:none}
+/* cornell */
+.cornell{display:grid;grid-template-columns:minmax(0,30%) minmax(0,1fr);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-top:22px;background:var(--card)}
+.cues{background:var(--cue);padding:16px;border-right:1px solid var(--line)}
+.cues ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;font-size:.95rem}
+.notes{padding:16px 20px;min-width:0}
+.notes h4{font-family:var(--f-display);font-size:1.08rem;margin:22px 0 6px}
+.notes h4:first-child{margin-top:0}
+.notes p{margin:6px 0;max-width:68ch}
+.notes ul,.notes ol{margin:6px 0;padding-left:22px}
+.notes li{margin:3px 0}
+.summary{margin-top:0;background:var(--accent-soft);padding:14px 18px;border-top:1px solid var(--line);grid-column:1/-1}
+.summary p{margin:0}
+@media (max-width:700px){.cornell{grid-template-columns:1fr}.cues{border-right:0;border-bottom:1px solid var(--line)}}
+.key-term{color:var(--accent);font-weight:700;background:linear-gradient(transparent 70%,var(--accent-soft) 70%)}
+.formula{font-family:var(--f-mono);font-size:.88rem;background:var(--cue);border:1px solid var(--line);border-radius:6px;padding:8px 12px;margin:8px 0;overflow-x:auto;white-space:pre}
+.trap{background:var(--warn-bg);border-left:3px solid var(--warn);padding:8px 12px;margin:10px 0;border-radius:0 6px 6px 0;font-size:.95rem}
+.trap b{color:var(--warn)}
+.tbl{overflow-x:auto;margin:8px 0}
+table{border-collapse:collapse;font-size:.9rem;font-variant-numeric:tabular-nums;width:100%}
+th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{font-weight:700;background:var(--cue)}
+td.n,th.n{text-align:right}
+kbd{font-family:var(--f-mono);font-size:.78rem;background:var(--key);border:1px solid var(--keyline);border-bottom-width:2px;border-radius:4px;padding:1px 5px;white-space:nowrap}
+kbd.sh{background:var(--shift);border-color:var(--shift);color:#1b1205}
+.keys{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin:6px 0;font-size:.9rem}
+.keys .arrow{color:var(--muted)}
+.ans{color:var(--accent);font-weight:700}
+/* glossary */
+.gsearch{width:100%;max-width:420px;padding:9px 12px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg);font:inherit;margin-bottom:16px}
+.gloss{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.gcard{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.gcard b{color:var(--accent)}
+.gcard p{margin:4px 0 0;font-size:.93rem}
+.gcard small{color:var(--muted)}
+/* practice */
+.pgroup h3{font-family:var(--f-display);font-size:1.15rem;margin:30px 0 10px}
+.q{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:12px 14px;margin:10px 0}
+.qhead{display:flex;gap:10px;align-items:flex-start}
+.qhead input{margin-top:5px;width:17px;height:17px;accent-color:var(--accent);flex:0 0 auto}
+.qtext{flex:1;min-width:0}
+.qtag{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--muted);margin-right:6px}
+.opts{display:flex;flex-direction:column;gap:6px;margin:10px 0 0 27px}
+.opts button{text-align:left;font:inherit;font-size:.95rem;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:7px 10px;cursor:pointer;transition:all .2s ease}
+.opts button:hover{border-color:var(--accent)}
+.opts button.right{border-color:var(--good);background:var(--accent-soft)}
+.opts button.wrong{border-color:var(--bad);color:var(--bad)}
+.showbtn{margin:10px 0 0 27px;font:600 .85rem var(--f-body);background:transparent;color:var(--accent);border:1px solid var(--accent);border-radius:6px;padding:5px 12px;cursor:pointer;transition:all .2s ease}
+.showbtn:hover{background:var(--accent-soft)}
+.answer{margin:10px 0 0 27px;padding:10px 12px;background:var(--cue);border-radius:6px;font-size:.95rem}
+.progress{font-weight:600;color:var(--muted);margin-bottom:6px}
+#toTop{position:fixed;right:calc(18px + env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));background:var(--accent);color:var(--bg);border:0;border-radius:999px;padding:9px 14px;font:700 .85rem var(--f-body);cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s ease}
+#toTop.show{opacity:1;pointer-events:auto}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top"><div class="wrap">
+  <div class="brand"><h1>FMGT 3510 Midterm Notes</h1><span>Ch 1, 2, 3, 4 &amp; 17 (slides 1–15) · Fall 2026</span></div>
+  <nav class="tabs" id="tabs" role="tablist"></nav>
+</div></header>
+
+<main class="wrap" id="main">
+
+<!-- ================= CH 1A ================= -->
+<section class="page" id="ch1a" data-tab="Ch 1 · Goals &amp; Agency">
+<div class="chap">Chapter 1 · Part A</div>
+<h2>What corporate finance is for</h2>
+<p class="lede">The goal of the firm, what drives value, ethics, the agency problem and the separation theorem. Mostly theory, so expect multiple-choice questions here.</p>
+<div class="outline"><div class="label">Concept outline</div>
+<ul class="tree">
+ <li class="has open"><span class="node">Corporate finance: 3 decisions</span><ul>
+  <li><span class="node">Capital structure: how to get financing</span></li>
+  <li><span class="node">Capital budgeting: which investments to pick</span></li>
+  <li><span class="node">Working capital: day-to-day financing</span></li></ul></li>
+ <li class="has open"><span class="node">Goal = value maximization</span><ul>
+  <li class="has"><span class="node">Value = PV of FCF at WACC</span><ul><li><span class="node">Drivers: amount, timing, risk of FCF</span></li></ul></li>
+  <li><span class="node">Maximize intrinsic price, not market price</span></li></ul></li>
+ <li class="has"><span class="node">Is it good for society?</span><ul>
+  <li><span class="node">Yes: ownership, competition, jobs, taxes</span></li>
+  <li><span class="node">Debate is ongoing; stakeholders matter</span></li></ul></li>
+ <li class="has"><span class="node">Governance &amp; ethics</span><ul>
+  <li><span class="node">US: shareholder wealth first</span></li>
+  <li><span class="node">Canada: "best interests of the corporation"</span></li></ul></li>
+ <li class="has"><span class="node">Agency problem</span><ul>
+  <li><span class="node">Cause: owners ≠ managers</span></li>
+  <li><span class="node">Direct vs indirect agency costs</span></li>
+  <li><span class="node">Fix: FCF-based pay, independent board</span></li></ul></li>
+ <li class="has"><span class="node">Fisher's Separation Theorem</span><ul>
+  <li><span class="node">Firm maximizes value; investors adjust themselves</span></li></ul></li>
+</ul></div>
+
+<div class="cornell">
+<aside class="cues"><div class="label">Cues</div><ol>
+<li>What are the 3 decisions of corporate finance?</li>
+<li>How do you define the value of a firm?</li>
+<li>What 3 things about FCF drive value?</li>
+<li>Name 4 arguments that value max is good for society.</li>
+<li>How does Canadian law differ from US law on whose interests come first?</li>
+<li>Intrinsic vs market share price: which one should managers maximize?</li>
+<li>What causes the agency problem, and what fixes it?</li>
+<li>What does Fisher's Separation Theorem say?</li>
+</ol></aside>
+<div class="notes">
+<h4>How a business succeeds</h4>
+<p>Sell a good or service customers value (the <span class="key-term">value proposition</span>) at a price that covers <b>all</b> costs, including the <span class="key-term">cost of capital</span>. That requires skilled ethical people, good customer/supplier relationships, and enough cash. The firm must also earn returns high enough to attract investors.</p>
+<h4>The 3 jobs of corporate finance</h4>
+<ul>
+<li><b>Getting financing</b> → <span class="key-term">capital structure decisions</span> (debt vs equity mix).</li>
+<li><b>Choosing investments</b> → <span class="key-term">capital budgeting decisions</span>. A project must cover all costs including the cost of capital, and must add value.</li>
+<li><b>Managing day-to-day financing</b> → <span class="key-term">working capital decisions</span> (this is Ch 17).</li>
+</ul>
+<h4>Savers vs users of capital</h4>
+<p><span class="key-term">Financing providers (savers)</span> have more cash than they need now: retirement savers, pension funds, banks. <span class="key-term">Financing seekers (users)</span> have opportunities but not enough cash: students, governments, entrepreneurs, growing corporations.</p>
+<p>Savers give cash in exchange for a <b>claim on future cash flow</b>: <b>interest</b> (loans, bonds) or <b>dividends and capital gains</b> (common/preferred shares). This happens through financial markets. If capital is not allocated efficiently, it is hard to create wealth and economic growth.</p>
+<p>How a saver decides: (1) forecast the project's cash flows and its <span class="key-term">expected rate of return</span>; (2) assess risk and set the minimum acceptable return for that risk, the <span class="key-term">required rate of return</span>; (3) invest only if expected ≥ required.</p>
+<h4>The main objective: value maximization</h4>
+<p><span class="key-term">Value maximization</span> = maximizing the value of the firm = maximizing shareholders' wealth = maximizing the <b>long-run</b> stock price.</p>
+<div class="formula">Value of firm = PV of expected Free Cash Flows (FCF), discounted at WACC
+
+FCF = Sales − Operating costs − Operating taxes − Required investments in operating capital</div>
+<p><span class="key-term">Free Cash Flow (FCF)</span> is the cash available for distribution ("free") to all investors. The <span class="key-term">Weighted Average Cost of Capital (WACC)</span> is the average return required by the firm's investors, combining the after-tax return lenders require and the return shareholders require.</p>
+<p>So three things drive value: the <b>amount</b>, the <b>timing</b> and the <b>riskiness</b> of FCF. All else equal, investors prefer <b>more</b> cash, <b>sooner</b>, with <b>less risk</b>.</p>
+<h4>Is shareholder value maximization good for society?</h4>
+<p>The "yes" arguments:</p>
+<ul><li>Share ownership is widespread, so higher share value makes many people wealthier.</li>
+<li>Competition among value-seeking firms makes products cheaper and better for consumers.</li>
+<li>Growing firms hire more workers, which reduces unemployment.</li>
+<li>Successful firms pay taxes.</li></ul>
+<p>The debate is not settled; there are counter-arguments to each point. Management decisions affect all <span class="key-term">stakeholders</span>: shareholders, lenders, customers, suppliers, employees, government, community and the environment.</p>
+<h4>Governance, the law and ethics</h4>
+<ul><li><b>US</b> corporate law: shareholder wealth maximization takes priority.</li>
+<li><b>Canadian</b> law: decisions must be in the <span class="key-term">"best interests of the corporation"</span>, which includes shareholders but also considers other stakeholders.</li></ul>
+<p>Ethics is more than following rules: no <span class="key-term">insider trading</span> (using confidential info for personal gain), product safety and quality, fair employment, fair marketing and selling, community involvement.</p>
+<p>For a public company the right target is the <span class="key-term">intrinsic share price</span> (value based on true expected cash flows), <b>not</b> the current market price. Misleading investors to push the price above intrinsic value temporarily is unethical.</p>
+<div class="trap"><b>Exam trap:</b> "Maximize profit" or "maximize the current stock price" are wrong answers. The goal is to maximize <b>long-run / intrinsic</b> value.</div>
+<h4>The agency problem</h4>
+<p>Shareholders usually hire managers to run the firm (<span class="key-term">separation of ownership and management</span>). Example: Rogers Communications has ~429 million B shares; 20–24% held by retail investors, the rest by 500+ institutions.</p>
+<p>Managers have personal goals (power, wealth, perks). When those conflict with shareholder wealth (a new corporate jet, a fancy but unneeded HQ), you get the <span class="key-term">agency problem</span>.</p>
+<ul><li><span class="key-term">Direct agency costs</span>: the cost of <b>monitoring</b> executives.</li>
+<li><span class="key-term">Indirect agency costs</span>: lost opportunities and the consequences of poor decisions (e.g. bad mergers and acquisitions, M&amp;A).</li></ul>
+<p><b>Solutions:</b></p>
+<ul><li><b>Compensation</b> that aligns executives with shareholders: bonuses based on <b>FCF generation, NOT sales</b>.</li>
+<li><b>Governance</b>: an <span class="key-term">independent board of directors</span> that monitors executives, sets strategy, tracks performance and protects shareholders.</li></ul>
+<h4>Separating investment and consumption decisions</h4>
+<div class="tbl"><table><tr><th>Investors who want cash now</th><th>Investors who want growth</th></tr>
+<tr><td>High dividends to fund present consumption</td><td>Reinvest now for higher dividends later (delayed consumption)</td></tr>
+<tr><td>Higher <b>payout ratio</b>, lower retained earnings</td><td>Lower payout ratio, higher retained earnings</td></tr></table></div>
+<p><span class="key-term">Irving Fisher's Separation Theorem</span>: the firm should always pursue the strategy that maximizes value, <b>regardless</b> of its investors' consumption preferences. Investors can use the capital markets (buy/sell shares, borrow, save) to match their own timing.</p>
+</div>
+<div class="summary"><div class="label">Summary</div><p>A firm's goal is to maximize its long-run intrinsic value, which is the present value of its future free cash flows discounted at the WACC. Value goes up with more cash, sooner and with less risk. Because managers and owners are different people, firms use FCF-based pay and independent boards to keep managers focused on value, and they invest to maximize value no matter how individual investors want their cash timed.</p></div>
+</div>
+</section>
+
+<!-- ================= CH 1B ================= -->
+<section class="page" id="ch1b" data-tab="Ch 1 · Financial System" hidden>
+<div class="chap">Chapter 1 · Part B</div>
+<h2>The financial system and the cost of money</h2>
+<p class="lede">How capital moves from savers to investors, what sets interest rates, how markets are split up, and recent trends.</p>
+<div class="outline"><div class="label">Concept outline</div>
+<ul class="tree">
+ <li class="has open"><span class="node">Capital allocation: savers → investors</span><ul>
+  <li><span class="node">Direct transfer</span></li>
+  <li><span class="node">Through investment bankers</span></li>
+  <li><span class="node">Through a financial intermediary</span></li></ul></li>
+ <li class="has open"><span class="node">Cost of money</span><ul>
+  <li><span class="node">4 fundamental factors</span></li>
+  <li><span class="node">6 economic factors</span></li></ul></li>
+ <li class="has"><span class="node">Market segments</span><ul>
+  <li><span class="node">Money vs capital markets</span></li>
+  <li><span class="node">Primary vs secondary</span></li>
+  <li><span class="node">Private vs public</span></li></ul></li>
+ <li class="has"><span class="node">Participants &amp; FinTech</span><ul>
+  <li><span class="node">Retail vs institutional</span></li>
+  <li><span class="node">FinTech: tech + finance platforms</span></li></ul></li>
+ <li class="has"><span class="node">Recent trends</span><ul>
+  <li><span class="node">Private equity growth</span></li>
+  <li><span class="node">Global debt risk</span></li></ul></li>
+</ul></div>
+<div class="cornell">
+<aside class="cues"><div class="label">Cues</div><ol>
+<li>What are the 3 ways capital moves from savers to investors?</li>
+<li>BMO buys all of XYZ's bonds: which type of transfer?</li>
+<li>What is a derivative?</li>
+<li>What are the 4 fundamental factors behind the cost of money?</li>
+<li>How does a government deficit affect the cost of capital?</li>
+<li>Money vs capital market? Dealer vs broker?</li>
+<li>Primary vs secondary market: who gets the cash?</li>
+<li>Why are companies staying private longer?</li>
+</ol></aside>
+<div class="notes">
+<h4>The capital allocation process</h4>
+<p><span class="key-term">Capital allocation</span> moves capital from <b>savers</b> (earn more than they spend) to <b>investors</b> (spend more than they earn to invest), on terms both accept. Borrowing to fund consumption (a vacation, a boat) is <b>not</b> investing.</p>
+<p>Three routes:</p>
+<ol><li><span class="key-term">Direct transfer</span>: the firm sells securities straight to the saver.</li>
+<li><span class="key-term">Indirect transfer through investment bankers</span>: a "middle-person" helps the firm issue and sell new securities.</li>
+<li><span class="key-term">Indirect transfer through a financial intermediary</span>: e.g. a commercial bank or pension fund collects savers' money and invests it.</li></ol>
+<div class="tbl"><table><tr><th>Slide example</th><th>Type</th></tr>
+<tr><td>XYZ issues $60M of bonds, all bought by BMO</td><td>Indirect, through a financial intermediary</td></tr>
+<tr><td>SmallCorp sells new shares to a shareholder for $10M</td><td>Direct transfer</td></tr>
+<tr><td>ABC issues $200M of new bonds with help from RBC Capital Markets, Goldman Sachs</td><td>Indirect, through investment bankers</td></tr></table></div>
+<p>The process involves creating <b>new securities</b>, <b>financial institutions</b> and <b>financial markets</b>.</p>
+<h4>Financial markets and securities</h4>
+<p><span class="key-term">Financial markets</span> are "where" financial assets (securities) are bought and sold. <span class="key-term">Securities</span> are contracts that entitle the owner to part of the cash flow generated by a business's assets: stocks, bonds, loans, mortgages.</p>
+<p><span class="key-term">Derivatives</span> are securities whose value comes from another asset (the <b>underlying asset</b>: a commodity, stock or currency). Examples: options, futures, swaps (covered in FMGT 4510).</p>
+<h4>The cost of money</h4>
+<p>The <span class="key-term">cost of money</span> (cost of capital) is the return investors need before they'll invest. For debt it is the <b>interest rate</b>; for equity it is the <b>cost of equity</b> (dividends + capital gains).</p>
+<p><b>4 fundamental factors:</b></p>
+<ol><li><span class="key-term">Production opportunities</span>: what return can real assets and businesses earn?</li>
+<li><span class="key-term">Time preference for consumption</span>: how much do people prefer spending now vs saving?</li>
+<li><b>Risk</b></li>
+<li><b>Expected inflation</b></li></ol>
+<p><b>Economic factors that move it:</b></p>
+<div class="tbl"><table><tr><th>Factor</th><th>Effect</th></tr>
+<tr><td>Central bank policy (Bank of Canada)</td><td>Expects higher inflation → tighter monetary policy → raises rates</td></tr>
+<tr><td>Government budget</td><td>Deficit is financed by issuing bonds → less capital left for the private sector</td></tr>
+<tr><td>Business activity</td><td>Fear of recession → lower rates to boost the economy</td></tr>
+<tr><td>International trade</td><td>Trade deficit (imports &gt; exports) must be financed → higher rates to attract capital, currency depreciation</td></tr>
+<tr><td>Country risk</td><td>Political stability and the "Rule of Law"</td></tr>
+<tr><td>Exchange rate risk</td><td>Currency depreciation makes imports more expensive</td></tr></table></div>
+<p>An <b>independent central bank</b> matters. Inflation and interest rates rose sharply after 2020 (BoC target 2% inflation; the chart on the slide shows CPI peaking around 8% in 2022).</p>
+<h4>Main market segments</h4>
+<div class="tbl"><table><tr><th></th><th>What</th><th>Key point</th></tr>
+<tr><td><span class="key-term">Money markets</span></td><td>Short-term debt</td><td>Traded mainly by <b>dealers</b> (buy/sell for themselves, at their own risk)</td></tr>
+<tr><td><span class="key-term">Capital markets</span></td><td>Long-term debt and stock</td><td>Traded mainly by <b>brokers/agents</b> (match buyers and sellers, never own the security)</td></tr>
+<tr><td><span class="key-term">Primary market</span></td><td>Original sale</td><td>The issuer <b>receives</b> the proceeds</td></tr>
+<tr><td><span class="key-term">Secondary market</span></td><td>Resale afterwards</td><td>Issuer not involved. A strong secondary market is needed for a successful primary market</td></tr>
+<tr><td><span class="key-term">Private markets</span></td><td>Deals worked out between two parties</td><td>Less liquid, less transparent (ECNs, dark pools, private equity)</td></tr>
+<tr><td><span class="key-term">Public markets</span></td><td>Standardized contracts on an organized exchange</td><td>More liquid and transparent (TSX, NYSE, Nasdaq)</td></tr></table></div>
+<h4>Market participants</h4>
+<p><b>Individuals</b> ("retail clients") and <b>institutions</b> (life insurers, hedge funds, pension funds, mutual funds, governments, credit unions, commercial and investment banks). Exchange members trade directly; everyone else uses a broker, either online (Questrade, Robinhood) or a full-service investment dealer (Raymond James, BMO Nesbitt).</p>
+<h4>FinTech</h4>
+<p><span class="key-term">FinTech</span> = online platforms that combine financial services with technology (AI, blockchain, robo-advisors, internet of things) to give <b>safer, faster, easier access</b> and <b>lower costs and fees</b>.</p>
+<ul><li>Individuals: credit cards, mortgages, identity theft protection, credit score monitoring.</li>
+<li>Businesses: loans, lines of credit, automated secure transactions.</li>
+<li>Investors: portfolio management, real-time securities settlement.</li>
+<li>Example: Equitable Bank's all-digital EQ Bank platform.</li></ul>
+<h4>Recent trends</h4>
+<p><b>Private equity is growing.</b> Tech value creation increasingly happens in private markets; leading AI firms raise billions without going public. Deep pools of PE/VC money delay IPOs, so private investors capture more of the growth and new public shareholders may get less upside. Example: SpaceX private round in 2023 at $80, IPO price $135.</p>
+<p><b>Risk of a debt crisis.</b> Global debt ≈ 235% of world GDP; public debt ≈ 94%. Cheap old debt must be refinanced at higher rates while governments face competing demands (defence, aging populations, infrastructure, AI, climate). Large deficits in the USA, Japan and France make it systemic. More debt → higher rates → higher financing costs, weaker growth, higher default risk. It's a <b>debt sustainability</b> problem rather than an imminent crash.</p>
+</div>
+<div class="summary"><div class="label">Summary</div><p>Capital flows from savers to investors directly, through investment bankers, or through intermediaries like banks. Its price, the cost of money, depends on production opportunities, time preference, risk and inflation, and is pushed around by central banks, government deficits, the business cycle and trade. Know the three market splits (money/capital, primary/secondary, private/public) and who trades in each.</p></div>
+</div>
+</section>
+
+<!-- ================= CH 2 ================= -->
+<section class="page" id="ch2" data-tab="Ch 2 · Statements &amp; FCF" hidden>
+<div class="chap">Chapter 2 · Quick review</div>
+<h2>Financial statements, cash flow and FCF</h2>
+<p class="lede">You already know the FCF mechanics, so this tab is a fast recap of the definitions and the theory questions that go with them.</p>
+<div class="outline"><div class="label">Concept outline</div>
+<ul class="tree">
+ <li class="has open"><span class="node">4 financial statements (IFRS / ASPE)</span><ul>
+  <li><span class="node">BS: snapshot; historic cost</span></li>
+  <li><span class="node">IS: accrual basis; non-cash items</span></li>
+  <li><span class="node">SCF: operating, investing, financing</span></li></ul></li>
+ <li class="has open"><span class="node">Profit measures</span><ul>
+  <li><span class="node">EBIT, EBITDA, NCF = NI + DA</span></li></ul></li>
+ <li class="has"><span class="node">FCF building blocks</span><ul>
+  <li><span class="node">Operating vs non-operating assets</span></li>
+  <li><span class="node">NOWC → TNOC → NOPAT → FCF</span></li></ul></li>
+ <li><span class="node">ROIC vs WACC = value created?</span></li>
+</ul></div>
+<div class="cornell">
+<aside class="cues"><div class="label">Cues</div><ol>
+<li>Name the 4 financial statements.</li>
+<li>2 main weaknesses of the balance sheet?</li>
+<li>Why is net income ≠ cash flow?</li>
+<li>NCF vs FCF: what's the difference?</li>
+<li>Which items are operating current liabilities, and why "spontaneous"?</li>
+<li>Is negative FCF always bad?</li>
+<li>When does a firm create value (ROIC test)?</li>
+</ol></aside>
+<div class="notes">
+<h4>Statements and standards</h4>
+<p>The 4 statements: <b>Statement of Financial Position</b> (balance sheet), <b>Statement of Profit and Loss and OCI</b> (income statement), <b>Statement of Changes in Equity</b>, <b>Statement of Cash Flows</b>. In Canada: <span class="key-term">IFRS</span>. Private companies may use the simpler <span class="key-term">ASPE</span>. A private firm might still choose IFRS if it plans to go public or its lenders/investors want comparable statements.</p>
+<h4>Balance sheet</h4>
+<p>A <b>snapshot at one moment</b>. Assets − Liabilities = Equity; equity is a <b>residual</b> claim (behind debt holders). Assets are listed by liquidity; liabilities by how soon they're due.</p>
+<div class="trap"><b>Weaknesses:</b> assets at <b>historic cost</b>, not market value; valuable <b>intangibles</b> (management, reputation, talent) don't appear at all.</div>
+<h4>Income statement</h4>
+<p>Performance <b>over a period</b>, on an <span class="key-term">accrual basis</span> (matching principle), so timing differs from cash. IFRS adds <span class="key-term">Other Comprehensive Income (OCI)</span>: unrealized gains/losses on investments, derivatives, FX hedges, recorded separately in equity. Non-cash items: depreciation/amortization, bad debt expense, options expense, gains/losses on asset sales.</p>
+<div class="formula">EBIT (operating income) = profit before interest &amp; taxes      Acme 2023: 21.5
+EBITDA = EBIT + Depreciation &amp; Amortization                 Acme 2023: 22.7
+Net Cash Flow (NCF) = NI + DA                               Acme 2023: 13.0</div>
+<p><span class="key-term">Net cash flow</span> is a rough profit measure if the firm never replaced worn-out assets. It is <b>not</b> FCF.</p>
+<h4>Statement of cash flows (interpret it)</h4>
+<p>Acme 2023: operating <b>+10.4</b> (operations generate cash), investing <b>(15.1)</b> (buying fixed assets and STI), financing <b>+4.7</b> (capital raised to cover the gap). Net change 0. The operating section matters most for a healthy firm.</p>
+<h4>FCF recap</h4>
+<div class="tbl"><table>
+<tr><th>Bucket</th><th>Items</th></tr>
+<tr><td>Operating current assets</td><td>Cash, A/R, inventory</td></tr>
+<tr><td>Non-operating assets</td><td>Short-term investments ("excess")</td></tr>
+<tr><td><span class="key-term">Operating current liabilities</span></td><td>A/P, accruals: <b>spontaneous</b>, they grow automatically with sales and cost no return to investors</td></tr>
+<tr><td><span class="key-term">Investor-supplied capital</span></td><td>ST bank loans/notes, LT debt, equity (these investors require a return)</td></tr></table></div>
+<div class="formula">NOWC  = Operating CA − Operating CL
+TNOC  = NOWC + Operating long-term assets
+NOPAT = EBIT(1 − T)
+FCF   = NOPAT − Net investment in TNOC (TNOC this yr − TNOC last yr)
+ROIC  = NOPAT / TNOC
+Acme 2023: FCF = 16.3 − 13.8 = 2.5;  ROIC = 16.3/98.7 = 16.5% &gt; 10% WACC → value created</div>
+<p>Negative FCF is not automatically bad: a growing firm investing in assets that raise future FCF can show negative FCF today (like buying a condo instead of renting).</p>
+<p>FCF is used to: pay <b>after-tax</b> interest, repay/raise debt principal, pay dividends, buy back/issue stock, and buy/sell short-term investments.</p>
+</div>
+<div class="summary"><div class="label">Summary</div><p>Accounting profit isn't cash: the income statement uses accruals and the balance sheet uses historic cost. FCF strips the statements down to operating items to show the cash truly available to all investors, and ROIC above WACC means the firm created value.</p></div>
+</div>
+</section>
+
+<!-- ================= CH 3 RATIOS ================= -->
+<section class="page" id="ch3a" data-tab="Ch 3 · Ratios" hidden>
+<div class="chap">Chapter 3 · Part A · Focus area</div>
+<h2>Financial ratios, by category</h2>
+<p class="lede">Every ratio from your formula sheet, with the Ellington Ltd. 2025 answer and what a high or low value means. All figures in $000s unless noted.</p>
+<div class="outline"><div class="label">Concept outline</div>
+<ul class="tree">
+ <li class="has open"><span class="node">5 performance perspectives</span><ul>
+  <li><span class="node">Liquidity: pay short-term bills?</span></li>
+  <li><span class="node">Productivity: assets used well?</span></li>
+  <li><span class="node">Profitability: enough profit?</span></li>
+  <li><span class="node">Leverage: how much debt risk?</span></li>
+  <li><span class="node">Valuation: what investors pay</span></li></ul></li>
+ <li class="has"><span class="node">Who cares about what</span><ul>
+  <li><span class="node">Suppliers/banks: liquidity, leverage</span></li>
+  <li><span class="node">Shareholders: profitability, valuation, leverage</span></li>
+  <li><span class="node">LT creditors: leverage, liquidity</span></li>
+  <li><span class="node">Management: everything</span></li></ul></li>
+</ul></div>
+<div class="cornell">
+<aside class="cues"><div class="label">Cues</div><ol>
+<li>Which perspective do short-term lenders care about most?</li>
+<li>CR rising but QR falling. What does that suggest?</li>
+<li>Can the current ratio be too high?</li>
+<li>Which turnover uses COGS instead of sales?</li>
+<li>Why does EBITDA coverage add lease payments to top and bottom?</li>
+<li>BEP vs ROA: what's the difference?</li>
+<li>Why might a P/E be very high?</li>
+<li>Growth firm vs mature firm: dividend yield?</li>
+</ol></aside>
+<div class="notes">
+<h4>The five perspectives</h4>
+<div class="tbl"><table>
+<tr><th>Perspective</th><th>Question</th><th>Who cares most</th></tr>
+<tr><td><span class="key-term">Liquidity</span></td><td>Can it meet sudden cash needs and short-term obligations?</td><td>Suppliers, banks (ST lenders), LT creditors</td></tr>
+<tr><td><span class="key-term">Productivity / asset management</span></td><td>Is it generating enough sales from its assets?</td><td>Management</td></tr>
+<tr><td><span class="key-term">Profitability</span></td><td>Enough profit vs sales and invested capital?</td><td>Shareholders, management</td></tr>
+<tr><td><span class="key-term">Leverage</span></td><td>How much debt and financial risk?</td><td>Everyone, especially lenders</td></tr>
+<tr><td><span class="key-term">Valuation</span></td><td>What value do investors assign? (easy for public firms, hard for private)</td><td>Shareholders, management</td></tr></table></div>
+
+<h4>Ellington Ltd. 2025 data</h4>
+<p>Cash 98 · A/R 188 · Inventory 422 · CA 708 · Net FA 2,880 · TA 3,588 · A/P 344 · ST bank loans 196 · CL 540 · LT debt 457 · Equity 2,591 · Sales 2,311 · COGS 1,344 (includes 25 lease payments) · Depreciation 276 · EBIT 691 · Interest 141 · Taxes 187 · NI 363 · Dividends 121 · Shares 52,500 · Price $51.</p>
+
+<h4>Liquidity</h4>
+<div class="tbl"><table>
+<tr><th>Ratio</th><th>Formula</th><th class="n">Ellington</th></tr>
+<tr><td><span class="key-term">Current ratio (CR)</span></td><td>CA / CL</td><td class="n">708/540 = 1.31×</td></tr>
+<tr><td><span class="key-term">Quick ratio (QR)</span></td><td>(CA − Inventory) / CL</td><td class="n">286/540 = 0.53×</td></tr></table></div>
+<ul><li>Low CR vs industry → possible liquidity shortage, future cash problems.</li>
+<li><b>Too high</b> CR → over-investment in current assets and/or not using trade credit or short-term borrowing.</li>
+<li>CR rising + QR falling → inventory is piling up / turning over slower.</li></ul>
+
+<h4>Productivity (asset management)</h4>
+<div class="tbl"><table>
+<tr><th>Ratio</th><th>Formula</th><th class="n">Ellington</th></tr>
+<tr><td><span class="key-term">Inventory turnover (ITO)</span></td><td>COGS / Inventory</td><td class="n">1,344/422 = 3.18×</td></tr>
+<tr><td><span class="key-term">Inventory conversion period (ICP)</span></td><td>Inventory / (COGS/365)</td><td class="n">422/3.682 = 114.6 days</td></tr>
+<tr><td><span class="key-term">Days sales outstanding (DSO / ACP / RCP)</span></td><td>A/R / (Sales/365)</td><td class="n">188/6.332 = 29.7 days</td></tr>
+<tr><td><span class="key-term">Average payables period (APP / PDP)</span></td><td>A/P / (COGS/365)</td><td class="n">344/3.682 = 93.4 days</td></tr>
+<tr><td><span class="key-term">Fixed asset turnover (FAT)</span></td><td>Sales / Net fixed assets</td><td class="n">2,311/2,880 = 0.80×</td></tr>
+<tr><td><span class="key-term">Total asset turnover (TAT)</span></td><td>Sales / Total assets</td><td class="n">2,311/3,588 = 0.644×</td></tr></table></div>
+<p>Want <b>high</b> asset turnovers and a <b>low</b> payables turnover (i.e. long APP). But excessively high turnover can mean unsustainable operations or under-investment; very low turnover means too many assets or weak management. Slides use year-end balances (averages are sometimes used for BS items).</p>
+<div class="trap"><b>Trap:</b> ITO, ICP and APP use <b>COGS</b>. DSO, FAT and TAT use <b>Sales</b>.</div>
+
+<h4>Profitability</h4>
+<div class="tbl"><table>
+<tr><th>Ratio</th><th>Formula</th><th class="n">Ellington</th></tr>
+<tr><td><span class="key-term">Net profit margin (NPM)</span></td><td>NIATCS / Sales</td><td class="n">363/2,311 = 15.71%</td></tr>
+<tr><td><span class="key-term">Gross profit margin (GPM)</span></td><td>(Sales − COGS) / Sales</td><td class="n">967/2,311 = 41.84%</td></tr>
+<tr><td><span class="key-term">Operating profit margin (OPM)</span></td><td>EBIT / Sales</td><td class="n">691/2,311 = 29.90%</td></tr>
+<tr><td><span class="key-term">Basic earning power (BEP)</span></td><td>EBIT / Total assets</td><td class="n">691/3,588 = 19.26%</td></tr>
+<tr><td><span class="key-term">Return on assets (ROA)</span></td><td>NIATCS / Total assets</td><td class="n">363/3,588 = 10.12%</td></tr>
+<tr><td><span class="key-term">Return on equity (ROE)</span></td><td>NIATCS / Common equity</td><td class="n">363/2,591 = 14.01%</td></tr>
+<tr><td><span class="key-term">ROIC</span></td><td>NOPAT / TNOC</td><td class="n">456/3,244 = 14.06%</td></tr></table></div>
+<p><span class="key-term">NIATCS</span> = net income available to common shareholders = NI − preferred dividends. <b>BEP</b> shows the earning power of assets <b>before taxes and leverage</b>, so it lets you compare firms with different debt and tax situations; ROA is after interest and tax.</p>
+<p>ROIC work: tax rate T = 187/550 = 34%; NOPAT = 691(1 − 0.34) = 456; TNOC = (708 − 344) + 2,880 = 3,244 (bank loans are investor capital, not operating liabilities).</p>
+<p>Higher is better. Low profitability → poor cost control or a sales mix tilted to low-margin products. Big swings in GPM year to year → possible inventory valuation problems.</p>
+
+<h4>Leverage (debt management)</h4>
+<div class="tbl"><table>
+<tr><th>Ratio</th><th>Formula</th><th class="n">Ellington</th></tr>
+<tr><td><span class="key-term">Debt ratio (DR)</span></td><td>Total interest-bearing debt / TA</td><td class="n">(196+457)/3,588 = 18.2%</td></tr>
+<tr><td><span class="key-term">Debt-to-equity</span></td><td>Total debt / Equity</td><td class="n">653/2,591 = 0.25</td></tr>
+<tr><td><span class="key-term">Equity multiplier (EM)</span></td><td>TA / Equity</td><td class="n">3,588/2,591 = 1.385</td></tr>
+<tr><td><span class="key-term">Times interest earned (TIE)</span></td><td>EBIT / Interest</td><td class="n">691/141 = 4.9×</td></tr>
+<tr><td><span class="key-term">EBITDA coverage</span></td><td>(EBITDA + Lease pmts) / (Interest + Loan principal pmts + Lease pmts)</td><td class="n">(691+276+25)/(141+0+25) = 6.0×</td></tr></table></div>
+<p>EBITDA coverage is a broader <b>cash</b> test: it adds back lease payments on top because they were already deducted (inside COGS) and must also be paid, so they go on the bottom too. Principal payments = sinking fund payments (none here).</p>
+<p>Too much debt → poor credit ratings and higher required returns on debt and equity. Too little debt → under-levered, value may not be maximized. (Teck debt ratio 25.5%, CN Rail 51%.)</p>
+<div class="trap"><b>Trap:</b> the formula sheet shows DR = 1 − 1/EM. That only holds if <b>all</b> liabilities are debt. For Ellington, 1 − 1/1.385 = 27.8%, not 18.2%, because A/P isn't interest-bearing debt. Use D/TA unless the question says otherwise.</div>
+
+<h4>Valuation (market) ratios</h4>
+<div class="tbl"><table>
+<tr><th>Ratio</th><th>Formula</th><th class="n">Ellington</th></tr>
+<tr><td><span class="key-term">EPS</span></td><td>NIATCS / shares</td><td class="n">363,000/52,500 = $6.91</td></tr>
+<tr><td><span class="key-term">BVPS</span></td><td>Common equity / shares</td><td class="n">2,591,000/52,500 = $49.35</td></tr>
+<tr><td><span class="key-term">CFPS</span></td><td>Net CF (NI + DA) / shares</td><td class="n">639,000/52,500 = $12.17</td></tr>
+<tr><td><span class="key-term">P/E</span></td><td>Price / EPS</td><td class="n">51/6.91 = 7.38×</td></tr>
+<tr><td><span class="key-term">P/CF</span></td><td>Price / CFPS</td><td class="n">51/12.17 = 4.2×</td></tr>
+<tr><td><span class="key-term">Market-to-book (M/B)</span></td><td>Price / BVPS</td><td class="n">51/49.35 = 1.033×</td></tr>
+<tr><td><span class="key-term">Dividend yield (DY)</span></td><td>DPS / Price</td><td class="n">2.30/51 = 4.51%</td></tr>
+<tr><td><span class="key-term">Dividend payout ratio (DPR)</span></td><td>Dividends / NI</td><td class="n">121/363 = 33.3%</td></tr></table></div>
+<div class="trap"><b>Trap:</b> CFPS uses <b>Net CF = NI + DA</b>, not operating cash flow (NOPAT + DA).</div>
+<p>A high P/E can mean unusually low earnings and/or high expected growth (optimistic investors; Palantir ≈ 150×). High-growth firms reinvest and pay little → low yield (Palantir 0%). Slow-growth stable firms pay more out → higher yield (RBC 2.28%, payout 43%).</p>
+</div>
+<div class="summary"><div class="label">Summary</div><p>Ratios fall into five groups: liquidity, productivity, profitability, leverage and valuation, and different users weight them differently. For each one, know the formula, which line items it uses (COGS vs sales trips people up), and what "too high" or "too low" signals.</p></div>
+</div>
+</section>
+
+<!-- ================= CH 3 DUPONT ================= -->
+<section class="page" id="ch3b" data-tab="Ch 3 · DuPont &amp; Analysis" hidden>
+<div class="chap">Chapter 3 · Part B · Focus area</div>
+<h2>DuPont, common-size and the limits of ratios</h2>
+<p class="lede">How to break ROE into its three drivers and explain <i>why</i> it changed, plus the other analysis tools and their weaknesses.</p>
+<div class="outline"><div class="label">Concept outline</div>
+<ul class="tree">
+ <li class="has open"><span class="node">FSA tools</span><ul>
+  <li><span class="node">Start with the statement of cash flows</span></li>
+  <li><span class="node">Comparative, common-size, ratios</span></li>
+  <li><span class="node">Inward (trend) vs outward (industry)</span></li></ul></li>
+ <li class="has open"><span class="node">DuPont: ROE = NPM × TAT × EM</span><ul>
+  <li><span class="node">Profitability × productivity × leverage</span></li>
+  <li><span class="node">ROA = NPM × TAT</span></li>
+  <li><span class="node">ROE = ROA × EM</span></li></ul></li>
+ <li class="has"><span class="node">Common-size &amp; % change</span><ul>
+  <li><span class="node">BS ÷ total assets; IS ÷ sales</span></li></ul></li>
+ <li><span class="node">Limitations of FSA</span></li>
+</ul></div>
+<div class="cornell">
+<aside class="cues"><div class="label">Cues</div><ol>
+<li>What's the first statement an analyst looks at?</li>
+<li>Inward vs outward approach? Why is outward risky?</li>
+<li>Write the 3-part DuPont equation.</li>
+<li>Which perspective does each DuPont ratio measure?</li>
+<li>Why did Ellington's ROE rise from 2024 to 2025?</li>
+<li>What do you divide by in a common-size BS? IS?</li>
+<li>List 4 limitations of ratio analysis.</li>
+</ol></aside>
+<div class="notes">
+<h4>Where analysis starts</h4>
+<p><span class="key-term">Financial statement analysis (FSA)</span> evaluates and compares a firm's position and performance and helps forecast earnings, dividends and FCF (S&amp;P Capital IQ is the pro database; BCIT library has it).</p>
+<p>Step 1 is always the <b>statement of cash flows</b>: Are operations producing or using cash, and what's the trend? Is a lot of cash going to investing? Is financing bringing cash in or paying investors, and which type (debt or equity)? Step 2: ratios and FCF, and their trends.</p>
+<p>Tools: <span class="key-term">comparative statements</span> (this year vs past years), <span class="key-term">common-size statements</span>, and <span class="key-term">financial ratios</span>.</p>
+<ul><li><span class="key-term">Inward approach</span>: compare the firm to its own past (<span class="key-term">trend analysis</span>).</li>
+<li><span class="key-term">Outward approach</span>: compare to other firms in the industry. Use with caution: regional and size differences, different accounting policies and poor industry categories make true comparables hard to find.</li></ul>
+
+<h4>DuPont analysis</h4>
+<p>The <span class="key-term">DuPont system</span> links three perspectives (profitability, productivity, leverage) to explain the firm's financial strategy through ROE.</p>
+<div class="formula">ROE = NI/Sales  ×  Sales/TA  ×  TA/Equity
+    = Net profit margin × Total asset turnover × Equity multiplier
+    = (profitability)   × (productivity)       × (leverage)
+
+ROA = NPM × TAT              ROE = ROA × EM</div>
+<ul><li><b>NPM</b>: cents of after-tax profit per $1 of sales.</li>
+<li><b>TAT</b>: dollars of sales per $1 of assets.</li>
+<li><b>EM</b>: dollars of assets per $1 of equity. Higher EM = more debt financing = more risk.</li></ul>
+<div class="tbl"><table>
+<tr><th>Ellington</th><th class="n">ROE</th><th class="n">NPM</th><th class="n">TAT</th><th class="n">EM</th></tr>
+<tr><td>2025</td><td class="n">14.01%</td><td class="n">15.71%</td><td class="n">0.64</td><td class="n">1.385</td></tr>
+<tr><td>2024</td><td class="n">10.44%</td><td class="n">11.57%</td><td class="n">0.62</td><td class="n">1.467</td></tr></table></div>
+<p><b>How to explain the change:</b> ROE rose by about 3.6 points. The driver is <b>profitability</b> (NPM up 4.1 points, helped by COGS falling from 62.4% to 58.2% of sales). Asset use improved slightly (TAT 0.62 → 0.64). Leverage actually <b>fell</b> (EM 1.467 → 1.385, as LT debt was paid down), so the higher ROE came from better operations, not from taking on more debt risk. That's a "good quality" ROE increase.</p>
+<div class="trap"><b>Exam technique:</b> when asked to explain ROE, name the component that moved the most, say whether it's profitability, productivity or leverage, and point out whether the ROE gain came with more risk (EM up) or not.</div>
+<p>Quick check of 2024: NPM = 240/2,075 = 11.57%; TAT = 2,075/3,373 = 0.615; EM = 3,373/2,299 = 1.467; product ≈ 10.44%.</p>
+
+<h4>Common-size and percent-change analysis</h4>
+<ul><li><span class="key-term">Common-size statements</span> (<span class="key-term">vertical analysis</span>): balance sheet items ÷ <b>total assets</b>; income statement items ÷ <b>sales</b>.</li>
+<li><span class="key-term">Percent change analysis</span>: % growth in each item over time.</li>
+<li><span class="key-term">Trend analysis</span>: plot a ratio over several years (e.g. Ellington ROE 2019–2023).</li></ul>
+<p>Ellington examples: A/R rose from 4.9% to 5.2% of total assets; COGS fell from 62.4% to 58.2% of sales; LT debt fell from 15.7% to 12.7% of assets.</p>
+
+<h4>Limitations of FSA</h4>
+<ul><li>Balance sheet uses <b>historic cost</b>, not market value, so ratios may mean little and may not reflect cash-generating ability.</li>
+<li><b>Different accounting policies</b> make comparisons hard.</li>
+<li><span class="key-term">Window dressing</span>: firms make statements look better (e.g. around year-end).</li>
+<li>Highly <b>summarized</b> statements with little detail.</li>
+<li>High <b>inflation or deflation</b> distorts results.</li>
+<li><b>Conglomerates</b> span many industries, so industry comparisons are hard.</li></ul>
+</div>
+<div class="summary"><div class="label">Summary</div><p>DuPont splits ROE into net profit margin, total asset turnover and the equity multiplier so you can see whether returns come from profit, efficient asset use or leverage. Ellington's ROE rose because margins improved while leverage fell. Ratios are only as good as the accounting numbers behind them, so know the main limitations.</p></div>
+</div>
+</section>
+
+<!-- ================= CH 4 CORE ================= -->
+<section class="page" id="ch4a" data-tab="Ch 4 · TVM Core" hidden>
+<div class="chap">Chapter 4 · Part A</div>
+<h2>Time value of money: lump sums, annuities, perpetuities</h2>
+<p class="lede">Each slide example with the formula and the HP 10bII+ keystrokes. <kbd class="sh">■</kbd> = the orange shift key. Assume <kbd>1</kbd> <kbd class="sh">■</kbd> <kbd>P/YR</kbd> and END mode unless stated.</p>
+<div class="outline"><div class="label">Concept outline</div>
+<ul class="tree">
+ <li class="has open"><span class="node">Why $1 today &gt; $1 later</span><ul>
+  <li><span class="node">Risks: default, inflation</span></li>
+  <li><span class="node">Sacrifices: delayed consumption, lost interest</span></li></ul></li>
+ <li class="has open"><span class="node">Lump sums</span><ul>
+  <li><span class="node">Compound vs simple interest</span></li></ul></li>
+ <li class="has"><span class="node">Annuities</span><ul>
+  <li><span class="node">Ordinary (END) vs due (BGN)</span></li>
+  <li><span class="node">Due = ordinary × (1 + I)</span></li></ul></li>
+ <li class="has"><span class="node">Perpetuities</span><ul>
+  <li><span class="node">Constant, delayed, growing</span></li></ul></li>
+ <li class="has"><span class="node">Uneven cash flows</span><ul>
+  <li><span class="node">CF keys → NPV</span></li>
+  <li><span class="node">Terminal value added to last CF</span></li></ul></li>
+ <li><span class="node">Solve for N, I or PMT</span></li>
+</ul></div>
+<div class="cornell">
+<aside class="cues"><div class="label">Cues</div><ol>
+<li>2 risks and 2 sacrifices of receiving money later?</li>
+<li>Simple vs compound interest: when is simple used?</li>
+<li>Ordinary annuity vs annuity due?</li>
+<li>PV of a growing perpetuity: which cash flow goes on top?</li>
+<li>Delayed perpetuity starting at t=3: discount back how many years?</li>
+<li>How do you add a terminal value in the CF keys?</li>
+<li>Why must one TVM input be negative?</li>
+</ol></aside>
+<div class="notes">
+<h4>Why money has time value</h4>
+<p>Waiting a year for $100 means taking <b>risks</b> (<span class="key-term">default risk</span>; <b>inflation</b> cuts purchasing power) and making <b>sacrifices</b> (<b>delayed consumption</b>; can't invest it and earn interest). That's an <span class="key-term">opportunity cost</span>, so you'd only wait if paid interest. At 4%, $100 today = $104 in a year.</p>
+<p><b>Timeline rules:</b> t = 0 is today; t = 1 is end of period 1 / start of period 2; outflows negative, inflows positive. Always draw one first.</p>
+
+<h4>Future value of a lump sum</h4>
+<div class="formula">Compound: FV_N = PV(1 + I)^N        $1,000 at 10% for 3 yrs = $1,331
+Simple:   FV_N = PV(1 + N·I)        $1,000 at 10% for 3 yrs = $1,300</div>
+<p>The $31 difference is <span class="key-term">compound interest</span> (interest on interest). The gap grows with time ($3,727.5 after 20 years). Simple interest is used only for short periods (≤ 1 year). <b>Assume compound unless told otherwise.</b></p>
+<div class="keys"><kbd>3</kbd><kbd>N</kbd><kbd>10</kbd><kbd>I/YR</kbd><kbd>1000</kbd><kbd>+/-</kbd><kbd>PV</kbd><kbd>0</kbd><kbd>PMT</kbd><kbd>FV</kbd><span class="arrow">→</span><span class="ans">1,331.00</span></div>
+
+<h4>Present value of a lump sum</h4>
+<div class="formula">PV_0 = FV_N / (1 + I)^N              $1,000 in 3 yrs at 10% = $751.31</div>
+<div class="keys"><kbd>3</kbd><kbd>N</kbd><kbd>10</kbd><kbd>I/YR</kbd><kbd>0</kbd><kbd>PMT</kbd><kbd>1000</kbd><kbd>FV</kbd><kbd>PV</kbd><span class="arrow">→</span><span class="ans">−751.31</span></div>
+
+<h4>Annuities</h4>
+<p><span class="key-term">Ordinary annuity</span>: equal payments at the <b>END</b> of each period, for a limited time. <span class="key-term">Annuity due</span>: equal payments at the <b>BEGINNING</b> of each period.</p>
+<div class="formula">FVA_ord = PMT/I × [(1+I)^N − 1]          FVA_due = FVA_ord × (1+I)
+PVA_ord = PMT/I × [1 − (1+I)^−N]          PVA_due = PVA_ord × (1+I)</div>
+<div class="tbl"><table><tr><th>$1,000/yr, 3 yrs, 10%</th><th class="n">Ordinary</th><th class="n">Due</th></tr>
+<tr><td>Future value</td><td class="n">3,310</td><td class="n">3,641</td></tr>
+<tr><td>Present value</td><td class="n">2,486.85</td><td class="n">2,735.54</td></tr></table></div>
+<div class="keys"><span>FV ordinary:</span><kbd>3</kbd><kbd>N</kbd><kbd>10</kbd><kbd>I/YR</kbd><kbd>0</kbd><kbd>PV</kbd><kbd>1000</kbd><kbd>+/-</kbd><kbd>PMT</kbd><kbd>FV</kbd><span class="arrow">→</span><span class="ans">3,310</span></div>
+<div class="keys"><span>FV due:</span><kbd class="sh">■</kbd><kbd>BEG/END</kbd><span>(BEGIN shows)</span><kbd>FV</kbd><span class="arrow">→</span><span class="ans">3,641</span><span>then</span><kbd class="sh">■</kbd><kbd>BEG/END</kbd><span>back to END</span></div>
+<div class="keys"><span>PV ordinary:</span><kbd>3</kbd><kbd>N</kbd><kbd>10</kbd><kbd>I/YR</kbd><kbd>1000</kbd><kbd>PMT</kbd><kbd>0</kbd><kbd>FV</kbd><kbd>PV</kbd><span class="arrow">→</span><span class="ans">−2,486.85</span></div>
+<div class="trap"><b>Slide typo:</b> Example 8's conclusion says "$2,487"; for the annuity due it should read <b>$2,736</b>.</div>
+
+<h4>Perpetuities</h4>
+<div class="formula">Constant:  PV = PMT / I                       $1,000/0.10 = $10,000
+Growing:   PV at time 0 = PMT at time 1 / (I − g)
+General:   PV at time N = PMT at time N+1 / (I − g)</div>
+<p><b>Delayed perpetuity</b> (first $1,000 at t = 3): PV<sub>2</sub> = 1,000/0.10 = 10,000 (the formula gives value <b>one period before</b> the first payment), then discount 2 years: 10,000/1.10² = <span class="ans">$8,265</span>.</p>
+<div class="keys"><kbd>2</kbd><kbd>N</kbd><kbd>10</kbd><kbd>I/YR</kbd><kbd>0</kbd><kbd>PMT</kbd><kbd>10000</kbd><kbd>FV</kbd><kbd>PV</kbd><span class="arrow">→</span><span class="ans">−8,264.46</span></div>
+<p><b>Growing perpetuity</b> (Ex. 11: $1,000 at t = 1, then +3%/yr — the slide's math uses CF<sub>2</sub> = 1,030): PV<sub>1</sub> = 1,030/(0.10 − 0.03) = 14,714.3; PV<sub>0</sub> = 14,714.3/1.10 = <span class="ans">$13,376.6</span>.</p>
+<div class="trap"><b>Trap:</b> in PV = CF/(I − g), the CF on top is the <b>next</b> cash flow (already grown by g), and the answer is the value one period <b>before</b> that cash flow. The formula needs I &gt; g.</div>
+
+<h4>Uneven cash flows (CF keys)</h4>
+<p>Ex. 12: $500, $700, $900, $1,100 at t = 1–4, 10%.</p>
+<div class="keys"><kbd class="sh">■</kbd><kbd>C ALL</kbd><kbd>0</kbd><kbd>CFj</kbd><kbd>500</kbd><kbd>CFj</kbd><kbd>700</kbd><kbd>CFj</kbd><kbd>900</kbd><kbd>CFj</kbd><kbd>1100</kbd><kbd>CFj</kbd><kbd>10</kbd><kbd>I/YR</kbd><kbd class="sh">■</kbd><kbd>NPV</kbd><span class="arrow">→</span><span class="ans">2,460.56</span></div>
+<p>FV at t = 4: take the PV to FV. <kbd>4</kbd><kbd>N</kbd> <kbd>10</kbd><kbd>I/YR</kbd> <kbd>2460.56</kbd><kbd>+/-</kbd><kbd>PV</kbd> <kbd>0</kbd><kbd>PMT</kbd> <kbd>FV</kbd> → <span class="ans">3,602.5</span>. (The slide says "time 3" in one line; the answer is at time 4.)</p>
+<p>For repeated cash flows, enter the amount, <kbd>CFj</kbd>, then the count <kbd class="sh">■</kbd><kbd>Nj</kbd>.</p>
+<p><b>Uneven + growing terminal value</b> (Ex. 13: after year 4, +3% forever): PV<sub>4</sub> = 1,100(1.03)/(0.10 − 0.03) = 16,185.7. Add it to the year-4 cash flow: CF<sub>4</sub> = 1,100 + 16,185.7 = 17,285.7. NPV → <span class="ans">$13,515.6</span>.</p>
+
+<h4>Solving for N, I or PMT</h4>
+<p>Every TVM problem uses 4 of the 5 variables (N, I, PV, PMT, FV). Give it the four, solve the fifth.</p>
+<ul>
+<li><b>Ex. 14 (N):</b> $3,000 doubles at 8%. <kbd>8</kbd><kbd>I/YR</kbd> <kbd>3000</kbd><kbd>+/-</kbd><kbd>PV</kbd> <kbd>0</kbd><kbd>PMT</kbd> <kbd>6000</kbd><kbd>FV</kbd> <kbd>N</kbd> → <span class="ans">9.01 years</span>. By logs: t = ln 2 / ln 1.08 (the slide writes "ln 0.08", a typo).</li>
+<li><b>Ex. 15 (I):</b> bought at $35, sold at $50 four years later. <kbd>4</kbd><kbd>N</kbd> <kbd>35</kbd><kbd>+/-</kbd><kbd>PV</kbd> <kbd>0</kbd><kbd>PMT</kbd> <kbd>50</kbd><kbd>FV</kbd> <kbd>I/YR</kbd> → <span class="ans">9.33%</span>.</li>
+<li><b>Ex. 16 (PMT, BGN):</b> have $2,000 at 6%, need $10,000 in 5 years, 5 deposits starting today. BGN mode: <kbd>5</kbd><kbd>N</kbd> <kbd>6</kbd><kbd>I/YR</kbd> <kbd>2000</kbd><kbd>+/-</kbd><kbd>PV</kbd> <kbd>10000</kbd><kbd>FV</kbd> <kbd>PMT</kbd> → <span class="ans">−1,225.63</span>.</li></ul>
+<div class="trap"><b>Sign rule:</b> money you pay out and money you get back must have opposite signs, or the calculator shows an error (no solution).</div>
+</div>
+<div class="summary"><div class="label">Summary</div><p>A dollar today is worth more than a dollar later because of risk, inflation and lost interest. Compound forward to get FV and discount back to get PV. Annuities due are just ordinary annuities times (1 + I), and a perpetuity formula always gives the value one period before its first payment.</p></div>
+</div>
+</section>
+
+<!-- ================= CH 4 RATES ================= -->
+<section class="page" id="ch4b" data-tab="Ch 4 · Rates &amp; Loans" hidden>
+<div class="chap">Chapter 4 · Part B</div>
+<h2>EAR, loan amortization and growing annuities</h2>
+<p class="lede">Converting between quoted and effective rates, Canadian mortgages, amortization tables and inflation-adjusted retirement income.</p>
+<div class="outline"><div class="label">Concept outline</div>
+<ul class="tree">
+ <li class="has open"><span class="node">Rate terms</span><ul>
+  <li><span class="node">Nominal / APR</span></li>
+  <li><span class="node">Periodic = APR / M</span></li>
+  <li><span class="node">EAR = (1 + APR/M)^M − 1</span></li></ul></li>
+ <li class="has"><span class="node">Loans</span><ul>
+  <li><span class="node">Amortized (blended payments)</span></li>
+  <li><span class="node">Bullet (interest-only) and balloon</span></li>
+  <li><span class="node">Canadian mortgage: semi-annual compounding</span></li></ul></li>
+ <li class="has"><span class="node">Growing annuity</span><ul>
+  <li><span class="node">Real rate = (1+nom)/(1+infl) − 1</span></li></ul></li>
+</ul></div>
+<div class="cornell">
+<aside class="cues"><div class="label">Cues</div><ol>
+<li>APR vs periodic rate vs EAR?</li>
+<li>When is APR = EAR?</li>
+<li>EAR with continuous compounding?</li>
+<li>How are Canadian fixed-rate mortgages compounded?</li>
+<li>Bullet loan vs balloon loan?</li>
+<li>How does the interest share of a payment change over time?</li>
+<li>How do you find the real rate of return?</li>
+</ol></aside>
+<div class="notes">
+<h4>Three rates</h4>
+<ul><li><span class="key-term">Nominal (quoted) rate / APR</span>: what the bank quotes. Ignores compounding; only use it directly if compounding is once a year.</li>
+<li><span class="key-term">Periodic rate</span> = I<sub>NOM</sub> / M (M = compounding periods per year).</li>
+<li><span class="key-term">Effective annual rate (EAR / EFF)</span>: the true annual rate after compounding. Lets you compare APRs with different compounding.</li></ul>
+<div class="formula">EAR = (1 + APR/M)^M − 1          Continuous: EAR = e^APR − 1
+12% compounded monthly: (1 + 0.12/12)^12 − 1 = 12.6825%</div>
+<div class="tbl"><table><tr><th>8% quoted, compounded…</th><th class="n">EAR</th></tr>
+<tr><td>Annually</td><td class="n">8.0000%</td></tr><tr><td>Semi-annually</td><td class="n">8.1600%</td></tr><tr><td>Quarterly</td><td class="n">8.2432%</td></tr><tr><td>Monthly</td><td class="n">8.3000%</td></tr><tr><td>Daily</td><td class="n">8.3278%</td></tr><tr><td>Continuously (upper limit)</td><td class="n">8.3287%</td></tr></table></div>
+<p>More compounding periods → higher EAR. One compounding period per year → APR = EAR.</p>
+<p><b>HP 10bII+ (no C/Y key):</b> NOM% and EFF% use P/YR as the number of compounding periods.</p>
+<div class="keys"><kbd>12</kbd><kbd class="sh">■</kbd><kbd>NOM%</kbd><kbd>12</kbd><kbd class="sh">■</kbd><kbd>P/YR</kbd><kbd class="sh">■</kbd><kbd>EFF%</kbd><span class="arrow">→</span><span class="ans">12.68</span><span>then reset</span><kbd>1</kbd><kbd class="sh">■</kbd><kbd>P/YR</kbd></div>
+
+<h4>Loans</h4>
+<p><span class="key-term">Amortized loans</span> are repaid with fixed <b>blended</b> payments (interest + principal) until the balance is zero. Early payments are mostly interest; as principal is repaid, the interest portion shrinks and the principal portion grows.</p>
+<p>Non-amortized: <span class="key-term">interest-only (bullet) loan</span> — only interest during the term, all principal in one lump sum at maturity. <span class="key-term">Balloon loan</span> — smaller regular payments, leaving a large final "balloon" payment.</p>
+<p>By law, Canadian <b>fixed-rate mortgages compound semi-annually</b>, but payments are usually monthly, so payment and compounding frequencies differ.</p>
+
+<h4>Example 18: $200,000 mortgage, 6% compounded semi-annually, 25 years, monthly payments</h4>
+<p><b>Method B (safest on the HP):</b> find the effective monthly rate by hand, then use P/YR = 1.</p>
+<div class="formula">Monthly rate = (1 + 0.06/2)^(2/12) − 1 = 0.49386%</div>
+<div class="keys"><kbd>1</kbd><kbd class="sh">■</kbd><kbd>P/YR</kbd><kbd>300</kbd><kbd>N</kbd><kbd>0.49386</kbd><kbd>I/YR</kbd><kbd>200000</kbd><kbd>PV</kbd><kbd>0</kbd><kbd>FV</kbd><kbd>PMT</kbd><span class="arrow">→</span><span class="ans">−1,279.61</span></div>
+<p>Getting 0.49386 on the HP: <kbd>1.03</kbd> <kbd class="sh">■</kbd><kbd>y<sup>x</sup></kbd> <kbd>(</kbd><kbd>2</kbd><kbd>÷</kbd><kbd>12</kbd><kbd>)</kbd> <kbd>=</kbd> <kbd>−</kbd> <kbd>1</kbd> <kbd>=</kbd> <kbd>×</kbd> <kbd>100</kbd> <kbd>=</kbd>.</p>
+<p><b>Method A (convert with NOM/EFF):</b> <kbd>6</kbd><kbd class="sh">■</kbd><kbd>NOM%</kbd> <kbd>2</kbd><kbd class="sh">■</kbd><kbd>P/YR</kbd> <kbd class="sh">■</kbd><kbd>EFF%</kbd> (6.09) → <kbd>12</kbd><kbd class="sh">■</kbd><kbd>P/YR</kbd> <kbd class="sh">■</kbd><kbd>NOM%</kbd> (5.9263, which is now also I/YR) → <kbd>300</kbd><kbd>N</kbd> <kbd>200000</kbd><kbd>PV</kbd> <kbd>0</kbd><kbd>FV</kbd> <kbd>PMT</kbd> → −1,279.61. Reset P/YR to 1 afterwards.</p>
+
+<h4>Amortization questions (HP <kbd class="sh">■</kbd><kbd>AMORT</kbd>)</h4>
+<p>With the loan still loaded, enter the first and last payment numbers, press AMORT, then <kbd>=</kbd> cycles <b>PRIN → INT → BAL</b>.</p>
+<div class="tbl"><table><tr><th>Question</th><th>Keys</th><th class="n">Answer</th></tr>
+<tr><td>Balance after year 1</td><td><kbd>1</kbd><kbd>INPUT</kbd><kbd>12</kbd><kbd class="sh">■</kbd><kbd>AMORT</kbd> <kbd>=</kbd><kbd>=</kbd><kbd>=</kbd></td><td class="n">BAL 196,400.61</td></tr>
+<tr><td>Principal in payment 15</td><td><kbd>15</kbd><kbd>INPUT</kbd><kbd>15</kbd><kbd class="sh">■</kbd><kbd>AMORT</kbd> <kbd>=</kbd></td><td class="n">PRIN −312.73</td></tr>
+<tr><td>Principal &amp; interest in year 3</td><td><kbd>25</kbd><kbd>INPUT</kbd><kbd>36</kbd><kbd class="sh">■</kbd><kbd>AMORT</kbd> <kbd>=</kbd><kbd>=</kbd></td><td class="n">PRIN −4,051.15<br>INT −11,304.21</td></tr></table></div>
+<p>Payment 1 is $987.72 interest + $291.89 principal; payment 300 is $6.29 interest + $1,273.32 principal.</p>
+<div class="trap"><b>Exam habit:</b> reset P/YR to 1 (and BEG/END to END) after every problem, or the next answer will be wrong.</div>
+
+<h4>Growing annuity: inflation-adjusted retirement income (Ex. 19)</h4>
+<p>$1,000,000 saved, 20 years, 8% return, 3% inflation, withdrawals at the <b>start</b> of each year that keep the same purchasing power.</p>
+<div class="formula">1 + r_nominal = (1 + r_real)(1 + inflation)
+Real rate = 1.08/1.03 − 1 = 4.85437%</div>
+<div class="keys"><span>BGN:</span><kbd>20</kbd><kbd>N</kbd><kbd>4.85437</kbd><kbd>I/YR</kbd><kbd>1000000</kbd><kbd>+/-</kbd><kbd>PV</kbd><kbd>0</kbd><kbd>FV</kbd><kbd>PMT</kbd><span class="arrow">→</span><span class="ans">75,585.54</span></div>
+<p>First withdrawal today is $75,585.54; next is ×1.03 = $77,853.10, then $80,188.70, … growing 3% a year.</p>
+<p>Formula sheet version: PVA = PMT<sub>1</sub>/(I − g) × [1 − ((1+g)/(1+I))<sup>N</sup>].</p>
+</div>
+<div class="summary"><div class="label">Summary</div><p>Quoted rates hide compounding; the EAR shows the true yearly cost. Canadian mortgages compound semi-annually but pay monthly, so convert to an effective monthly rate first. To find a constant real income, discount at the real rate of return.</p></div>
+</div>
+</section>
+
+<!-- ================= CH 17 POLICY ================= -->
+<section class="page" id="ch17a" data-tab="Ch 17 · WC Policy" hidden>
+<div class="chap">Chapter 17 · Slides 1–11 · Focus area</div>
+<h2>Working capital policies</h2>
+<p class="lede">How much operating working capital to hold, and whether to finance it short- or long-term. Your midterm covers Ch 17 slides 1–15 only: this tab plus the Cash Conversion Cycle tab.</p>
+<div class="outline"><div class="label">Concept outline</div>
+<ul class="tree">
+ <li class="has open"><span class="node">2 questions of WC management</span><ul>
+  <li><span class="node">How much NOWC?</span></li>
+  <li><span class="node">How to finance it?</span></li></ul></li>
+ <li class="has open"><span class="node">NOWC (investment) policies</span><ul>
+  <li><span class="node">Relaxed: low risk, low return</span></li>
+  <li><span class="node">Restricted: high risk, high return</span></li>
+  <li><span class="node">Moderate: in between</span></li></ul></li>
+ <li class="has open"><span class="node">Financing policies</span><ul>
+  <li><span class="node">Permanent vs temporary NOWC</span></li>
+  <li><span class="node">Maturity matching</span></li>
+  <li><span class="node">Aggressive: more ST debt</span></li>
+  <li><span class="node">Conservative: more LT debt</span></li></ul></li>
+</ul></div>
+<div class="cornell">
+<aside class="cues"><div class="label">Cues</div><ol>
+<li>What 2 questions does WC management answer?</li>
+<li>Cash equivalent vs short-term investment?</li>
+<li>Relaxed vs restricted NOWC policy: risk and return?</li>
+<li>What kind of business suits a relaxed policy?</li>
+<li>Temporary vs permanent NOWC: examples?</li>
+<li>What is rollover risk and which policy has the most?</li>
+<li>Which financing policy leaves surplus cash to invest?</li>
+<li>On the slide 8 graphs, where is the LT financing line for each policy?</li>
+</ol></aside>
+<div class="notes">
+<h4>Overview</h4>
+<p><span class="key-term">Working capital management</span> answers: (1) What is the right amount of operating working capital? (2) How should it be financed? It goes beyond finance: logistics, operations, engineering and IT all affect it, because every operating step touches a working capital account.</p>
+<div class="tbl"><table><tr><th>Activity</th><th>Accounts affected</th></tr>
+<tr><td>Purchase raw materials</td><td>Cash, Inventory, Payables</td></tr>
+<tr><td>Produce goods</td><td>Cash, Inventory, Payables, Accruals</td></tr>
+<tr><td>Sell goods</td><td>Cash, Receivables, Inventory</td></tr>
+<tr><td>Collect receivables</td><td>Cash, Receivables</td></tr>
+<tr><td>Pay payables</td><td>Cash, Payables</td></tr></table></div>
+<p><b>Cash</b> = short-term financial assets held to support <b>ongoing operations</b>. <b>Short-term investments</b> = short-term financial assets held for <b>future purposes</b>. Consistent with the Ch 2 FCF/NOWC definitions (may differ from strict accounting). A <span class="key-term">cash equivalent</span> is normally a debt security with <b>&lt; 3 months</b> to maturity; a short-term investment has <b>&gt; 3 months</b>. Both are liquid.</p>
+
+<h4>NOWC policies (how much to hold)</h4>
+<div class="tbl"><table><tr><th>Policy</th><th>What it holds</th><th>Trade-off</th><th>Suits</th></tr>
+<tr><td><span class="key-term">Relaxed</span></td><td>Lots of cash, inventory, A/R; little A/P and accruals</td><td>Fewer stock-outs and lost sales, but lots of NOWC to finance → lower ROI. <b>Low risk, low return</b></td><td>Hard-to-predict demand, long operating cycle, need a cushion (e.g. supermarket)</td></tr>
+<tr><td><span class="key-term">Restricted</span></td><td>Little current assets; lots of A/P and accruals</td><td>Higher risk of stock-outs and lost sales, but less NOWC → higher ROI. <b>High risk, high return</b></td><td>Predictable demand, short operating cycle, tight inventories (utilities, airlines, service firms)</td></tr>
+<tr><td><span class="key-term">Moderate</span></td><td colspan="3">Between the two extremes</td></tr></table></div>
+
+<h4>Temporary vs permanent NOWC</h4>
+<p><span class="key-term">Temporary NOWC</span> rises and falls with seasons (ski or toy manufacturers). <span class="key-term">Permanent NOWC</span> is the base level always needed (heavy equipment maker, not seasonal). Permanent NOWC <b>grows</b> as the business grows.</p>
+
+<h4>Financing policies</h4>
+<ul><li><span class="key-term">Maturity matching ("self-liquidating")</span>, also called the <b>moderate approach</b>: permanent NOWC (and fixed assets) with LT debt/equity; temporary NOWC with ST debt. Match asset life to financing term. You wouldn't fund a 30-year mine with a 1-year loan, or 50 days of inventory with a 5-year loan.</li>
+<li><span class="key-term">Aggressive</span>: ST debt funds all temporary NOWC <b>and some or all permanent NOWC</b>. Might save interest (ST rates are usually lower than LT rates) but high <span class="key-term">rollover risk</span>: the ST loan may not be renewed.</li>
+<li><span class="key-term">Conservative</span>: LT debt funds all permanent NOWC <b>and some or all temporary NOWC</b>. Rollover risk is reduced but interest cost is likely higher, and you need to invest the excess cash when temporary NOWC is at its low point.</li></ul>
+
+<h4>Reading the slide 8 graphs</h4>
+<p>Each graph stacks <b>fixed assets</b> (bottom), the <b>permanent level of current assets</b> (middle, rising as the firm grows) and a wavy line of <b>temporary current assets</b> on top. Long-term financing on the graphs = <b>LT non-spontaneous debt + equity + spontaneous current liabilities</b>.</p>
+<div class="tbl"><table><tr><th>Graph</th><th>Where the long-term financing line sits</th><th>What that means</th></tr>
+<tr><td><b>a. Moderate (maturity matching)</b></td><td>Exactly at the top of permanent current assets</td><td>Everything above the line (the seasonal bumps) is ST debt</td></tr>
+<tr><td><b>b. Relatively aggressive</b></td><td>Dashed line <b>below</b> the permanent level</td><td>ST debt covers the bumps <b>plus</b> part of permanent current assets</td></tr>
+<tr><td><b>c. Conservative</b></td><td>Dashed line <b>above</b> the permanent level, cutting through the bumps</td><td>When needs dip below the line → surplus cash in <b>marketable securities</b>; only the peaks above the line need ST financing</td></tr></table></div>
+
+<h4>Slide 9 example</h4>
+<p>Permanent NOWC $50,000; temporary 0 / 30,000 / 20,000 / 0 (Jan–Apr); total 50,000 / 80,000 / 70,000 / 50,000.</p>
+<div class="tbl"><table><tr><th>Policy</th><th class="n">Jan</th><th class="n">Feb</th><th class="n">Mar</th><th class="n">Apr</th></tr>
+<tr><td><b>Conservative</b> LT debt</td><td class="n">80,000</td><td class="n">80,000</td><td class="n">80,000</td><td class="n">80,000</td></tr>
+<tr><td>… ST debt</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">0</td></tr>
+<tr><td>… cash surplus</td><td class="n">30,000</td><td class="n">0</td><td class="n">10,000</td><td class="n">30,000</td></tr>
+<tr><td><b>Aggressive</b> LT debt</td><td class="n">30,000</td><td class="n">30,000</td><td class="n">30,000</td><td class="n">30,000</td></tr>
+<tr><td>… ST debt</td><td class="n">20,000</td><td class="n">50,000</td><td class="n">40,000</td><td class="n">20,000</td></tr>
+<tr><td>… cash surplus</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">0</td></tr>
+<tr><td><b>Matching</b> (by the definition) LT debt</td><td class="n">50,000</td><td class="n">50,000</td><td class="n">50,000</td><td class="n">50,000</td></tr>
+<tr><td>… ST debt</td><td class="n">0</td><td class="n">30,000</td><td class="n">20,000</td><td class="n">0</td></tr>
+<tr><td><b>Matching</b> as printed on slide 9: ST debt</td><td class="n">25,000</td><td class="n">40,000</td><td class="n">35,000</td><td class="n">25,000</td></tr>
+<tr><td>… LT debt</td><td class="n">25,000</td><td class="n">40,000</td><td class="n">35,000</td><td class="n">25,000</td></tr></table></div>
+<p>How to read the conservative row: LT debt of 80,000 covers the <b>peak</b> (Feb). In other months the firm needs less, so the extra sits as surplus cash (80,000 − 50,000 = 30,000 in Jan). In the aggressive row, LT debt (30,000) is <b>below</b> permanent NOWC (50,000), so ST debt fills the 20,000 gap even in quiet months.</p>
+<div class="trap"><b>Check with your instructor:</b> slide 9's answer splits each month 50/50 between ST and LT debt. That doesn't match the maturity-matching definition or the slide 8 graph, where LT covers the permanent $50,000 and ST covers only the seasonal part. Learn the definition version, but ask which one your instructor expects in case this shows up on the exam.</div>
+
+<h4>Payment trends in Canada</h4>
+<p>Moving from cash and cheques to electronic and contactless. Cheques: value down 14% since 2017 but still used for big amounts (2% of volume, 28% of value). Cash: very small transactions (10% of volume, 0.5% of value). COVID sped it up: cash value −41%, <b>EFT</b> (electronic funds transfer) value +59% over 5 years.</p>
+</div>
+<div class="summary"><div class="label">Summary</div><p>A relaxed NOWC policy is safe but ties up capital; a restricted one earns more but risks stock-outs. On financing, maturity matching pairs short-term needs with short-term debt; aggressive policies use more cheap short-term debt and take rollover risk, while conservative policies pay more for long-term debt in exchange for safety.</p></div>
+</div>
+</section>
+
+<!-- ================= CH 17 CCC ================= -->
+<section class="page" id="ch17b" data-tab="Ch 17 · Cash Conversion Cycle" hidden>
+<div class="chap">Chapter 17 · Slides 12–15 · Focus area</div>
+<h2>The cash conversion cycle</h2>
+<p class="lede">How many days your cash is stuck in operations, how to calculate it, and how much cash you free up by shortening it.</p>
+<div class="outline"><div class="label">Concept outline</div>
+<ul class="tree">
+ <li class="has open"><span class="node">The cycle a firm follows</span><ul>
+  <li><span class="node">Buy inventory → sell goods</span></li>
+  <li><span class="node">Pay payables, collect receivables</span></li></ul></li>
+ <li class="has open"><span class="node">Measure it in days</span><ul>
+  <li><span class="node">ICP: days inventory is held</span></li>
+  <li><span class="node">DSO: days to collect from customers</span></li>
+  <li><span class="node">APP: days before paying suppliers</span></li></ul></li>
+ <li class="has open"><span class="node">Two cycles</span><ul>
+  <li><span class="node">Operating cycle = ICP + DSO</span></li>
+  <li><span class="node">CCC = ICP + DSO − APP</span></li></ul></li>
+ <li class="has"><span class="node">Shorten the CCC → more FCF</span><ul>
+  <li><span class="node">Days cut × daily sales or COGS</span></li>
+  <li><span class="node">Growth adds more next year</span></li></ul></li>
+</ul></div>
+<div class="cornell">
+<aside class="cues"><div class="label">Cues</div><ol>
+<li>What 4 steps make up the firm's cash cycle?</li>
+<li>Write the CCC formula. How is the operating cycle different?</li>
+<li>Which of ICP, DSO and APP use COGS? Which uses sales?</li>
+<li>On the timeline, where does the CCC start and end?</li>
+<li>Does a longer APP lengthen or shorten the CCC?</li>
+<li>How do you turn days saved into dollars of cash?</li>
+<li>What happens to the cash gain if sales grow 10% next year?</li>
+</ol></aside>
+<div class="notes">
+<h4>What the cycle is</h4>
+<p>Firms go round the same loop: <b>buy inventory</b> → <b>sell finished goods</b> → <b>pay payables</b> and <b>collect receivables</b>. The <span class="key-term">cash conversion cycle (CCC)</span> measures, in days, how long the firm's own cash is tied up in that loop: from the day it <b>pays its suppliers</b> to the day it <b>collects from customers</b>.</p>
+<div class="formula">CCC = Inventory Conversion Period + Receivables Collection Period − Payables Deferral Period
+    = ICP (days in inventory) + DSO − APP
+
+Operating cycle (OC) = ICP + DSO
+
+ICP = Inventory / (COGS/365)
+DSO = A/R / (Sales/365)          ← the only one that uses SALES
+APP = A/P / (COGS/365)</div>
+<p>Your formula sheet writes these as CCC = ICP + RCP − PDP and OC = ICP + RCP. RCP = DSO = ACP, and PDP = APP. Same thing, different letters.</p>
+
+<h4>The slide 13 timeline</h4>
+<div class="formula">Inventory      Pay             Inventory        Collect from
+purchased      suppliers       sold             customers
+   |--------------|---------------|------------------|
+   |&lt;---------- ICP (days in inventory) -&gt;|&lt;---- DSO ----&gt;|
+   |&lt;-- APP ---&gt;|&lt;------------------ CCC -----------------&gt;|
+   |&lt;--------------------- Operating cycle ---------------------&gt;|</div>
+<ul><li>The <span class="key-term">operating cycle</span> runs from buying inventory to collecting the cash: ICP + DSO.</li>
+<li>Suppliers let you wait APP days before paying, so <b>your</b> cash is only tied up for the rest of it. That's why the CCC = operating cycle − APP.</li>
+<li>Shorter CCC = less cash tied up = less financing needed = more FCF.</li></ul>
+
+<h4>Example 1 (slide 14)</h4>
+<p>A/R $800,000 · Inventory $2,500,000 · A/P $910,000 · Sales (all credit) $10,000,000 · COGS $8,000,000.</p>
+<div class="tbl"><table>
+<tr><th>Step</th><th class="n">Math</th><th class="n">Days</th></tr>
+<tr><td>COGS per day</td><td class="n">8,000,000 / 365</td><td class="n">21,918</td></tr>
+<tr><td>Sales per day</td><td class="n">10,000,000 / 365</td><td class="n">27,397</td></tr>
+<tr><td>ICP</td><td class="n">2,500,000 / 21,918</td><td class="n">114</td></tr>
+<tr><td>DSO</td><td class="n">800,000 / 27,397</td><td class="n">29</td></tr>
+<tr><td>APP</td><td class="n">910,000 / 21,918</td><td class="n">42 (41.52)</td></tr>
+<tr><th>CCC</th><th class="n">114 + 29 − 42</th><th class="n">101 days</th></tr>
+<tr><td>Operating cycle</td><td class="n">114 + 29</td><td class="n">143 days</td></tr></table></div>
+
+<h4>Example 1 continued (slide 15): what is a shorter CCC worth?</h4>
+<p>ICP cut to 110 (−4 days), DSO cut to 25 (−4 days), APP raised to 45 (+3 days). New CCC = 110 + 25 − 45 = <b>90 days</b>.</p>
+<p><b>Method:</b> each day removed frees one day's worth of the flow that account is based on.</p>
+<div class="tbl"><table>
+<tr><th>Change</th><th class="n">Math</th><th class="n">Cash freed</th></tr>
+<tr><td>A/R down 4 days</td><td class="n">(10,000,000/365) × 4</td><td class="n">$109,589</td></tr>
+<tr><td>Inventory down 4 days</td><td class="n">(8,000,000/365) × 4</td><td class="n">$87,671</td></tr>
+<tr><td>A/P up 3 days</td><td class="n">(8,000,000/365) × 3</td><td class="n">$65,753</td></tr>
+<tr><th>Increase in FCF in the year of the change</th><th></th><th class="n">$263,013</th></tr></table></div>
+<p><b>Next year, sales grow 10%:</b> the improved cycle also applies to the extra sales, so it frees another 10% × $263,013 = <span class="ans">$26,301</span>.</p>
+<div class="trap"><b>Traps:</b> (1) DSO uses <b>sales</b>/365; ICP and APP use <b>COGS</b>/365, and so do their dollar savings. (2) A <b>longer</b> APP makes the CCC <b>shorter</b>. (3) The cash freed is a one-time gain in the year of the change, not every year.</div>
+<p>On your HP, one day of COGS: <kbd>8000000</kbd> <kbd>÷</kbd> <kbd>365</kbd> <kbd>=</kbd>, then <kbd>×</kbd> <kbd>4</kbd> <kbd>=</kbd> → 87,671.23.</p>
+</div>
+<div class="summary"><div class="label">Summary</div><p>The cash conversion cycle counts the days your own cash is tied up: days in inventory plus days to collect, minus the days suppliers let you wait. Cutting days frees cash: multiply the days saved by one day of sales (for receivables) or one day of COGS (for inventory and payables).</p></div>
+</div>
+</section>
+
+<!-- ================= HP CHEAT ================= -->
+<section class="page" id="hp" data-tab="HP 10bII+ Keys" hidden>
+<div class="chap">Calculator</div>
+<h2>HP 10bII+ cheat sheet</h2>
+<p class="lede">Your slides show TI BA II Plus keystrokes (P/Y, C/Y, 2nd, CPT). This translates them for the HP 10bII+. <kbd class="sh">■</kbd> = orange shift. There's no CPT key on the HP: pressing the unknown variable's key solves it.</p>
+<div class="cornell">
+<aside class="cues"><div class="label">Cues</div><ol>
+<li>What's the factory P/YR setting, and why is it dangerous?</li>
+<li>How do you switch BEGIN/END?</li>
+<li>How do you show 4 decimals?</li>
+<li>No C/Y key: how do you convert APR to EAR?</li>
+<li>Order of AMORT outputs?</li>
+</ol></aside>
+<div class="notes">
+<h4>Before every exam question</h4>
+<ul><li><b>Clear:</b> <kbd class="sh">■</kbd><kbd>C ALL</kbd>. This does <b>not</b> reset P/YR or BEG/END, so check both.</li>
+<li><b>Payments per year:</b> <kbd>1</kbd><kbd class="sh">■</kbd><kbd>P/YR</kbd>. The HP ships set to <b>12</b>, which silently divides your rate by 12.</li>
+<li><b>END mode:</b> if "BEGIN" shows in the display, press <kbd class="sh">■</kbd><kbd>BEG/END</kbd>.</li>
+<li><b>Decimals:</b> <kbd class="sh">■</kbd><kbd>DISP</kbd><kbd>4</kbd> (your formula sheet's "2nd FORMAT" line is for the TI).</li></ul>
+<h4>TI → HP translation</h4>
+<div class="tbl"><table><tr><th>Slide (TI BA II Plus)</th><th>HP 10bII+</th></tr>
+<tr><td>N, I/Y, PV, PMT, FV then CPT</td><td>N, I/YR, PV, PMT, FV; press the unknown key to solve</td></tr>
+<tr><td>P/Y = 1, C/Y = 1</td><td><kbd>1</kbd><kbd class="sh">■</kbd><kbd>P/YR</kbd> (one setting does both)</td></tr>
+<tr><td>2nd BGN, 2nd SET, 2nd QUIT</td><td><kbd class="sh">■</kbd><kbd>BEG/END</kbd></td></tr>
+<tr><td>CF: CF0, C01, F01 … NPV I= CPT</td><td>amount <kbd>CFj</kbd> for each flow; repeats: count <kbd class="sh">■</kbd><kbd>Nj</kbd>; rate <kbd>I/YR</kbd>; <kbd class="sh">■</kbd><kbd>NPV</kbd></td></tr>
+<tr><td>IRR CPT</td><td><kbd class="sh">■</kbd><kbd>IRR/YR</kbd></td></tr>
+<tr><td>2nd ICONV: NOM, C/Y, CPT EFF</td><td>rate <kbd class="sh">■</kbd><kbd>NOM%</kbd>, periods <kbd class="sh">■</kbd><kbd>P/YR</kbd>, <kbd class="sh">■</kbd><kbd>EFF%</kbd></td></tr>
+<tr><td>P/Y = 12, C/Y = 2 (mortgage)</td><td>Compute the effective monthly rate yourself and use P/YR = 1, or convert NOM→EFF at P/YR 2 then EFF→NOM at P/YR 12</td></tr>
+<tr><td>2nd AMORT P1, P2, ↓ BAL / PRN / INT</td><td>P1 <kbd>INPUT</kbd> P2 <kbd class="sh">■</kbd><kbd>AMORT</kbd>, then <kbd>=</kbd> → PRIN, INT, BAL</td></tr>
+<tr><td>N = 25 × 12</td><td><kbd>25</kbd><kbd class="sh">■</kbd><kbd>×P/YR</kbd> (with P/YR 12) or just type 300</td></tr>
+<tr><td>y<sup>x</sup></td><td><kbd class="sh">■</kbd><kbd>y<sup>x</sup></kbd></td></tr></table></div>
+<h4>Rules that cost marks</h4>
+<ul><li>Enter rates as percents (10, not 0.10).</li>
+<li>Cash out and cash in need opposite signs (<kbd>+/-</kbd> before PV/PMT/FV).</li>
+<li>Enter 0 for any unused TVM variable (or clear first) so old values don't linger.</li>
+<li>For CF problems, CF<sub>0</sub> is required even if it's 0.</li>
+<li>Report rates to 2 decimals (5.25%) or 4 in decimal form (0.0525).</li></ul>
+</div>
+<div class="summary"><div class="label">Summary</div><p>Set P/YR to 1, check END mode and clear before every question. The HP solves the moment you press the unknown key, and NOM%/EFF% replace the TI's ICONV worksheet.</p></div>
+</div>
+</section>
+
+<!-- ================= GLOSSARY ================= -->
+<section class="page" id="glossary" data-tab="Glossary" hidden>
+<div class="chap">Reference</div>
+<h2>Glossary</h2>
+<p class="lede" id="gcount"></p>
+<label for="gsearch" class="label">Filter terms</label><br>
+<input id="gsearch" class="gsearch" type="search" placeholder="Type a term, e.g. agency, CCC, rollover">
+<div class="gloss" id="gloss"></div>
+</section>
+
+<!-- ================= PRACTICE ================= -->
+<section class="page" id="practice" data-tab="Practice Qs" hidden>
+<div class="chap">Test yourself</div>
+<h2>Practice questions</h2>
+<p class="lede">Multiple choice: click an option to check it. Calculations: work it out, then reveal the answer. Tick the box when you've got a question down.</p>
+<div class="progress" id="prog"></div>
+<div id="pq"></div>
+</section>
+
+</main>
+<button id="toTop" type="button">↑ Top</button>
+
+<script>
+/* ---------- tabs ---------- */
+const pages=[...document.querySelectorAll('section.page')];
+const tabs=document.getElementById('tabs');
+pages.forEach(p=>{const b=document.createElement('button');b.type='button';b.role='tab';b.innerHTML=p.dataset.tab;b.dataset.id=p.id;b.onclick=()=>show(p.id,true);tabs.appendChild(b);});
+function show(id,scroll){
+  pages.forEach(p=>p.hidden=p.id!==id);
+  [...tabs.children].forEach(b=>{const on=b.dataset.id===id;b.setAttribute('aria-selected',on);if(on)b.scrollIntoView({block:'nearest',inline:'nearest'});});
+  try{localStorage.setItem('fm-tab',id)}catch(e){}
+  try{history.replaceState(null,'','#'+id)}catch(e){}
+  if(scroll)window.scrollTo({top:0});
+}
+let start=(location.hash||'').slice(1);
+if(!document.getElementById(start)){try{start=localStorage.getItem('fm-tab')||''}catch(e){start=''}}
+show(document.getElementById(start)?start:'ch1a',false);
+addEventListener('load',()=>setTimeout(()=>scrollTo(0,0),0));
+
+/* ---------- outline trees ---------- */
+document.querySelectorAll('.tree li').forEach(li=>{if(li.querySelector(':scope>ul'))li.classList.add('has');});
+document.querySelectorAll('.tree li.has>.node').forEach(n=>{n.tabIndex=0;const t=()=>n.parentElement.classList.toggle('open');n.onclick=t;n.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();t()}};});
+
+/* ---------- top button ---------- */
+const tt=document.getElementById('toTop');
+addEventListener('scroll',()=>tt.classList.toggle('show',scrollY>200),{passive:true});
+tt.onclick=()=>scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});
+
+/* ---------- glossary ---------- */
+const G=[
+["Agency problem","Conflict when managers (agents) pursue their own goals instead of maximizing shareholder wealth, caused by separating ownership and management.","Ch 1"],
+["Aggressive financing policy","Uses short-term debt to fund temporary NOWC and some or all permanent NOWC. Cheaper, but high rollover risk.","Ch 17"],
+["Amortized loan","Loan repaid with fixed blended payments of interest and principal until the balance reaches zero.","Ch 4"],
+["Annuity due","Equal payments at the beginning of each period for a set time. Value = ordinary annuity × (1 + I).","Ch 4"],
+["APR (nominal rate)","Quoted annual rate that ignores compounding. Equals the EAR only with annual compounding.","Ch 4"],
+["ASPE","Accounting Standards for Private Enterprises; a simpler standard private Canadian companies may use instead of IFRS.","Ch 2"],
+["Average payables period (APP/PDP)","A/P ÷ (COGS/365): average days the firm takes to pay suppliers.","Ch 3, 17"],
+["Balloon loan","Loan with smaller regular payments and a large final payment of the remaining principal.","Ch 4"],
+["Basic earning power (BEP)","EBIT ÷ total assets: earning power of assets before taxes and leverage.","Ch 3"],
+["Book value per share (BVPS)","Common equity ÷ shares outstanding.","Ch 3"],
+["Bullet loan (interest-only)","Borrower pays only interest during the term and repays all principal in one lump sum at maturity.","Ch 4"],
+["Capital budgeting decisions","Choosing which long-term investments to make; projects must cover all costs including the cost of capital.","Ch 1"],
+["Capital markets","Markets for long-term debt and stock, traded mainly through brokers and agents.","Ch 1"],
+["Capital structure decisions","Decisions about how to finance the firm (mix of debt and equity).","Ch 1"],
+["Cash conversion cycle (CCC)","ICP + DSO − APP: days between paying for inventory and collecting cash from customers.","Ch 17"],
+["Cash equivalent","Debt security with less than 3 months to maturity, treated as cash.","Ch 17"],
+["Common-size statements","Vertical analysis: BS items as % of total assets, IS items as % of sales.","Ch 3"],
+["Compound interest","Interest earned on both principal and previously earned interest.","Ch 4"],
+["Conservative financing policy","Uses long-term debt for all permanent NOWC and some or all temporary NOWC. Safer but costlier, leaves surplus cash at low points.","Ch 17"],
+["Cost of money","Return investors require to invest; interest rate for debt, cost of equity (dividends + capital gains) for equity.","Ch 1"],
+["Current ratio","Current assets ÷ current liabilities.","Ch 3"],
+["Days sales outstanding (DSO/ACP/RCP)","A/R ÷ (Sales/365): average days to collect from customers.","Ch 3, 17"],
+["Debt ratio","Interest-bearing debt ÷ total assets.","Ch 3"],
+["Derivatives","Securities whose value is derived from an underlying asset such as a commodity, stock or currency (options, futures, swaps).","Ch 1"],
+["Direct agency costs","The cost of monitoring top executives' actions.","Ch 1"],
+["Direct transfer","Firm sells securities straight to savers without a middle-person.","Ch 1"],
+["Dividend payout ratio","Dividends ÷ net income.","Ch 1, 3"],
+["Dividend yield","Dividends per share ÷ share price.","Ch 3"],
+["DuPont system","ROE = net profit margin × total asset turnover × equity multiplier (profitability × productivity × leverage).","Ch 3"],
+["EAR (effective annual rate)","True annual rate after compounding: (1 + APR/M)^M − 1.","Ch 4"],
+["EBITDA","EBIT + depreciation and amortization; operating profit before non-cash charges.","Ch 2"],
+["EBITDA coverage","(EBITDA + lease payments) ÷ (interest + principal payments + lease payments).","Ch 3"],
+["Equity multiplier","Total assets ÷ equity; dollars of assets per dollar of equity (a leverage measure).","Ch 3"],
+["Expected rate of return","Return an investment is forecast to earn from its expected cash flows.","Ch 1"],
+["Financial intermediary","Institution such as a commercial bank or pension fund that pools savers' money and invests it.","Ch 1"],
+["Financial markets","Where financial assets (securities) are bought and sold.","Ch 1"],
+["FinTech","Online platforms combining financial services and technology (AI, blockchain, robo-advisors) for faster, cheaper access.","Ch 1"],
+["Fisher's Separation Theorem","Firms should pursue the value-maximizing strategy regardless of investors' consumption preferences; investors adjust through capital markets.","Ch 1"],
+["Free cash flow (FCF)","Cash available to all investors after required investments in operating capital: NOPAT − net investment in TNOC.","Ch 1, 2"],
+["IFRS","International Financial Reporting Standards, required for Canadian public companies.","Ch 2"],
+["Independent board of directors","Board free of management influence that monitors executives and protects shareholders.","Ch 1"],
+["Indirect agency costs","Lost opportunities and the cost of poor managerial decisions, such as bad M&A.","Ch 1"],
+["Insider trading","Using confidential information for personal gain; unethical and illegal.","Ch 1"],
+["Intrinsic share price","Value of a share based on its true expected future cash flows; what managers should maximize.","Ch 1"],
+["Inventory conversion period (ICP)","Inventory ÷ (COGS/365): average days inventory is held before sale.","Ch 3, 17"],
+["Inventory turnover","COGS ÷ inventory.","Ch 3"],
+["Investor-supplied capital","Short-term and long-term interest-bearing debt plus equity; providers require a return.","Ch 2"],
+["Market-to-book ratio","Share price ÷ BVPS.","Ch 3"],
+["Maturity matching","Financing permanent needs with long-term funds and temporary needs with short-term funds (self-liquidating).","Ch 17"],
+["Money markets","Markets for short-term debt securities, traded mainly by dealers.","Ch 1"],
+["Net cash flow (NCF)","Net income + depreciation and amortization; not the same as FCF.","Ch 2, 3"],
+["NIATCS","Net income available to common shareholders: NI − preferred dividends.","Ch 3"],
+["NOPAT","Net operating profit after taxes: EBIT(1 − T).","Ch 2"],
+["NOWC","Net operating working capital: operating current assets − operating current liabilities.","Ch 2, 17"],
+["Operating current liabilities","A/P and accruals; spontaneous liabilities that grow with sales and need no investor return.","Ch 2"],
+["Operating cycle","ICP + DSO: days from buying inventory to collecting the cash from its sale.","Ch 17"],
+["Other comprehensive income (OCI)","Unrealized gains and losses (investments, derivatives, FX hedges) recorded separately in equity under IFRS.","Ch 2"],
+["Outward approach","Comparing a firm's ratios to other firms in its industry.","Ch 3"],
+["Inward approach","Comparing a firm's ratios to its own past results (trend analysis).","Ch 3"],
+["Permanent NOWC","Base level of operating working capital needed year-round; grows with the firm.","Ch 17"],
+["Perpetuity","Equal payments forever. PV = PMT ÷ I; growing: next payment ÷ (I − g).","Ch 4"],
+["Price/earnings ratio","Share price ÷ EPS.","Ch 3"],
+["Primary market","Where a security is first sold; the issuer receives the proceeds.","Ch 1"],
+["Private markets","Trades worked out directly between two parties; less liquid and transparent.","Ch 1"],
+["Production opportunities","Returns available from investing in real assets; one of the 4 fundamental drivers of the cost of money.","Ch 1"],
+["Public markets","Organized exchanges trading standardized contracts (TSX, NYSE); liquid and transparent.","Ch 1"],
+["Quick ratio","(Current assets − inventory) ÷ current liabilities.","Ch 3"],
+["Real rate of return","Return after inflation: (1 + nominal) ÷ (1 + inflation) − 1.","Ch 4"],
+["Relaxed NOWC policy","Holding large current assets and little A/P; low risk, low return.","Ch 17"],
+["Required rate of return","Minimum return an investor accepts for a given level of risk.","Ch 1"],
+["Restricted NOWC policy","Holding minimal current assets and lots of A/P and accruals; higher risk, higher return.","Ch 17"],
+["Return on assets (ROA)","NIATCS ÷ total assets = NPM × TAT.","Ch 3"],
+["Return on equity (ROE)","NIATCS ÷ common equity = NPM × TAT × EM.","Ch 3"],
+["ROIC","Return on invested capital: NOPAT ÷ TNOC. Value is created when ROIC > WACC.","Ch 2, 3"],
+["Rollover risk","Risk that a short-term loan won't be renewed when it matures.","Ch 17"],
+["Moderate approach","Another name for maturity matching: long-term funds for permanent assets, short-term debt for temporary needs.","Ch 17"],
+["Marketable securities","Short-term investments a conservatively financed firm holds when its seasonal needs dip below its long-term financing.","Ch 17"],
+["Secondary market","Where existing securities are resold; the issuer is not involved.","Ch 1"],
+["Securities","Contracts entitling the owner to part of the cash flows generated by a business's assets.","Ch 1"],
+["Separation of ownership and management","Shareholders own the firm but hire managers to run it; the root of the agency problem.","Ch 1"],
+["Simple interest","Interest earned only on the original principal; used for short periods.","Ch 4"],
+["Spontaneous financing","Financing such as A/P and accruals that rises and falls automatically with sales.","Ch 2"],
+["Stakeholders","Everyone affected by the firm: shareholders, lenders, customers, suppliers, employees, government, community, environment.","Ch 1"],
+["Temporary NOWC","Seasonal working capital that rises and falls during the year.","Ch 17"],
+["Time preference for consumption","How strongly people prefer spending now vs later; a driver of the cost of money.","Ch 1"],
+["Times interest earned (TIE)","EBIT ÷ interest expense.","Ch 3"],
+["TNOC","Total net operating capital: NOWC + operating long-term assets.","Ch 2"],
+["Total asset turnover","Sales ÷ total assets.","Ch 3"],
+["Trend analysis","Plotting a ratio over several years to see its direction.","Ch 3"],
+["Value maximization","Maximizing the firm's value, shareholder wealth and long-run stock price.","Ch 1"],
+["WACC","Weighted average cost of capital: average return required by the firm's lenders (after tax) and shareholders.","Ch 1"],
+["Window dressing","Actions that make financial statements look better than reality, e.g. around year-end.","Ch 3"],
+["Working capital decisions","Managing day-to-day financing and current assets and liabilities.","Ch 1, 17"]
+].sort((a,b)=>a[0].localeCompare(b[0]));
+const gl=document.getElementById('gloss');
+gl.innerHTML=G.map(g=>`<div class="gcard" data-k="${(g[0]+' '+g[1]).toLowerCase()}"><b>${g[0]}</b><p>${g[1]} <small>(${g[2]})</small></p></div>`).join('');
+document.getElementById('gcount').textContent=G.length+' key terms from all five chapters, in alphabetical order.';
+document.getElementById('gsearch').addEventListener('input',e=>{const q=e.target.value.toLowerCase().trim();gl.querySelectorAll('.gcard').forEach(c=>c.hidden=q&&!c.dataset.k.includes(q));});
+
+/* ---------- practice ---------- */
+// [type, question, options|null, correctIndex|null, answer/explanation]
+const P={
+"Ch 1 · Goals & Agency":[
+["MC","What is the primary financial objective of a corporation?",["Maximize accounting profit this year","Maximize sales growth","Maximize the firm's long-run intrinsic value","Maximize the current market share price"],2,"The goal is value maximization: the firm's long-run intrinsic value (PV of expected FCF at WACC). Short-term profit or the current market price can be manipulated."],
+["MC","Which bonus plan best reduces the agency problem?",["Bonus based on sales growth","Bonus based on FCF generation","Fixed salary only","Bonus based on number of acquisitions"],1,"The slides say bonuses should be based on FCF generation, NOT sales. Sales-based bonuses can reward value-destroying growth."],
+["MC","The cost of monitoring top executives is an example of:",["Indirect agency cost","Direct agency cost","Opportunity cost","Cost of capital"],1,"Monitoring costs are direct agency costs. Lost opportunities and bad M&A are indirect agency costs."],
+["MC","Under Canadian corporate law, directors must act in:",["Shareholders' interests only","The best interests of the corporation, considering stakeholders","Employees' interests first","The government's interest"],1,"Canada: 'best interests of the corporation', including shareholders but also other stakeholders. The US prioritizes shareholder wealth."],
+["MC","Fisher's Separation Theorem says a firm should:",["Set dividends to match the majority of shareholders' preferences","Pursue the value-maximizing strategy regardless of investors' consumption preferences","Pay out all earnings as dividends","Retain all earnings"],1,"Firms separate investment decisions from investors' consumption timing; investors use capital markets to adjust their own portfolios."],
+["Short","Name the three factors of FCF that determine a firm's value, and which direction investors prefer for each.",null,null,"Amount (more), timing (sooner), riskiness (lower). Value = PV of expected FCF discounted at WACC."]
+],
+"Ch 1 · Financial System":[
+["MC","ABC Corp. issues $200M of new bonds with the help of RBC Capital Markets. This is:",["Direct transfer","Indirect transfer through a financial intermediary","Indirect transfer through investment bankers","A secondary market transaction"],2,"An investment bank acts as the middle-person helping issue the new securities."],
+["MC","Which is NOT one of the four fundamental factors that determine the cost of money?",["Production opportunities","Time preference for consumption","Expected inflation","Exchange rate risk"],3,"The four are production opportunities, time preference, risk and expected inflation. Exchange rate risk is one of the economic factors that affect it."],
+["MC","In which market does the issuing company receive the cash from the sale?",["Secondary market","Primary market","Money market only","Over-the-counter market"],1,"The primary market is the original sale; the issuer gets the proceeds. In the secondary market investors trade with each other."],
+["MC","A dealer differs from a broker because a dealer:",["Only trades long-term securities","Matches buyers and sellers without owning the security","Buys and sells for itself at its own risk","Works only in private markets"],2,"Dealers (mainly money markets) take ownership and risk; brokers (capital markets) just match buyers and sellers."],
+["MC","A large government budget deficit financed by issuing bonds tends to:",["Lower interest rates","Leave less capital for the private sector","Reduce inflation","Strengthen the currency"],1,"Government borrowing competes for savers' capital, leaving less for businesses and pushing the cost of capital up."],
+["MC","An option, future or swap is best described as a:",["Money market instrument","Derivative","Common share","Bankers' acceptance"],1,"Derivatives get their value from an underlying asset such as a commodity, stock or currency."]
+],
+"Ch 2 · Statements & FCF":[
+["MC","Which is an operating current liability?",["Short-term bank loan","Long-term debt","Accruals","Common stock"],2,"A/P and accruals are spontaneous operating liabilities. Bank loans are investor-supplied capital."],
+["MC","Net cash flow (NCF) equals:",["NOPAT − ΔTNOC","NI + depreciation and amortization","EBIT(1 − T)","CFO + CFI"],1,"NCF = NI + DA. It's a rough measure and different from FCF."],
+["Calc","EBIT = $500, tax rate 25%, TNOC rises from $1,800 to $2,050. Find FCF.",null,null,"NOPAT = 500(0.75) = 375. Net investment = 2,050 − 1,800 = 250. FCF = 375 − 250 = <b>$125</b>."],
+["Calc","NOPAT = $300, TNOC = $2,000, WACC = 12%. Did the firm create value?",null,null,"ROIC = 300/2,000 = 15% &gt; 12% WACC → yes, value was created."]
+],
+"Ch 3 · Ratios":[
+["MC","A rising current ratio combined with a falling quick ratio most likely means:",["A/R is falling","Inventory is building up","The firm repaid debt","Cash increased"],1,"The only difference between CR and QR is inventory, so a widening gap signals rising inventory / slower inventory turnover."],
+["MC","Which ratio uses COGS rather than sales?",["DSO","Total asset turnover","Average payables period","Fixed asset turnover"],2,"APP = A/P ÷ (COGS/365). ITO and ICP also use COGS. DSO, TAT and FAT use sales."],
+["MC","Which group mainly cares about liquidity and leverage?",["Shareholders","Suppliers and banks (short-term lenders)","Management only","Equity analysts"],1,"Short-term lenders want to be repaid soon: liquidity and leverage."],
+["Calc","Sales 4,000; COGS 2,600; A/R 400; Inventory 650; A/P 300. Find DSO, ICP and APP (365 days).",null,null,"DSO = 400/(4,000/365) = <b>36.5 days</b>. ICP = 650/(2,600/365) = <b>91.25 days</b>. APP = 300/(2,600/365) = <b>42.1 days</b>."],
+["Calc","EBIT 900, depreciation 200, lease payments 50, interest 150, principal payments 100. Find TIE and EBITDA coverage.",null,null,"TIE = 900/150 = <b>6.0×</b>. EBITDA coverage = (900 + 200 + 50)/(150 + 100 + 50) = 1,150/300 = <b>3.83×</b>."],
+["Calc","NI $800,000; depreciation $300,000; common equity $5,000,000; 100,000 shares; price $60. Find EPS, CFPS, BVPS, P/E and M/B.",null,null,"EPS = 800,000/100,000 = $8.00; CFPS = 1,100,000/100,000 = $11.00; BVPS = 5,000,000/100,000 = $50.00; P/E = 60/8 = <b>7.5×</b>; M/B = 60/50 = <b>1.2×</b>."],
+["MC","A very high P/E ratio is most likely explained by:",["High current earnings and no growth","Low current earnings and/or high expected growth","A high dividend yield","Low leverage"],1,"P/E is high when earnings are unusually low or investors expect strong growth."]
+],
+"Ch 3 · DuPont & Analysis":[
+["MC","In the DuPont equation, the equity multiplier measures:",["Profitability","Productivity","Leverage","Liquidity"],2,"EM = TA/Equity: dollars of assets per dollar of equity, i.e. leverage."],
+["Calc","NPM = 8%, TAT = 1.5, EM = 2.0. Find ROA and ROE.",null,null,"ROA = 8% × 1.5 = <b>12%</b>. ROE = 12% × 2.0 = <b>24%</b>."],
+["Short","Firm A's ROE rose from 12% to 15%. NPM and TAT were unchanged, but EM rose from 1.6 to 2.0. Is this a good-quality improvement?",null,null,"The whole increase came from leverage (more debt), not better operations. Returns are higher but so is financial risk, so it's a lower-quality improvement than one driven by margins or turnover."],
+["MC","In a common-size income statement, each item is divided by:",["Total assets","Net income","Sales","Equity"],2,"IS items ÷ sales; BS items ÷ total assets."],
+["MC","Comparing a firm's ratios to its own past five years is the:",["Outward approach","Inward approach","DuPont approach","Common-size approach"],1,"Inward = trend analysis against the firm's own record. Outward = against industry peers."],
+["MC","Which is a limitation of financial statement analysis?",["Ratios are hard to calculate","Balance sheet values are at historic cost","Ratios ignore the income statement","Ratios can't be compared over time"],1,"Historic cost (not market value), differing accounting policies, window dressing, inflation and conglomerates are the listed limitations."]
+],
+"Ch 4 · TVM Core":[
+["Calc","You invest $5,000 today at 7% compounded annually. What is it worth in 10 years?",null,null,"10 N, 7 I/YR, −5000 PV, 0 PMT → FV = <b>$9,835.76</b>."],
+["Calc","What is the PV of $2,000 per year for 8 years at 6%, first payment in one year? What if the first payment is today?",null,null,"END: 8 N, 6 I/YR, 2000 PMT, 0 FV → PV = <b>−12,419.59</b>. BGN: PV = 12,419.59 × 1.06 = <b>13,164.76</b>."],
+["Calc","A stock pays a $3 dividend next year, growing 4% forever. Required return 10%. Value today?",null,null,"PV = 3/(0.10 − 0.04) = <b>$50.00</b>. The $3 is already next year's dividend, so don't grow it again."],
+["Calc","A perpetuity of $500/yr starts at t = 4. Discount rate 8%. PV today?",null,null,"PV<sub>3</sub> = 500/0.08 = 6,250. PV<sub>0</sub> = 6,250/1.08³ = <b>$4,961.45</b>."],
+["Calc","Cash flows of $200, $400, $600 at t = 1, 2, 3; rate 9%. Find the NPV.",null,null,"■ C ALL; 0 CFj, 200 CFj, 400 CFj, 600 CFj; 9 I/YR; ■ NPV → <b>$983.47</b>."],
+["MC","Which statement is TRUE?",["An annuity due is worth less than an ordinary annuity","PVA due = PVA ordinary × (1 + I)","Simple interest is assumed unless stated","Perpetuity formulas give value at the time of the first payment"],1,"Annuity due = ordinary × (1 + I). Perpetuity formulas give value one period before the first payment; compound interest is the default."]
+],
+"Ch 4 · Rates & Loans":[
+["Calc","What is the EAR of 9% compounded quarterly?",null,null,"(1 + 0.09/4)⁴ − 1 = <b>9.31%</b>. HP: 9 ■ NOM%, 4 ■ P/YR, ■ EFF% → 9.31 (then reset P/YR to 1)."],
+["MC","Canadian fixed-rate mortgage interest must, by law, be compounded:",["Monthly","Semi-annually","Annually","Daily"],1,"Semi-annually, even though payments are usually monthly."],
+["Calc","$300,000 mortgage, 5% compounded semi-annually, 25-year amortization, monthly payments. Find the payment.",null,null,"Monthly rate = 1.025^(1/6) − 1 = 0.41239%. P/YR 1: 300 N, 0.41239 I/YR, 300000 PV, 0 FV → PMT = <b>−$1,744.81</b>."],
+["MC","In an amortized loan, over time the interest portion of each payment:",["Rises","Stays constant","Falls","Equals the principal portion"],2,"As principal is repaid, interest on the smaller balance falls and the principal portion rises."],
+["Calc","Nominal return 7%, inflation 2%. What is the real rate?",null,null,"1.07/1.02 − 1 = <b>4.902%</b>."],
+["MC","A loan where you pay only interest and repay all principal at maturity is a:",["Balloon loan","Amortized loan","Bullet loan","Revolving loan"],2,"Interest-only = bullet loan. A balloon loan has smaller regular payments plus a large final balance."]
+],
+"Ch 17 · WC Policy":[
+["MC","A relaxed NOWC policy is best described as:",["High risk, high return","Low risk, low return","High risk, low return","Low risk, high return"],1,"Lots of current assets means fewer stock-outs (low risk) but more capital tied up, so lower ROI."],
+["MC","Which firm is best suited to a restricted NOWC policy?",["A supermarket with unpredictable demand","A utility with predictable demand and a short operating cycle","A toy maker with highly seasonal sales","A firm needing a big inventory cushion"],1,"Restricted fits predictable demand, short operating cycles and tight inventories (utilities, airlines, service firms)."],
+["MC","Financing some permanent NOWC with short-term debt is a(n):",["Conservative policy","Maturity-matching policy","Aggressive policy","Relaxed policy"],2,"Aggressive policies use ST debt for temporary and some or all permanent NOWC; cheaper, but rollover risk."],
+["MC","The main risk of an aggressive financing policy is:",["Excess idle cash","Higher interest costs","Rollover risk","Lower liquidity in assets"],2,"Short-term loans may not be renewed. A conservative policy instead suffers higher interest and idle cash."],
+["Short","Permanent NOWC is $100k; temporary NOWC peaks at $40k. Under maturity matching, how much LT and ST financing is used at the peak?",null,null,"LT = $100k (permanent), ST = $40k (temporary). When temporary NOWC is 0, ST debt is 0."],
+["MC","On the slide 8 graphs, the conservative approach shows its long-term financing line:",["Exactly at the permanent level of current assets","Below the permanent level of current assets","Above the permanent level, with marketable securities held when needs dip below it","At the level of fixed assets only"],2,"Conservative: LT financing is above the permanent level, so in low months the extra goes into marketable securities. Aggressive puts the line below the permanent level; matching puts it right at it."],
+["MC","A debt security with 2 months left to maturity would normally be classified as:",["A short-term investment","A cash equivalent","A long-term asset","An operating liability"],1,"Under 3 months to maturity = cash equivalent; over 3 months = short-term investment."]
+],
+"Ch 17 · Cash Conversion Cycle":[
+["Calc","Inventory 900, A/R 600, A/P 400; Sales 7,300; COGS 5,475. Find the CCC (365 days).",null,null,"ICP = 900/(5,475/365) = 900/15 = 60 days. DSO = 600/(7,300/365) = 600/20 = 30 days. APP = 400/15 = 26.7 days. CCC = 60 + 30 − 26.7 = <b>63.3 days</b>."],
+["Calc","Using the same firm, DSO falls by 5 days. How much cash is freed?",null,null,"(7,300/365) × 5 = 20 × 5 = <b>$100</b> (same units as sales)."],
+["MC","Which of these lengthens the cash conversion cycle?",["Collecting receivables faster","Paying suppliers later","Holding inventory longer","Selling inventory faster"],2,"Longer ICP raises CCC. Paying suppliers later (higher APP) shortens it."],
+["MC","ICP is 70 days, DSO is 40 days and APP is 35 days. What are the operating cycle and the CCC?",["OC 110, CCC 75","OC 75, CCC 110","OC 145, CCC 110","OC 110, CCC 145"],0,"OC = ICP + DSO = 70 + 40 = 110 days. CCC = OC − APP = 110 − 35 = 75 days."],
+["MC","Which of these is calculated using SALES per day rather than COGS per day?",["Inventory conversion period","Average payables period","Days sales outstanding","Cash saved by cutting inventory days"],2,"Only DSO (A/R ÷ sales/365) uses sales. ICP, APP and the dollar savings from inventory and payables use COGS/365."],
+["Calc","Sales are $3,650,000 and COGS is $2,920,000. The firm cuts ICP by 3 days and stretches APP by 2 days. How much cash is freed this year? How much more next year if sales grow 10%?",null,null,"COGS per day = 2,920,000/365 = 8,000. Inventory: 8,000 × 3 = 24,000. Payables: 8,000 × 2 = 16,000. Total = <b>$40,000</b>. Next year: 10% × 40,000 = <b>$4,000</b> more."],
+["MC","On the cash conversion cycle timeline, the CCC runs from:",["Buying inventory to selling it","Paying suppliers to collecting from customers","Buying inventory to collecting from customers","Selling inventory to paying suppliers"],1,"The CCC starts when you pay suppliers (after APP days) and ends when customers pay you. Buying inventory to collecting cash is the operating cycle."]
+],
+"HP 10bII+":[
+["MC","You compute a monthly payment and get a number 12× too small. The most likely cause is:",["Calculator in BEGIN mode","P/YR still set to 12","Forgot to clear CF registers","DISP set to 2"],1,"With P/YR = 12 the HP divides your I/YR by 12. Set 1 ■ P/YR before annual problems."],
+["MC","On the HP 10bII+, how do you solve for FV after entering N, I/YR, PV and PMT?",["Press CPT then FV","Press FV","Press = then FV","Press ■ FV"],1,"There's no CPT key; pressing the unknown variable's key solves for it."]
+]};
+const pq=document.getElementById('pq');let done={};
+try{done=JSON.parse(localStorage.getItem('fm-done')||'{}')}catch(e){}
+let qi=0,html='';
+for(const [sec,qs] of Object.entries(P)){
+  html+=`<div class="pgroup"><h3>${sec}</h3>`;
+  qs.forEach(q=>{const id='q'+(qi++);const [t,txt,opts,ci,ans]=q;
+    html+=`<div class="q" data-id="${id}"><div class="qhead"><input type="checkbox" id="${id}" ${done[id]?'checked':''} aria-label="Mark done"><label class="qtext" for="${id}"><span class="qtag">${t==='MC'?'Multiple choice':t==='Calc'?'Calculation':'Short answer'}</span>${txt}</label></div>`;
+    if(opts){html+=`<div class="opts">${opts.map((o,i)=>`<button type="button" data-i="${i}" data-c="${ci}">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div>`;}
+    html+=`<button type="button" class="showbtn">Show Answer</button><div class="answer" hidden>${opts?'<b>Answer: '+String.fromCharCode(65+ci)+'.</b> ':''}${ans}</div></div>`;});
+  html+='</div>';
+}
+pq.innerHTML=html;
+const total=qi;
+function prog(){const n=pq.querySelectorAll('input:checked').length;document.getElementById('prog').textContent=`${total} questions · ${n} marked done`;}
+prog();
+pq.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  const q=b.closest('.q');
+  if(b.classList.contains('showbtn')){const a=q.querySelector('.answer');a.hidden=!a.hidden;b.textContent=a.hidden?'Show Answer':'Hide Answer';return;}
+  if(b.dataset.i!==undefined){const right=b.dataset.i===b.dataset.c;
+    q.querySelectorAll('.opts button').forEach(x=>{x.classList.remove('wrong');if(x.dataset.i===x.dataset.c&&right)x.classList.add('right');});
+    b.classList.add(right?'right':'wrong');
+    if(right){const a=q.querySelector('.answer');a.hidden=false;q.querySelector('.showbtn').textContent='Hide Answer';}}
+});
+pq.addEventListener('change',e=>{if(e.target.type!=='checkbox')return;done[e.target.id]=e.target.checked;try{localStorage.setItem('fm-done',JSON.stringify(done))}catch(x){}prog();});
+</script>

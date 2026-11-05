@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FP Midterm Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FAF8F3;--ink:#1C1C2E;--accent:#2D6A4F;--accent-soft:rgba(45,106,79,.10);--cue:#EEF2F7;--card:#fff;--line:#DDD;--muted:#5b6170;--warn:#9a3412;--warn-bg:#fff7ed}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:'Source Sans 3','Source Sans Pro',system-ui,sans-serif;font-size:16.5px;line-height:1.6}
+nav{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:2px solid var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.nav-inner{max-width:1040px;margin:0 auto;padding:10px 16px;display:flex;gap:6px;align-items:center;overflow-x:auto;scrollbar-width:thin}
+.brand{font-family:Lora,serif;font-weight:700;color:var(--accent);white-space:nowrap;margin-right:8px}
+.tab{border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:6px 11px;border-radius:999px;font:inherit;font-size:14px;cursor:pointer;white-space:nowrap;transition:all .2s ease}
+.tab:hover{border-color:var(--accent)}
+.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tab.focus::after{content:" ★";color:#e9c46a}
+main{max-width:960px;margin:0 auto;padding:24px 16px 80px}
+h1{font-family:Lora,serif;font-size:30px;margin-bottom:4px}
+h2{font-family:Lora,serif;font-size:21px;margin:18px 0 10px;color:var(--accent)}
+.lead{color:var(--muted);margin-bottom:18px}
+.section{display:none}.section.show{display:block;animation:fade .2s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1}}
+.box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:18px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.box h3{font-family:Lora,serif;font-size:16px;margin-bottom:8px;color:var(--accent);text-transform:uppercase;letter-spacing:.05em}
+/* outline */
+.tree ul{list-style:none;padding-left:20px;border-left:1px dashed #c9c9c9;margin-left:6px}
+.tree>ul{padding-left:0;border:0;margin:0}
+.tree li{margin:3px 0}
+.node{cursor:pointer;user-select:none;display:inline-flex;gap:6px;align-items:baseline}
+.node .car{display:inline-block;transition:transform .2s ease;color:var(--accent);font-size:12px;width:12px}
+.node.open .car{transform:rotate(90deg)}
+.node.leaf{cursor:default}.node.leaf .car{visibility:hidden}
+.tree li>ul{display:none}.tree li.open>ul{display:block}
+/* cornell */
+.cornell{display:grid;grid-template-columns:30% 1fr;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card);margin-bottom:0}
+.cues{background:var(--cue);padding:16px}
+.cues h3,.notes h3{font-family:Lora,serif;font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:10px}
+.cues ol{padding-left:18px}.cues li{margin-bottom:10px;font-weight:600;font-size:15px}
+.notes{padding:16px 20px}
+.notes h4{font-size:16px;margin:14px 0 4px;color:var(--ink);border-bottom:1px solid #eee;padding-bottom:2px}
+.notes h4:first-of-type{margin-top:0}
+.notes ul{padding-left:20px;margin:4px 0 8px}.notes li{margin:3px 0}
+.notes p{margin:4px 0 8px}
+.key-term{color:var(--accent);font-weight:700;background:linear-gradient(transparent 62%,var(--accent-soft) 62%)}
+.tip{background:var(--warn-bg);border-left:4px solid var(--warn);padding:8px 12px;border-radius:6px;margin:8px 0;font-size:15px}
+.tip b{color:var(--warn)}
+.cls{background:#eef4fb;border-left:4px solid #2c5aa0;padding:8px 12px;border-radius:6px;margin:8px 0;font-size:15px}
+.cls b{color:#2c5aa0}
+.ex{background:#f3f7f4;border-left:4px solid var(--accent);padding:8px 12px;border-radius:6px;margin:8px 0;font-size:15px}
+.keys{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13.5px;background:#1C1C2E;color:#e8f1ec;padding:8px 12px;border-radius:6px;margin:6px 0;white-space:pre-wrap;overflow-x:auto}
+table{border-collapse:collapse;width:100%;margin:8px 0;font-size:14.5px}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:var(--accent-soft)}
+.tablewrap{overflow-x:auto}
+.summary{background:var(--accent-soft);border:1px solid var(--line);border-top:0;border-radius:0 0 10px 10px;padding:14px 18px;margin-bottom:18px}
+.summary b{font-family:Lora,serif;color:var(--accent)}
+.cornell{border-radius:10px 10px 0 0}
+/* glossary */
+.gsearch{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;margin-bottom:14px}
+.ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.gcard{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.gcard .t{font-weight:700;color:var(--accent)}.gcard .s{font-size:12.5px;color:var(--muted);margin-top:4px}
+/* practice */
+.pq{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.pq-head{display:flex;gap:10px;align-items:flex-start}
+.pq-head input{margin-top:5px;width:18px;height:18px;accent-color:var(--accent);flex-shrink:0}
+.pq-type{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.ans-btn{margin:8px 0 0 28px;border:1px solid var(--accent);color:var(--accent);background:transparent;border-radius:6px;padding:4px 10px;cursor:pointer;font:inherit;font-size:14px;transition:all .2s ease}
+.ans-btn:hover{background:var(--accent);color:#fff}
+.ans{display:none;margin:8px 0 0 28px;padding:10px 12px;background:var(--accent-soft);border-radius:8px;font-size:15px}
+.ans.show{display:block}
+.progress{font-weight:600;color:var(--accent);margin-bottom:12px}
+#topBtn{position:fixed;right:18px;bottom:18px;background:var(--accent);color:#fff;border:0;border-radius:999px;padding:10px 14px;font:inherit;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s ease;box-shadow:0 3px 10px rgba(0,0,0,.2)}
+#topBtn.show{opacity:1;pointer-events:auto}
+@media (max-width:700px){.cornell{grid-template-columns:1fr}h1{font-size:24px}body{font-size:16px}}
+@media print{nav,#topBtn,.ans-btn{display:none}.section{display:block!important;page-break-after:always}.ans{display:block}}
+</style>
+</head>
+<body>
+<nav><div class="nav-inner" id="tabs"><span class="brand">FP Midterm</span></div></nav>
+<main id="main"></main>
+<button id="topBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Top</button>
+
+<script>
+/* <k>term</k> renders as a key term. Sections with focus:true are the areas you asked for extra depth on (★ in the nav). */
+const SECTIONS = [
+{ id:"fund", title:"1. Fundamentals", focus:false,
+  outline:["Financial Planning Fundamentals",[
+    ["FP Canada",[["Sets standards & ethics"],["Certifies CFP / QAFP"]]],
+    ["Goals",[["SMART goals"],["Opportunity cost of every choice"]]],
+    ["Net worth statement (a snapshot)",[["Assets − Liabilities"],["Liquid vs. non-liquid assets"]]],
+    ["Cash flow statement (a period)",[["Inflows − Outflows"],["Budget = plan for cash flow"]]],
+    ["Safety & habits",[["Emergency fund 3–6 months"],["Pay yourself first"]]],
+    ["Planning process",[["5 components"],["6 steps"]]],
+    ["Ratios (class)",[["Current & liquidity"],["Debt-to-asset & savings"]]],
+    ["Where to keep savings",[["Banks, credit unions, CDIC"],["Savings, term deposits, GICs"]]]]],
+  cues:["What does FP Canada do?","What makes a goal SMART?","What is opportunity cost?","How do you calculate net worth?","Net worth vs. cash flow statement: what's the difference?","How big should an emergency fund be?","Paying off a debt with savings: what happens to net worth?","What are the 5 components and 6 steps of a financial plan?","What do the current, liquidity and debt-to-asset ratios measure?","Envelope method vs. pay yourself first?","Where should an emergency fund be kept?"],
+  notes:`
+<h4>FP Canada</h4>
+<ul><li><k>FP Canada</k> is the national professional body for financial planning. It sets competency, ethics and practice standards, and certifies <k>CFP</k> (Certified Financial Planner) and <k>QAFP</k> (Qualified Associate Financial Planner) professionals.</li>
+<li>It is <b>not</b> a government regulator (OSFI regulates banks, CDIC insures deposits, CRA collects tax).</li></ul>
+<h4>The financial plan (class Ch. 1)</h4>
+<ul><li><k>Personal financial plan</k>: states your goals, the spending, financing and investing activities to reach them, and the risk management needed to protect against events like death or disability.</li>
+<li><b>5 components:</b> (1) budgeting & tax planning, (2) financing purchases (liquidity, money & credit management), (3) protecting assets & income (insurance), (4) investing, (5) retirement & estate planning.</li>
+<li><b>6 steps:</b> establish goals → consider your current financial position → identify & evaluate alternative plans → select & implement the best plan → evaluate → revise.</li>
+<li>Life stages: Education (0–22), Early Career (23–30), Family & Mid Career (31–49), Prime Earning (50–64), Early Retirement (65–74), Late Retirement (75+).</li></ul>
+<h4>Goals & opportunity cost</h4>
+<ul><li><k>SMART goals</k>: <b>S</b>pecific, <b>M</b>easurable, <b>A</b>ttainable, <b>R</b>ealistic/Relevant, <b>T</b>ime-bound. A good goal states an amount, a deadline and an action plan.</li>
+<li>Goal timing: <b>short term</b> = within a year, <b>medium term</b> = 1–5 years, <b>long term</b> = more than 5 years.</li>
+<li><k>Opportunity cost</k>: what you give up by choosing one option over the next-best alternative (e.g., spending $3,000 means giving up the growth it would have earned).</li></ul>
+<h4>Net worth statement (balance sheet)</h4>
+<ul><li><k>Assets</k> = what you own. <k>Liabilities</k> = what you owe.</li>
+<li><k>Net worth</k> = Total Assets − Total Liabilities. It is a snapshot at one point in time.</li>
+<li><k>Liquid assets</k> = cash or near-cash you can access quickly without loss (chequing, savings, TFSA in a HISA, money market). A house, car and furniture are not liquid; an RRSP is usually not treated as liquid because withdrawals are taxed.</li>
+<li>Use market value for assets (what the car would sell for today, not what you paid).</li>
+<li>Asset types (class): <k>liquid assets</k>, <k>household assets</k> (car, furniture) and <k>investments</k> (stocks, bonds, mutual funds, real estate).</li>
+<li>Liabilities: <k>current liabilities</k> are due within a year (credit card); <k>long-term liabilities</k> take longer than a year (student loan, car loan, mortgage).</li>
+<li>Net worth grows only if your assets rise by more than your liabilities.</li></ul>
+<h4>Cash flow statement & budgeting</h4>
+<ul><li><k>Income</k> (inflows) and <k>expenses</k> (outflows) over a period (month/year).</li>
+<li><k>Net cash flow</k> = Cash Inflows − Cash Outflows. A positive number is a surplus; a negative one is a deficit.</li>
+<li>A <k>budget</k> is a plan for future cash flow: fixed expenses (rent, loan payments), variable expenses (food, entertainment), and savings as a planned "expense".</li>
+<li><k>Envelope method</k>: put the budgeted cash for hard-to-control categories (dining out, recreation) in separate envelopes and spend only what's inside. Leftovers carry forward.</li>
+<li>Paid bi-weekly? That's 26 cheques a year, so two months a year have a third cheque. Plan what it's for.</li></ul>
+<div class="cls"><b>Class slides say:</b> net cash flow = <b>disposable (after-tax) income − expenses</b>. It's the same as the hint sheet's inflows − outflows when inflows are your take-home pay.</div>
+<h4>How decisions affect each statement</h4>
+<div class="tablewrap"><table><tr><th>Decision</th><th>Net worth</th><th>Cash flow</th></tr>
+<tr><td>Pay off $2,000 card using savings</td><td>No change (asset ↓, liability ↓)</td><td>Improves later (no interest)</td></tr>
+<tr><td>Buy a car with a loan</td><td>No change at first, then ↓ as the car depreciates</td><td>Worse (loan payment)</td></tr>
+<tr><td>Spend $500 on dinner/travel</td><td>↓ $500</td><td>Outflow $500</td></tr>
+<tr><td>Investment rises in value</td><td>↑</td><td>No effect until sold</td></tr>
+<tr><td>Pay term life premium</td><td>↓ (expense, no cash value)</td><td>Outflow</td></tr></table></div>
+<h4>Financial ratios (class Ch. 3)</h4>
+<div class="tablewrap"><table><tr><th>Ratio</th><th>Formula</th><th>Meaning</th></tr>
+<tr><td><k>Current ratio</k></td><td>Liquid assets ÷ Current liabilities</td><td>Higher = more liquid</td></tr>
+<tr><td><k>Liquidity ratio</k></td><td>Liquid assets ÷ Monthly living expenses</td><td>Months you could cover (ties to the 3–6 month rule)</td></tr>
+<tr><td><k>Debt-to-asset ratio</k></td><td>Total liabilities ÷ Total assets</td><td>Higher = too much debt. It should fall with age and reach zero by retirement.</td></tr>
+<tr><td><k>Savings ratio</k></td><td>Savings ÷ <b>Disposable</b> income</td><td>Share of after-tax income saved</td></tr></table></div>
+<div class="ex">Liquid assets $6,000; credit card $2,400 (due this year); car loan $15,000 (long-term) → current ratio = 6,000 ÷ 2,400 = <b>2.5</b>. The car loan isn't a current liability.</div>
+<div class="cls"><b>Class vs. hint sheet:</b> the hint sheet's <b>savings rate</b> divides by annual income; the class <b>savings ratio</b> divides by disposable (after-tax) income. Use whichever income the question gives you.</div>
+<h4>Emergency fund & paying yourself first</h4>
+<ul><li><k>Emergency fund</k>: liquid savings covering 3–6 months of expenses. Months covered = liquid assets ÷ monthly expenses.</li>
+<li><k>Pay yourself first</k>: send savings out automatically on payday, before spending, and treat it as a fixed bill.</li>
+<li><k>Savings rate</k> = Annual Savings ÷ Annual Income × 100.</li>
+<li>Class slides: pay yourself first takes savings out at the <b>start</b> of the budget period, while the envelope method controls spending.</li></ul>
+<h4>Where to keep liquid savings (class Ch. 5)</h4>
+<ul><li><b>Chartered banks</b> (CDIC insured): <b>Schedule I</b> = domestic (RBC, Scotiabank, CIBC); <b>Schedule II</b> = subsidiaries of foreign banks; <b>Schedule III</b> = foreign banks with restricted deposit-taking (e.g., Citibank).</li>
+<li><b>Trust & loan companies</b>: bank-like services plus administering estates and trusts.</li>
+<li><b>Credit unions / caisses populaires</b>: provincial co-ops owned by their members. Deposits are insured by <b>provincial</b> agencies (not CDIC), and they don't operate outside their province.</li>
+<li><b>Chequing</b> = everyday transactions, little or no interest. <b>Savings</b> = more interest, may limit transactions.</li>
+<li><b>Term deposits</b>: a bit more than savings, less than GICs. <k>GIC</k>: minimum investment, fixed rate and maturity, penalty for early withdrawal (a <b>cashable GIC</b> allows it, at a lower rate). Longer terms pay more. CDIC covers it within limits.</li>
+<li>Liquidity can also come from credit (a line of credit is much cheaper than a credit card), but an emergency fund avoids interest completely. A GIC rate that looks too good to be true is probably riskier, so check for CDIC coverage.</li></ul>`,
+  summary:"Financial planning starts with knowing where you stand (net worth = assets − liabilities, a snapshot) and where your money goes (cash flow = inflows − outflows, over a period). Set SMART goals, keep a 3–6 month emergency fund, and pay yourself first. Swapping an asset for a debt (paying off a card with savings) leaves net worth unchanged. Class ratios: current = liquid assets ÷ current liabilities, debt-to-asset = liabilities ÷ assets, savings ratio = savings ÷ disposable income."},
+
+{ id:"math", title:"2. Financial Math (HP 10bII+)", focus:false,
+  outline:["Time Value of Money",[
+    ["The 5 keys",[["N · I/YR · PV · PMT · FV"],["Cash out = negative"]]],
+    ["Simple vs. compound",[["I = P × r × t"],["Interest on interest"]]],
+    ["Lump sums",[["FV = PV(1+i)^n"],["PV = FV/(1+i)^n"]]],
+    ["Annuities",[["Ordinary → END"],["Due → BEGIN (rent, leases)"]]],
+    ["Rates",[["Nominal vs. effective"],["Semi-annual mortgage conversion"]]],
+    ["Uneven cash flows",[["CFj + NPV"],["Enter $0 for empty years"]]]]],
+  cues:["What does P/YR control on the HP 10bII+?","How do you switch BEGIN/END?","Ordinary annuity vs. annuity due?","How do you convert a nominal rate to an EAR?","How do you set up a Canadian mortgage rate?","How do you find a compound annual return?","How do you do uneven cash flows?","Simple vs. compound interest?","The hint sheet says 'set P/Y and C/Y'. How do you do that on the HP?"],
+  notes:`
+<h4>HP 10bII+ setup: do this before EVERY question</h4>
+<div class="keys">Clear TVM/everything:   [■] [C ALL]          (■ = orange shift key)
+Set payments per year:  12 [■] [P/YR]        (factory default is 12!)
+BEGIN / END toggle:     [■] [BEG/END]        ("BEGIN" shows on screen when on)
+More decimals:          [■] [DISP] 4         (or [■][DISP][.] for all)
+Check P/YR:             [■] [C ALL] briefly shows "1 P_Yr" / "12 P_Yr"</div>
+<ul><li>The HP has <b>one</b> P/YR setting (no separate C/Y like the TI). <k>I/YR</k> is always a <b>nominal annual rate compounded P/YR times per year</b>.</li>
+<li><k>Sign convention</k>: money you pay out is negative, money you receive is positive. PV and FV have opposite signs (otherwise you get "no Solution").</li></ul>
+<div class="tip"><b>Watch out:</b> the HP is set to 12 payments per year by default. For annual problems set <b>1 [■][P/YR]</b>, or every annual answer will be wrong.</div>
+<div class="cls"><b>Hint sheet says "Set P/Y and C/Y":</b> that's TI BA II Plus wording, and the class slides use the TI and TVM tables (PVIFA) too. The answers are the same on the HP: if payment and compounding frequencies match, just set P/YR. If they differ (e.g., semi-annual mortgage, monthly payments), convert with NOM%/EFF% first (see below).</div>
+<h4>Simple vs. compound interest (class Ch. 2)</h4>
+<ul><li><k>Simple interest</k>: <b>I = P × r × t</b>. Interest is paid out, not reinvested, so you earn the same amount every year.</li>
+<li><k>Compound interest</k>: you earn interest on interest, so it grows faster.</li></ul>
+<div class="ex">$5,000 at 4% for 3 years: simple = 5,000 × 0.04 × 3 = <b>$600</b> ($200/yr); compounded annually = $624.32.</div>
+<h4>Lump sums: PV and FV</h4>
+<ul><li><k>Future value (FV)</k> = PV × (1 + i)^n: how investment/savings grow.</li>
+<li><k>Present value (PV)</k> = FV ÷ (1 + i)^n: what a future amount is worth today.</li></ul>
+<div class="ex">$10,000 at 6% compounded monthly for 8 years:<br><span class="keys">12 [■][P/YR]  96 [N]  6 [I/YR]  -10000 [PV]  0 [PMT]  [FV] → 16,141.43</span></div>
+<h4>Annuities</h4>
+<ul><li><k>Ordinary annuity</k> (<k>END</k> mode): payments at the end of each period. Used for loans, mortgages and most savings questions.</li>
+<li><k>Annuity due</k> (<k>BGN</k>/BEGIN mode): payments at the start of each period. Used for rent, leases, insurance premiums, and "deposits at the beginning of each month". FV(due) = FV(ordinary) × (1 + i).</li></ul>
+<div class="ex">$250 at the BEGINNING of each month, 15 yrs, 6% monthly:<br><span class="keys">[■][BEG/END] (BEGIN on)  12 [■][P/YR]  180 [N]  6 [I/YR]  0 [PV]  -250 [PMT]  [FV] → 73,068.20</span>Switch back to END afterwards!</div>
+<h4>Nominal vs. effective rates</h4>
+<ul><li><k>Nominal rate</k> (j) = the quoted annual rate. <k>Effective annual rate (EAR)</k> = what you actually earn or pay after compounding.</li>
+<li><b>EAR = (1 + j/m)^m − 1</b>, m = compounding periods per year. More compounding means a higher EAR.</li>
+<li>To compare loans or savings, always compare EARs (lowest EAR = cheapest loan; highest = best savings).</li>
+<li>Class names: nominal rate = <k>APR</k>; effective rate = <k>effective yield (EY)</k> = (1 + i/n)^n − 1.</li></ul>
+<div class="tablewrap"><table><tr><th>10% compounded…</th><th>Annually</th><th>Semi-annually</th><th>Quarterly</th><th>Monthly</th><th>Weekly</th><th>Daily</th></tr>
+<tr><td>Effective rate</td><td>10.00%</td><td>10.25%</td><td>10.38%</td><td>10.47%</td><td>10.51%</td><td>10.52%</td></tr></table></div>
+<div class="keys">18% compounded monthly → EAR:   12 [■][P/YR]  18 [■][NOM%]  [■][EFF%] → 19.56</div>
+<h4>Canadian mortgage rate conversion (semi-annual compounding)</h4>
+<ul><li>By law (<k>Interest Act</k>), Canadian fixed-rate mortgages are compounded <b>semi-annually</b>, but paid monthly, bi-weekly, etc. You must convert the rate to match the payment frequency.</li></ul>
+<div class="keys">5% compounded semi-annually, monthly payments:
+2 [■][P/YR]   5 [■][NOM%]   [■][EFF%]     → 5.0625  (EAR)
+12 [■][P/YR]  [■][NOM%]                   → 4.9487  (now stored in I/YR)
+300 [N]  500000 [PV]  0 [FV]  [PMT]       → -2,908.02</div>
+<p>For bi-weekly payments, use 26 [■][P/YR] in step 2 instead.</p>
+<h4>Solving for N, I/YR, PMT</h4>
+<ul><li><b>N</b>: "how long?" Answer is in periods, so divide by P/YR for years.</li>
+<li><b>I/YR</b>: "what rate?" Also gives the <k>compound annual return</k> = (Ending ÷ Beginning)^(1/n) − 1 (set P/YR = 1).</li>
+<li><b>PMT</b>: savings needed (PV = 0, FV = target) vs. loan payment (PV = loan, FV = 0). Don't mix them up!</li></ul>
+<h4>Uneven cash flows (PV of individual cash flows)</h4>
+<div class="keys">$3,000 yr1, $5,000 yr2, $0 yr3, $8,000 yr4 @ 6%:
+1 [■][P/YR]  0 [CFj]  3000 [CFj]  5000 [CFj]  0 [CFj]  8000 [CFj]
+6 [I/YR]  [■][NPV] → 13,616.92</div>
+<p>Or discount each one: 3,000/1.06 + 5,000/1.06² + 8,000/1.06⁴. Repeated equal flows: amount [CFj], count [■][Nj].</p>
+<h4>Amortization (balances & interest paid)</h4>
+<div class="keys">After entering a mortgage: 1 [INPUT] 60 [■][AMORT]
+[=] → principal paid · [=] → interest paid · [=] → balance</div>`,
+  summary:"Every TVM question uses the same five keys (N, I/YR, PV, PMT, FV). Most mistakes come from the settings, so check P/YR (default 12!), BEGIN vs END, and the signs of the cash flows. Compare rates using EARs, and convert Canadian semi-annual mortgage rates with NOM%/EFF% before solving."},
+
+{ id:"tax", title:"3. Personal Taxation", focus:true,
+  outline:["Personal Taxation (2026, federal + BC)",[
+    ["Rates",[["Marginal = rate on next $1"],["Average = total tax ÷ income"]]],
+    ["Deductions vs. credits",[["Deduction × marginal rate"],["Credit × 14% (federal)"]]],
+    ["Income types",[["Employment & interest: 100%"],["Capital gains: 50% included"],["Inheritance: not taxed"]]],
+    ["Special cases",[["T-bills = interest"],["Scholarships exempt (full-time)"],["Union dues deductible"]]],
+    ["OAS recovery tax",[["15% over $95,323"]]],
+    ["Filing",[["April 30 (self-employed: June 15)"],["Late: 5% + 1%/month"]]],
+    ["Ethics",[["Planning & avoidance: legal"],["Evasion: illegal"]]]]],
+  cues:["What are the 2026 federal and BC brackets?","Marginal vs. average tax rate?","Deduction vs. credit: which saves more?","How is each type of investment income taxed?","Are inheritances taxed?","How are T-bills and scholarships taxed?","How does the OAS recovery tax work?","When is the filing deadline, and what is the late penalty?","Tax planning vs. avoidance vs. evasion?","Which credits can be transferred or carried forward?"],
+  notes:`
+<h4>2026 tax brackets (taxable income)</h4>
+<div class="tablewrap"><table><tr><th>Federal</th><th>Rate</th><th>British Columbia</th><th>Rate</th></tr>
+<tr><td>$0 – $58,523</td><td>14%</td><td>$0 – $50,363</td><td>5.60%</td></tr>
+<tr><td>$58,523 – $117,045</td><td>20.5%</td><td>$50,363 – $100,728</td><td>7.70%</td></tr>
+<tr><td>$117,045 – $181,440</td><td>26%</td><td>$100,728 – $115,648</td><td>10.50%</td></tr>
+<tr><td>$181,440 – $258,482</td><td>29%</td><td>$115,648 – $140,430</td><td>12.29%</td></tr>
+<tr><td>Over $258,482</td><td>33%</td><td>$140,430 – $190,405</td><td>14.70%</td></tr>
+<tr><td></td><td></td><td>$190,405 – $265,545</td><td>16.80%</td></tr>
+<tr><td></td><td></td><td>Over $265,545</td><td>20.50%</td></tr></table></div>
+<p>Federal basic personal amount (BPA) 2026: <b>$16,452</b> (credit = 14% × BPA ≈ $2,303). Top combined BC rate: 53.50%.</p>
+<div class="cls"><b>Class slides use 2017 figures:</b> federal 15% / 20.5% / 26% / 29% / 33% at $45,282 / $90,563 / $140,388 / $200,000, BPA $11,635, and credits × <b>15%</b>. The lowest rate is 14% for 2026. If an answer only works at 15%, it's using the slide figures.</div>
+<div class="tablewrap"><table><tr><th>Taxable income</th><th>Combined federal + BC marginal rate</th></tr>
+<tr><td>$50,363 – $58,523</td><td>14% + 7.70% = <b>21.70%</b></td></tr>
+<tr><td>$58,523 – $100,728</td><td>20.5% + 7.70% = <b>28.20%</b></td></tr>
+<tr><td>$100,728 – $115,648</td><td>20.5% + 10.50% = <b>31.00%</b></td></tr>
+<tr><td>$117,045 – $140,430</td><td>26% + 12.29% = <b>38.29%</b></td></tr></table></div>
+<h4>Marginal vs. average tax rate</h4>
+<ul><li><k>Marginal tax rate</k> = the rate on your <b>next</b> dollar of income. Use it for RRSP savings, deductions, raises and investment decisions.</li>
+<li><k>Average tax rate</k> = Total Tax ÷ Taxable Income. It is always lower than the marginal rate in a <k>progressive tax system</k>.</li>
+<li>Moving into a higher bracket only taxes the dollars <b>above</b> the threshold at the higher rate. It never makes you take home less overall.</li></ul>
+<div class="ex">Federal tax on $70,000 (before credits): 14% × 58,523 + 20.5% × (70,000 − 58,523) = 8,193.22 + 2,352.79 = <b>$10,546.01</b></div>
+<h4>Tax deductions vs. tax credits</h4>
+<ul><li>A <k>tax deduction</k> reduces <b>taxable income</b> and saves deduction × <b>marginal rate</b>. Examples: <k>RRSP contributions</k>, <k>union dues</k> (line 21200), professional dues, child care, moving expenses, carrying charges.</li>
+<li>A <k>non-refundable tax credit</k> reduces <b>tax payable</b>: credit amount × lowest rate (14% federal, 5.60% BC). Examples: basic personal amount, tuition, CPP/EI, donations, medical, age amount. Worth the same to everyone who owes tax.</li>
+<li>A <k>refundable credit</k> is paid even if you owe no tax (e.g., GST/HST credit, Canada Workers Benefit).</li>
+<li>Order: Total income − deductions = <k>net income</k> → − more deductions = <k>taxable income</k> → × brackets − credits = tax payable.</li></ul>
+<div class="ex">$1,000 at a 31% marginal rate: deduction saves <b>$310</b>; federal credit saves <b>$140</b>.</div>
+<h4>Deductions & credits in detail (class Ch. 4)</h4>
+<ul><li><b>Deductions:</b> RPP contributions (T4 box 20) and RRSP contributions; union/professional dues (T4 box 44); <b>child care</b> (child under 16 or infirm; usually claimed by the lower-income spouse); <b>moving expenses</b> (new job or post-secondary school, moving at least <b>40 km closer</b>); <b>spousal support</b> (child support only under agreements made before May 1, 1997); <b>carrying charges</b> (e.g., interest on money borrowed to invest); employment expenses your contract requires.</li>
+<li><b>Common credits:</b> basic personal, spouse/common-law, age (65+; clawed back at higher income), disability, Canada caregiver, pension income (first $2,000), Canada employment amount, CPP/EI, student loan interest, tuition, medical (amount above the lesser of 3% of net income or a fixed threshold), donations.</li>
+<li><b>Transferable:</b> tuition (to a parent or grandparent, with a limit), pension income and age amounts (to a spouse), disability.</li>
+<li><b>Carry forward:</b> tuition, medical expenses, donations.</li>
+<li>Refundable credit examples from the slides: GST credit, Working Income Tax Benefit (now the Canada Workers Benefit).</li>
+<li>Students should file even with no tax owing: they get the GST/HST credit, carry tuition forward, and build RRSP room.</li></ul>
+<h4>RRSP tax savings</h4>
+<p><b>RRSP Tax Savings = Deductible Contribution × Marginal Tax Rate</b>. BC, $110,000 income, $6,000 contribution → 31% × 6,000 = <b>$1,860</b>. (A very large contribution can push income down into a lower bracket; then split it across the brackets.)</p>
+<h4>How different income is taxed</h4>
+<div class="tablewrap"><table><tr><th>Income</th><th>Tax treatment</th></tr>
+<tr><td><k>Employment income</k></td><td>100% taxable; tax withheld at source (T4)</td></tr>
+<tr><td><k>Interest income</k> (GICs, savings, bonds)</td><td>100% taxable at the marginal rate. The most heavily taxed. Taxed in the year it's <b>earned</b>, not received (reported on a T5).</td></tr>
+<tr><td><k>Capital gains</k></td><td>Only 50% taxable (<k>inclusion rate</k>). <b>Taxable Capital Gain = Gain × 50%</b>. Taxed only when sold (realized). Capital losses offset gains only (<b>allowable capital loss</b> = 50% of the loss).</td></tr>
+<tr><td>Eligible dividends</td><td>From large public corporations. Grossed up 38%, then the enhanced dividend tax credit, giving a lower effective rate than interest. Non-eligible dividends (small CCPCs) get a smaller credit.</td></tr>
+<tr><td><k>Treasury bills</k></td><td>Bought at a discount; the gain at maturity is <b>interest income</b> (100% taxable), not a capital gain</td></tr>
+<tr><td><k>Inheritances</k> / gifts</td><td><b>Not taxable</b> to the recipient (Canada has no inheritance tax). The deceased's final return pays tax on the deemed disposition.</td></tr>
+<tr><td><k>Scholarships</k></td><td>Fully exempt for full-time students eligible for the education amount (<k>scholarship exemption</k>)</td></tr>
+<tr><td>Lottery winnings</td><td>Not taxable (but interest earned on them is)</td></tr>
+<tr><td>TFSA withdrawals; life insurance death benefit</td><td>Not taxable</td></tr></table></div>
+<p>Class slides: scholarships, bursaries and fellowships are not taxable; certain RESP and RDSP amounts are received tax-free.</p>
+<h4>OAS recovery tax ("clawback")</h4>
+<ul><li><k>OAS recovery tax</k> = 15% × (net income − threshold). 2026 threshold: <b>$95,323</b>. OAS is fully eliminated at about $154,708 (ages 65–74).</li>
+<li>Example: net income $105,323 → (105,323 − 95,323) × 15% = <b>$1,500</b> repaid.</li>
+<li>Planning: pension income splitting, using a TFSA (TFSA withdrawals don't count as income), and timing RRIF withdrawals.</li></ul>
+<h4>Filing, penalties & ethics (class Ch. 4)</h4>
+<ul><li>Your employer withholds tax based on your <b>TD1</b>. Employment income is on a <b>T4</b>, other income (interest, dividends) on a <b>T5</b>. You file a <b>T1 General</b>.</li>
+<li>Tax year = calendar year. File and pay by <b>April 30</b>. Self-employed people file by <b>June 15</b>, but any tax owing is still due April 30.</li>
+<li>Late-filing penalty (if you owe tax): <b>5%</b> of the balance + <b>1% per full month</b> late, up to 12 months. File by NETFILE or mail. The <b>Notice of Assessment</b> confirms your return and shows next year's RRSP limit.</li>
+<li>Keep returns and receipts for <b>7 years</b> (class slides; the CRA's own rule is 6 years after the tax year).</li>
+<li><k>Tax planning</k> = legally using deductions, credits and accounts. <k>Tax avoidance</k> = legal, but abuses the spirit of the Income Tax Act, so the CRA may challenge it. <k>Tax evasion</k> = knowingly under-reporting tax owed: <b>illegal</b>.</li>
+<li>Other taxes: GST (federal), PST (provincial), HST (combined); excise taxes (tobacco, alcohol, gasoline); property tax (municipal, based on assessed value). Capital assets are taxed when sold, gifted, transferred or inherited.</li></ul>
+<div class="ex">Owe $2,000, file 3 full months late → 5% + 3 × 1% = 8% → penalty <b>$160</b>.</div>`,
+  summary:"Use your marginal rate (the rate on the next dollar) to value deductions like RRSP contributions and union dues. Non-refundable credits are worth a flat 14% federally. Interest is fully taxed, capital gains are 50% taxed, and inheritances and full-time scholarships aren't taxed at all. T-bill discounts count as interest, and OAS is clawed back at 15% of net income above $95,323. File by April 30; the late penalty is 5% + 1% per month. Note: the class slides use 2017 brackets and a 15% credit rate."},
+
+{ id:"reg", title:"4. Registered Accounts", focus:true,
+  outline:["Registered Plans",[
+    ["RRSP",[["Deductible; taxed on withdrawal"],["18% of prior-year earned income, max $33,810"],["HBP: $60,000 per person"]]],
+    ["TFSA",[["Not deductible; tax-free withdrawals"],["$7,000 in 2026; $109,000 cumulative"],["Withdrawals re-added Jan 1"]]],
+    ["RESP",[["Not deductible; EAPs taxed to student"],["CESG 20% of $2,500 = $500/yr"],["Lifetime: $50,000 contributions; $7,200 CESG"]]],
+    ["Choosing",[["RRSP if tax rate now > later"],["TFSA if low income now"]]]]],
+  cues:["How is RRSP contribution room calculated?","RRSP vs. TFSA: how is each taxed?","When does TFSA room come back after a withdrawal?","What is the CESG and its limits?","What is the Home Buyers' Plan limit?","When is a TFSA better than an RRSP?"],
+  notes:`
+<h4>Side-by-side comparison</h4>
+<div class="tablewrap"><table><tr><th></th><th><k>RRSP</k></th><th><k>TFSA</k></th><th><k>RESP</k></th></tr>
+<tr><td>Contribution deductible?</td><td><b>Yes</b></td><td>No</td><td>No</td></tr>
+<tr><td>Growth</td><td>Tax-deferred</td><td>Tax-free</td><td>Tax-deferred</td></tr>
+<tr><td>Withdrawals</td><td>Fully taxable as income (withholding tax)</td><td><b>Tax-free</b>; don't affect OAS/GIS</td><td>Contributions back tax-free; grants + growth taxed to the <b>student</b> (EAPs)</td></tr>
+<tr><td>2026 limit</td><td>18% of 2025 earned income, max <b>$33,810</b> + unused room</td><td><b>$7,000</b>/yr; cumulative <b>$109,000</b> (18+ since 2009)</td><td>Lifetime <b>$50,000</b> per beneficiary</td></tr>
+<tr><td>Over-contribution</td><td>1%/month over the $2,000 buffer</td><td>1%/month on the excess</td><td>1%/month</td></tr>
+<tr><td>Ends</td><td>Convert to a RRIF/annuity by end of the year you turn 71</td><td>Never; can contribute for life</td><td>36 years after opening</td></tr></table></div>
+<h4>RRSP details</h4>
+<ul><li><k>RRSP contribution room</k> = 18% × previous year's <k>earned income</k> (max $33,810 for 2026) − pension adjustment + unused carry-forward room.</li>
+<li>Deadline: 60 days after year-end (about March 1). Deductions can be carried forward and claimed in a higher-income year.</li>
+<li><k>Spousal RRSP</k>: the higher earner contributes and gets the deduction, and the spouse withdraws later at a lower rate (3-year attribution rule).</li>
+<li><k>Home Buyers' Plan (HBP)</k>: first-time buyers can withdraw up to <b>$60,000 per person</b> tax-free ($120,000 for a couple). Repay over <b>15 years</b>; any missed repayment is added to income that year.</li></ul>
+<div class="cls"><b>Class slides say $35,000</b> per person (older textbook). The limit rose to <b>$60,000</b> for withdrawals after April 16, 2024. If you see $35,000 / $70,000 as options, those are the slide figures.</div>
+<h4>TFSA details</h4>
+<ul><li>Annual limits: $5,000 (2009–12), $5,500 (2013–14), $10,000 (2015), $5,500 (2016–18), $6,000 (2019–22), $6,500 (2023), $7,000 (2024–26) = <b>$109,000</b>.</li>
+<li><k>TFSA withdrawal</k> amounts are added back to room on <b>January 1 of the following year</b>, not immediately.</li>
+<li>Best place for an emergency fund or short-term goals, and for low-income earners.</li>
+<li>Must be 18+ and a Canadian resident. Withdrawals can be used for any purpose.</li></ul>
+<div class="cls"><b>Class slides (2017):</b> $5,500 a year, $52,000 cumulative. 2026: $7,000 / $109,000.</div>
+<div class="tip"><b>Watch out:</b> withdraw $10,000 in March 2026 with no other room, re-contribute in July 2026, and you're over-contributed. Wait until Jan 1, 2027.</div>
+<h4>RESP details & government grants</h4>
+<ul><li><k>Canada Education Savings Grant (CESG)</k>: 20% on the first <b>$2,500</b> contributed per year = <b>$500/yr</b>. Unused grant room carries forward: catch-up of up to $1,000/yr in grants ($5,000 contributed). Lifetime CESG max <b>$7,200</b> (until the end of the year the child turns 17).</li>
+<li>Additional CESG for lower-income families: an extra 10–20% on the first $500.</li>
+<li><k>Canada Learning Bond (CLB)</k>: up to $2,000 for low-income families, with <b>no contribution required</b>.</li>
+<li><k>Educational Assistance Payments (EAPs)</k> = grants + growth, taxed to the student (usually little or no tax). If the child doesn't go to school: grants are repaid, and growth can roll to an RRSP (up to $50,000) or be taxed + 20% penalty.</li>
+<li><k>Accumulated income payment (AIP)</k>: growth paid to the <b>subscriber</b> (not the student). It's taxable.</li>
+<li><k>RDSP</k> (Registered Disability Savings Plan): for someone eligible for the disability tax credit. Not deductible, no annual limit, <b>$200,000 lifetime</b> limit, contributions until the year the beneficiary turns 59.</li></ul>
+<h4>Choosing RRSP vs. TFSA</h4>
+<ul><li>If your marginal rate is <b>higher now</b> than expected in retirement, choose the RRSP (deduct at a high rate, withdraw at a low rate).</li>
+<li>If income is <b>low now</b> (e.g., a student) or you'll need the money soon, choose the TFSA. Carry RRSP room forward.</li>
+<li>Same tax rate now and later: the two give the same after-tax result.</li>
+<li>Employer RRSP match: take it first; it's free money.</li></ul>`,
+  summary:"RRSPs give a deduction now and tax you later, TFSAs give no deduction but are tax-free forever, and RESPs grow tax-deferred with a 20% government grant on the first $2,500 a year. The key numbers are $33,810 (RRSP max), $7,000/$109,000 (TFSA), $500/yr and $7,200 lifetime (CESG), $50,000 (RESP), and $60,000 per person (HBP). TFSA withdrawals are re-added on January 1."},
+
+{ id:"credit", title:"5. Credit & Debt", focus:true,
+  outline:["Credit & Debt Management",[
+    ["Credit basics",[["Instalment vs. revolving"],["Credit score 300–900"]]],
+    ["Credit cards",[["Grace period on purchases only"],["Cash advances: interest from day 1"]]],
+    ["Personal loans",[["Longer maturity = more interest"],["Secured vs. unsecured"]]],
+    ["Comparing loans",[["Use EAR"],["Total cost = payments + fees"]]],
+    ["Leasing",[["Lower payments, no equity"],["Km limits, wear charges"]]],
+    ["Repayment strategy",[["Avalanche = highest rate first"]]],
+    ["Insolvency",[["Consumer proposal ≤ $250,000"],["Licensed Insolvency Trustee"],["Bankruptcy: owes ≥ $1,000"]]]]],
+  cues:["When does credit card interest start?","How do you compare two loans fairly?","How do you compare 0% financing vs. a rebate?","Pros and cons of leasing?","Which debt should you pay off first?","Consumer proposal vs. bankruptcy?","What is a Licensed Insolvency Trustee?","Instalment vs. revolving credit?","What's a good credit score, and how long do bad marks stay?","Which credit card balance method is cheapest for you?","How does loan maturity affect total interest?"],
+  notes:`
+<h4>Types of credit & credit reports (class Ch. 6)</h4>
+<ul><li><k>Instalment loan</k>: borrowed for a specific purchase and repaid in regular payments (car loan). <k>Revolving open-end credit</k>: a limit you can borrow up to; interest on the outstanding balance; a minimum payment each month (credit cards, lines of credit).</li>
+<li>Credit bureaus: <b>Equifax Canada</b> and <b>TransUnion Canada</b>. Check each report at least once a year. Lenders need your written permission to access it.</li>
+<li><k>Credit score</k>: 300–900; <b>600+ = good, 750+ = very good</b>. Factors: payment history, utilization (keep under 30%), length of history, types of credit, recent inquiries.</li>
+<li>Poor credit history stays on your report <b>3–10 years</b>, and a bankruptcy <b>6–7 years</b>. Quickest fixes: catch up on late payments, pay at least the minimum on time, and reduce debt.</li>
+<li><k>Credit insurance</k>: covers card payments for a short time (e.g., 3 months) if you're sick, injured or unemployed.</li></ul>
+<h4>Credit cards & borrowing costs</h4>
+<ul><li><k>Grace period</k>: at least 21 interest-free days on <b>new purchases</b>, only if the full statement balance is paid by the due date.</li>
+<li><k>Cash advances</k> and balance transfers accrue interest <b>from the day taken</b> (no grace period), often at a higher rate plus a fee.</li>
+<li>Paying only the <k>minimum payment</k> means interest on the whole balance and years to repay.</li>
+<li><k>Secured debt</k> (mortgage, car loan) is backed by an asset and carries a lower rate. <k>Unsecured debt</k> (credit cards, most lines of credit) carries a higher rate.</li>
+<li>Card rates are usually <b>20–30%</b>. <k>Finance charge</k> = the interest and fees you pay for using credit.</li>
+<li>How card interest is calculated: <b>previous balance</b> method (balance at the start of the period: least favourable), <b>average daily balance</b> (most common; paying part early lowers it), <b>adjusted balance</b> (balance at the end of the period: most favourable).</li></ul>
+<div class="cls"><b>Class slides say</b> the grace period is "usually about 20 days". The federal minimum is 21 days.</div>
+<h4>Personal loans (class Ch. 6)</h4>
+<ul><li>A loan contract sets the principal, interest rate, repayment schedule (<k>amortize</k> = equal payments of interest + principal) and maturity.</li>
+<li><b>Longer maturity = lower payments but more total interest.</b></li>
+<li><k>Collateral</k> backs a <k>secured loan</k>, which gets better terms than an <k>unsecured loan</k>. A co-signer is fully liable if you don't pay.</li>
+<li><k>Payday loan</k>: a short-term advance on your next paycheque, very expensive. The slides give a 60%/yr maximum consumer loan rate. (The federal criminal rate was cut to 35% APR in 2025.)</li>
+<li><k>HELOC</k>: the home is collateral; interest-only payments at a variable rate tied to the <k>prime rate</k> (the rate a bank charges its best customers); can act as a second mortgage. Default can cost you the home.</li></ul>
+<div class="ex">$16,000 at 4.9% compounded monthly: 4 years → $367.74/mo, interest $1,651.73; 5 years → $301.21/mo, interest $2,072.44. The extra year saves $66.53 a month but costs <b>$420.71</b> more interest.</div>
+<h4>Comparing loan offers: use the EAR</h4>
+<ul><li>Convert each rate: <b>EAR = (1 + j/m)^m − 1</b>. The lowest EAR is the cheapest.</li></ul>
+<div class="ex">9.60% monthly → 10.034% · 9.75% semi-annual → 9.988% · 9.70% quarterly → 10.058% · <b>9.85% annually → 9.850% (cheapest!)</b><br>The highest quoted rate can be the cheapest loan once compounding is counted.</div>
+<h4>Comparing financing alternatives by total cost</h4>
+<ul><li>Total cost = (payment × number of payments) + fees + down payment − rebates.</li>
+<li><b>Total interest</b> = (PMT × N) − amount borrowed.</li></ul>
+<div class="ex">$30,000 car: 0% for 48 months = $625 × 48 = <b>$30,000</b>.<br>Rebate $3,000 + borrow $27,000 at 6.9% monthly, 48 months: PMT = $645.30 → <b>$30,974</b>. The 0% option wins by about $974.<br><span class="keys">12 [■][P/YR]  48 [N]  6.9 [I/YR]  27000 [PV]  0 [FV]  [PMT]</span></div>
+<h4>Leasing</h4>
+<div class="tablewrap"><table><tr><th>Advantages</th><th>Disadvantages</th></tr>
+<tr><td>Lower monthly payments; small or no down payment<br>Drive a newer car, mostly under warranty<br>Easy to return at the end</td><td>No ownership or equity at the end (unless you buy it out)<br>Kilometre limits (charges per extra km)<br>Excess wear-and-tear charges; you're responsible for maintenance and damage<br>Costly to end early<br>Usually more expensive long-term than buying</td></tr></table></div>
+<p>Lease payments are made at the <b>beginning</b> of each month, so use BGN mode. Residual value = FV.</p>
+<h4>Debt repayment strategies</h4>
+<ul><li><k>Debt avalanche</k>: extra money goes to the <b>highest interest rate</b> first, which minimizes total interest.</li>
+<li><k>Debt snowball</k>: smallest balance first. Motivating, but not the cheapest.</li>
+<li><k>Debt consolidation loan</k>: one lower-rate loan replaces several high-rate debts. It only helps if you stop re-borrowing.</li>
+<li><k>Credit counselling</k> (non-profit): a debt management plan negotiates interest relief, but the full principal is still repaid.</li></ul>
+<h4>Insolvency: consumer proposals & LITs</h4>
+<ul><li><k>Licensed Insolvency Trustee (LIT)</k>: the <b>only</b> professional licensed (by the federal Office of the Superintendent of Bankruptcy) to administer consumer proposals and bankruptcies.</li>
+<li><k>Consumer proposal</k>: a legal offer to unsecured creditors to repay <b>part</b> of what you owe, over a maximum of <b>5 years</b>. Available for unsecured debts up to <b>$250,000</b> (excluding the mortgage on your principal residence). You <b>keep your assets</b>, collection calls and wage garnishments stop, and it's binding if creditors holding a majority (by dollar value) accept.</li>
+<li>Class slides add: a consumer proposal is the <b>last resort before bankruptcy</b>; creditors have <b>45 days</b> to object; it's removed from your credit report once its terms are met.</li>
+<li><k>Bankruptcy</k>: the last resort. You're <k>insolvent</k> if you owe at least <b>$1,000</b> and can't pay debts as they come due. Your property goes to the LIT (trustee in bankruptcy), who sells non-exempt assets and pays creditors <b>pro rata</b>. Unsecured creditors can no longer sue you. Your credit record is affected longer, and surplus-income payments may apply. A spouse isn't affected unless they are also responsible for the debt.</li>
+<li>Before insolvency: review your budget (set a self-imposed credit limit), balance sheet (assets that could pay down debt) and cash flow (where to cut back).</li>
+<li>Secured debts (mortgage, car loan) are <b>not</b> eliminated by a proposal.</li></ul>`,
+  summary:"Compare loans by effective rate and by total cost, not by the quoted rate or the monthly payment. Pay off the highest-rate debt first (avalanche). Leasing lowers payments but builds no equity and limits kilometres. When debt is unmanageable, a consumer proposal (administered only by a Licensed Insolvency Trustee) can reduce up to $250,000 of unsecured debt while you keep your assets. A longer loan means lower payments but more interest, and a credit score of 600+ is good (750+ very good)."},
+
+{ id:"mort", title:"6. Mortgages & Home Equity", focus:true,
+  outline:["Mortgage Financing",[
+    ["Mortgage types",[["Open vs. closed"],["Fixed vs. variable"],["Term vs. amortization"]]],
+    ["Payments",[["Semi-annual compounding"],["Accelerated bi-weekly"]]],
+    ["Qualifying",[["GDS ≤ 39% (slides: 32%)"],["TDS ≤ 44% (slides: 40%)"]]],
+    ["Down payment & insurance",[["LTV > 80% → insured"],["Min: 5% / 10% tiers"]]],
+    ["Equity",[["Value − secured debt"],["HELOC ≤ 65%; combined ≤ 80%"]]],
+    ["Buying costs",[["Down payment sources"],["Closing costs"],["Rent vs. own"]]]]],
+  cues:["Open vs. closed mortgage?","Term vs. amortization?","Why do accelerated payments save interest?","How do you calculate GDS and TDS?","How do you calculate LTV, and when is insurance needed?","What is the minimum down payment?","How do you find home equity and the HELOC limit?","What are the payment frequency formulas?","Conventional vs. high-ratio mortgage?","What closing costs should a buyer budget for?","Renting vs. owning: which costs count?"],
+  notes:`
+<h4>Mortgage basics</h4>
+<ul><li><k>Amortization period</k> = total time to pay off the loan (typically 25 years; up to 30 for insured first-time buyers or new builds). <k>Term</k> = the length of the current contract and rate (e.g., 5 years), renewed at the end.</li>
+<li><k>Open mortgage</k>: prepay any amount at any time with <b>no penalty</b>, at a <b>higher rate</b>. Good if you'll sell soon or expect a windfall.</li>
+<li><k>Closed mortgage</k>: <b>lower rate</b>, but limited prepayment privileges (e.g., 10–20%/yr). Breaking it costs 3 months' interest or the <k>interest rate differential (IRD)</k>.</li>
+<li><k>Fixed rate</k>: the payment and rate are locked for the term; preferred when rates are rising. <k>Variable rate</k>: moves with the lender's <k>prime rate</k> (set at prime ± a margin). It can be open or closed. A <k>convertible mortgage</k> lets you lock in a fixed rate before the term ends without a penalty.</li>
+<li><k>Refinancing</k>: replacing your mortgage with a new lower-rate one. It's only worth it if the savings exceed the prepayment penalty and new closing costs.</li></ul>
+<div class="cls"><b>Class slides say:</b> maximum amortization <b>25 years (300 months)</b>; terms of 6 months or 1, 2, 3, 4, 5 or 10 years.</div>
+<h4>Regular vs. accelerated payments</h4>
+<ul><li>Monthly: 12 payments a year. <b>Regular bi-weekly</b> = monthly × 12 ÷ 26 (same annual total, little saving).</li>
+<li><k>Accelerated bi-weekly</k> = monthly ÷ 2, paid 26 times a year, which works out to <b>one extra monthly payment per year</b>. That shortens the amortization by years and saves a lot of interest.</li></ul>
+<div class="tablewrap"><table><tr><th>Frequency</th><th>Payments/yr</th><th>Payment</th></tr>
+<tr><td>Monthly</td><td>12</td><td>—</td></tr>
+<tr><td>Semi-monthly</td><td>24</td><td>Monthly ÷ 2</td></tr>
+<tr><td>Bi-weekly</td><td>26</td><td>Monthly × 12 ÷ 26</td></tr>
+<tr><td><b>Accelerated bi-weekly</b></td><td>26</td><td><b>Monthly ÷ 2</b></td></tr>
+<tr><td>Weekly</td><td>52</td><td>Monthly × 12 ÷ 52</td></tr>
+<tr><td><b>Accelerated weekly</b></td><td>52</td><td><b>Monthly ÷ 4</b></td></tr></table></div>
+<p>Class example ($250,000, 6% semi-annual, 25 yrs, $1,600/month): accelerated bi-weekly ($800) or weekly ($400) pays it off in <b>252 months (21 years)</b> and saves about <b>$42,500–$43,000</b> of interest. Regular bi-weekly/weekly save only $1,400–$2,100.</p>
+<div class="ex">$500,000, 5% semi-annual, 25 yrs: monthly = <b>$2,908.02</b>. Accelerated bi-weekly = $1,454.01 → paid off in about <b>21.5 years</b>.<br>Balance after a 5-year term = <b>$442,537.54</b>; interest paid in the first 5 years = <b>$117,019</b> (most early payments are interest).</div>
+<div class="keys">Accelerated bi-weekly: 2 [■][P/YR] 5 [■][NOM%] [■][EFF%]; 26 [■][P/YR] [■][NOM%]
+1454.01 [+/-] [PMT]  500000 [PV]  0 [FV]  [N] → ≈ 558.4 periods ÷ 26 = 21.5 yrs</div>
+<h4>Interest savings</h4>
+<ul><li>Total interest = PMT × N − principal. Compare scenarios (shorter amortization, lump-sum prepayment, accelerated payments).</li>
+<li>Example: $400,000 at 4.8% semi-annual: 25 years vs. 20 years saves about <b>$63,800</b> of interest for roughly $304/month more.</li>
+<li>Lump-sum prepayment: subtract it from the balance (PV), keep PMT the same, and solve for the new N.</li></ul>
+<h4>Qualifying: GDS & TDS</h4>
+<ul><li><k>GDS ratio</k> = (P&I + property taxes + heating [+ 50% of condo fees]) ÷ gross income × 100. Limit about <b>39%</b>.</li>
+<li><k>TDS ratio</k> = (housing costs above + all other debt payments) ÷ gross income × 100. Limit about <b>44%</b>.</li>
+<li>Credit cards: lenders assume a <b>3% of balance</b> monthly payment. Use monthly OR annual figures throughout; don't mix them.</li>
+<li><k>Stress test</k>: qualify at the higher of the contract rate + 2% or 5.25%.</li>
+<li>Uses <b>gross household</b> income. A <k>pre-approval</k> tells you how much you can borrow and guarantees a rate for a while.</li></ul>
+<div class="cls"><b>Class slides use stricter limits:</b> GDS ≤ <b>32%</b> and TDS ≤ <b>40%</b> (textbook), and they say CMHC's limits for insured mortgages were <b>35% / 42%</b> from July 2020. CMHC went back to <b>39% / 44%</b> in July 2021. If the answer choices say 32%/40%, that's the textbook rule.<br>Class example: income $7,000/mo; mortgage $1,919 + heat $120 + tax $250 → GDS = <b>32.70%</b>; + $500 other debt → TDS = <b>39.84%</b>.</div>
+<div class="ex">Income $120,000/yr; P&I $2,600/mo; tax $4,800/yr ($400/mo); heat $150/mo → GDS = $3,150 × 12 ÷ 120,000 = <b>31.5%</b>.<br>Add car loan $550 + 3% × $5,000 card = $700 → TDS = $3,850 × 12 ÷ 120,000 = <b>38.5%</b>.</div>
+<h4>Down payment, LTV & default insurance</h4>
+<ul><li><k>Loan-to-value (LTV) ratio</k> = Mortgage ÷ Property Value × 100.</li>
+<li>LTV <b>above 80%</b> (less than 20% down) = <k>high-ratio mortgage</k>, so <k>mortgage default insurance</k> is mandatory (CMHC, Sagen, Canada Guaranty). It <b>protects the lender</b>, the borrower pays a premium (about 2.8–4.0% of the loan), and the premium is usually added to the mortgage. Insurance is available on homes under $1.5 million.</li>
+<li><k>Minimum down payment</k>: 5% of the first $500,000 + 10% of the portion from $500,000 to $1.5M; 20% for $1.5M+. Example: $800,000 home → $25,000 + $30,000 = <b>$55,000</b>.</li>
+<li>Don't confuse it with <b>mortgage life insurance</b>, which pays off the mortgage when the borrower dies.</li>
+<li><k>Conventional mortgage</k>: at least 20% down; no insurance needed. <k>High-ratio mortgage</k>: under 20% down; must be insured.</li></ul>
+<div class="tablewrap"><table><tr><th>LTV (CMHC, class slides)</th><th>≤ 65%</th><th>≤ 75%</th><th>≤ 80%</th><th>≤ 85%</th><th>≤ 90%</th><th>≤ 95%</th><th>90.01–95% non-traditional</th></tr>
+<tr><td>Premium (% of loan)</td><td>0.60%</td><td>1.70%</td><td>2.40%</td><td>2.80%</td><td>3.10%</td><td>4.00%</td><td>4.50%</td></tr></table></div>
+<div class="ex">$400,000 mortgage at 90% LTV → 3.10% × 400,000 = <b>$12,400</b> premium, usually added to the mortgage.</div>
+<ul><li><b>Traditional down payment</b>: own savings, RRSP (HBP), non-repayable gift from a parent, sale of another property. <b>Non-traditional</b>: borrowed money, other gifts, lender cashback (higher premium).</li>
+<li><k>Vendor take-back mortgage</k>: the <b>seller</b> lends you the money. Title transfers to you, and the property goes back to the seller if you default. It's an alternative to a high-ratio mortgage.</li></ul>
+<h4>Home equity & HELOCs</h4>
+<ul><li><k>Home equity</k> = Property Value − <b>all</b> outstanding secured debt (mortgage + HELOC). $750,000 − $420,000 − $40,000 = <b>$290,000</b>.</li>
+<li><k>HELOC</k> (home equity line of credit): revolving credit secured by the home, with interest-only minimum payments, at about prime + 0.5%. Limits: the HELOC portion ≤ <b>65%</b> of value, and mortgage + HELOC ≤ <b>80%</b>.</li>
+<li>Example: $800,000 home, $400,000 mortgage → 80% × 800,000 − 400,000 = <b>$240,000</b> (less than the 65% cap of $520,000).</li>
+<li>Risks: easy to over-borrow, rates are variable, and the home is the collateral.</li></ul>
+<div class="cls"><b>Class slides say</b> a HELOC can go "up to 80% or more" of the home's value, with interest-only payments, and can act as a second mortgage. The 65% / 80% split is the current federal (OSFI) guideline.</div>
+<h4>Closing costs & rent vs. own (class Ch. 7)</h4>
+<ul><li><b>Closing costs</b>: home inspection ($350–600), appraisal ($300–500), land survey, <b>land transfer tax</b> (BC: property transfer tax), legal fees, GST/HST on a new home, title insurance, interest adjustment, prepaid property tax/utility adjustments, home insurance. Keep some cash for these and for liquidity.</li>
+<li><b>Costs of renting</b>: rent, opportunity cost of the security deposit, renter's insurance.</li>
+<li><b>Costs of owning</b>: down payment and its <b>opportunity cost</b>, mortgage payments, closing costs, maintenance and repairs, property tax, home insurance.</li>
+<li>Bigger mortgage payments mean less saving, lower liquidity and more financial risk. Don't overbuy.</li></ul>`,
+  summary:"Canadian fixed mortgages compound semi-annually, so convert the rate before solving. Accelerated bi-weekly payments add one extra monthly payment a year and cut years off the amortization. Lenders want GDS ≤ 39% and TDS ≤ 44%, and any LTV above 80% needs default insurance, which protects the lender. Equity = value − all secured debt, and a HELOC is capped at 65% of value and 80% combined with the mortgage. The class slides use stricter textbook limits (GDS 32%, TDS 40%), and accelerated weekly = monthly ÷ 4."},
+
+{ id:"risk", title:"7. Risk Mgmt (Bonus)", focus:false,
+  outline:["Risk Management: 6 bonus marks",[
+    ["Managing risk",[["Avoid · Reduce · Accept · Share"]]],
+    ["Auto policy",[["A: Third-party liability"],["B: Accident benefits"],["C: Collision & comprehensive"]]],
+    ["Property & auto",[["Deductible: you pay first"],["Water damage endorsements"],["Comprehensive / Broad / Basic"]]],
+    ["Valuation",[["Actual cash value"],["Replacement cost"],["Agreed value"]]],
+    ["Life insurance",[["Term: no cash value"],["Needs analysis"],["Whole · Universal · Term to 100"]]],
+    ["Health insurance",[["Disability · Critical illness · LTC"]]]]],
+  cues:["How does a deductible affect the payout and the premium?","What water damage does a standard home policy cover?","ACV vs. replacement cost vs. agreed value?","How does term life affect net worth?","How do you calculate life insurance needs?","What are the 4 ways to manage risk?","What are the 3 sections of an auto policy?","Comprehensive vs. broad vs. basic home policy?","Whole vs. universal life vs. term to 100?","Income method vs. budget method?"],
+  notes:`
+<h4>Managing risk (class Ch. 8)</h4>
+<ul><li>Steps: recognize your risks → decide whether to protect against them → decide how much coverage and which provisions.</li>
+<li>Four choices: <b>avoid</b> the risk, <b>reduce</b> it, <b>accept</b> it (when the possible loss is small), or <b>share</b> it by insuring (when the loss would be likely and large).</li>
+<li><k>Premium</k> = cost of insurance. Insurer profit = (premiums + investment earnings) − (claims + expenses). Likelier, bigger losses mean higher premiums. <k>Underwriters</k> price the risk.</li>
+<li><b>Captive agent</b> = sells for one insurer; <b>independent agent/broker</b> = sells for many.</li></ul>
+<h4>Automobile insurance & deductibles</h4>
+<ul><li><k>Deductible</k> = the part of each claim you pay. Insurer pays loss − deductible ($4,200 − $1,000 = $3,200).</li>
+<li>A <b>higher deductible means a lower premium</b> (you retain more risk). Collision covers crashes; comprehensive covers theft, fire, hail and vandalism. In BC, basic auto insurance is through ICBC.</li>
+<li>An auto policy has three sections: <b>A. Third-party liability</b> (bodily injury and property damage you cause others; BC minimum <b>$200,000</b>, and you should buy more); <b>B. Accident benefits</b> (medical, funeral and income benefits for you and your passengers, plus <k>uninsured motorist</k> coverage for hit-and-runs or uninsured drivers; BC $150,000); <b>C. Loss or damage to your own car</b> (optional: <k>collision</k> = accidents where your driver is at fault; <k>comprehensive</k> = theft, fire, hail, flood, vandalism).</li>
+<li><b>No-fault</b>: your own insurer pays your medical costs whoever caused the accident. The <b>Facility Association</b> insures high-risk drivers nobody else will.</li>
+<li>Premium factors: likelihood of claims, amount of liability coverage, deductible, how you use the car, its value and repair record, location, driving record and training (private insurers also use age, sex and distance).</li></ul>
+<h4>Homeowners' insurance & water damage</h4>
+<ul><li>A standard policy covers <b>sudden and accidental</b> water damage (e.g., a burst pipe).</li>
+<li><k>Sewer backup</k> and <k>overland flood</k> need separate <b>endorsements</b>. Gradual leaks, seepage and lack of maintenance are excluded.</li>
+<li>The BCAA policy reading excludes outdoor drain/sewer backup, surface water (rain or snowmelt flowing over the ground) and flood (rivers, lakes, the sea) unless you buy those extra coverages. Continuous seepage, groundwater and wear and tear are always excluded.</li>
+<li>Policy types: <b>Comprehensive</b> = all perils on building <i>and</i> contents; <b>Broad</b> = all perils on the building, named perils on contents; <b>Basic</b> = named perils on both. <k>All perils</k> covers everything not excluded, while <k>named perils</k> covers only the listed events.</li>
+<li>Many insurers require coverage of at least <b>80% of replacement cost</b>, and your lender requires at least the mortgage amount. Contents coverage is a % of the dwelling value. A <k>personal property floater</k> itemizes valuables, a home office usually needs an add-on, and liability coverage also applies away from home.</li>
+<li><k>Tenant's insurance</k>: contents + liability + extra living expenses, but not the building. <k>Umbrella liability policy</k>: extra liability on top of your auto and home policies.</li>
+<li>Lower your premium: raise the deductible (Vancouver Sun article: $500 → $1,000 cuts the premium about 10–15%), add alarms or extinguishers, bundle policies, stay loyal, shop around. Keep a photo inventory of your belongings for claims.</li></ul>
+<h4>How losses are valued</h4>
+<ul><li><k>Actual cash value (ACV)</k> = replacement cost − <k>depreciation</k>. Example: $2,000 TV, 10-yr life, 4 yrs old → depreciation 40% → ACV $1,200 − $500 deductible = <b>$700</b>.</li>
+<li><k>Replacement cost</k> coverage pays the cost of a new item of similar brand and quality (no depreciation) and costs a higher premium. The class slides call ACV coverage a <b>cash-value policy</b>.</li>
+<li><k>Agreed-value insurance</k>: the value is fixed when the policy is written (classic cars, art, collectibles), and that amount is paid on a total loss with no depreciation argument.</li></ul>
+<h4>Life insurance</h4>
+<ul><li><k>Term life insurance</k>: pure protection for a set period, cheapest, <b>no cash value</b>. It does <b>not</b> increase net worth, and premiums are an expense. Permanent (whole/universal) life builds cash value, which <b>is</b> an asset.</li>
+<li><k>Life insurance needs analysis</k> (capital needs): PV of income the family needs + lump sums (debts, funeral, education) − existing assets & coverage.</li></ul>
+<div class="ex">$50,000/yr for 20 yrs at 4% → PV = $679,516; + $300,000 debts − $100,000 resources = <b>$879,516</b>.<br><span class="keys">1 [■][P/YR]  20 [N]  4 [I/YR]  50000 [PMT]  0 [FV]  [PV]</span></div>
+<ul><li><k>Income method</k>: coverage = a multiple of annual income (e.g., 10×). Simple, but ignores age and family situation (young family → ~20×; older couple with savings → ~6×).</li>
+<li><k>Budget method</k>: coverage based on future expenses and current situation (living costs, special expenses like tuition, debts, the spouse's job prospects, existing savings). It gives a better estimate.</li></ul>
+<div class="ex">Class example: $30,000 at the <b>start</b> of each year for 20 years at 3% → PV = <b>$459,714</b> (BGN mode). + $50,000 education + $20,000 job training + $250,000 mortgage = <b>≈ $779,714</b> → buy $800,000.<br><span class="keys">[■][BEG/END]  1 [■][P/YR]  20 [N]  3 [I/YR]  30000 [PMT]  0 [FV]  [PV] → −459,713.97</span></div>
+<div class="tip"><b>Slide typo:</b> the slide says to multiply by <b>1.06</b> and shows $364,746. An annuity due = ordinary × (1 + i) = $446,340 × <b>1.03</b> = $459,730. Their final $779,730 only works with 1.03.</div>
+<h4>Types of life insurance (class Ch. 9)</h4>
+<div class="tablewrap"><table><tr><th></th><th>Term</th><th>Whole life</th><th>Universal life</th><th>Term to 100</th></tr>
+<tr><td>Coverage</td><td>Set period (10–20 yrs)</td><td>Permanent</td><td>Permanent</td><td>Permanent</td></tr>
+<tr><td>Cash value?</td><td>No</td><td>Yes, guaranteed</td><td>Yes, not guaranteed</td><td>No</td></tr>
+<tr><td>Premium</td><td>Lowest</td><td>Fixed for life</td><td>Flexible (min–max)</td><td>Between term and whole/UL</td></tr>
+<tr><td>Investments</td><td>—</td><td>Insurer picks</td><td>Owner picks</td><td>—</td></tr></table></div>
+<ul><li>Term premiums are higher for a longer term, an older insured, more coverage, men, smokers and a family medical history.</li>
+<li>Death benefit is <b>tax-free</b>, and a named beneficiary avoids probate. <b>Participating</b> policies (whole life) can pay policy dividends.</li>
+<li><k>Creditor insurance</k> (e.g., mortgage insurance from the bank): the creditor is the beneficiary, coverage shrinks with the balance but the premium doesn't, and it ends if you switch lenders. Personally owned term is more flexible. <b>Group term</b> through an employer is cheaper.</li>
+<li>Policy terms: suicide clause (no benefit within <b>2 years</b>), grace period, reinstatement, living benefits, policy loans (cash-value policies). Riders: waiver of premium, guaranteed insurability, accidental death (usually double), child term.</li>
+<li><b>Non-forfeiture options</b> (cancelling a cash-value policy): take the cash, use it to pay premiums, or buy paid-up term or permanent insurance.</li></ul>
+<h4>Health insurance (class Ch. 9)</h4>
+<ul><li><k>Disability insurance</k>: <b>monthly income</b> if you can't work. Sources: workers' comp (work injuries only), group LTD (60–70% of gross), CPP disability (severe and prolonged), EI sickness (slides: 15 weeks; now 26). Definitions of disability: own occupation (best), regular occupation, any occupation. A longer waiting period means a lower premium.</li>
+<li><k>Critical illness insurance</k>: a <b>lump sum</b> if you're diagnosed with a covered illness (stroke, cancer, heart attack) and survive about 30 days. Use it any way you like.</li>
+<li><k>Long-term care insurance</k>: covers help with everyday tasks (nursing, personal care). A longer elimination period means a lower premium.</li></ul>`,
+  summary:"These are 6 free bonus marks. The insurer pays the loss minus the deductible, and a higher deductible lowers the premium. ACV subtracts depreciation, replacement cost doesn't, and agreed value pays a pre-set amount. Standard home policies cover sudden water damage but not flood or sewer backup without endorsements. Term life has no cash value, so it doesn't add to net worth. An auto policy has 3 sections (liability, accident benefits, own-car damage), home policies are comprehensive, broad or basic, and the budget method beats the income method for sizing life insurance."},
+
+{ id:"estate", title:"8. Estate Planning", focus:false,
+  outline:["Estate Planning",[
+    ["Objectives",[["Carry out wishes"],["Provide for dependants"],["Minimize tax & costs"]]],
+    ["Key documents",[["Will → after death"],["Power of attorney → incapacity"]]],
+    ["Bypass the estate",[["Beneficiary designations"],["Joint tenancy (JTWROS)"]]],
+    ["Tax at death",[["Deemed disposition"],["Spousal rollover"],["BC probate ~1.4%"]]]]],
+  cues:["What are the main goals of estate planning?","What happens if you die without a will?","Why do beneficiary designations matter?","How can taxes and probate be reduced?","Will vs. power of attorney?","How does a planner identify estate needs?"],
+  notes:`
+<h4>Primary objectives</h4>
+<ul><li>Transfer assets to the people and causes you choose, efficiently, while providing for dependants and minimizing taxes, <k>probate</k> fees, delays and family conflict.</li>
+<li>Class Ch. 1 definition: estate planning = deciding how your wealth will be distributed before and/or after your death. (The class slides don't have a full estate chapter, so this section follows the hint sheet.)</li></ul>
+<h4>Wills & powers of attorney</h4>
+<ul><li>A <k>will</k> names an <k>executor</k> (in BC, the "executor" is also called the personal representative), beneficiaries and guardians for minor children. Review it after marriage, divorce, children or a move.</li>
+<li><k>Intestate</k> (no will): provincial law decides who inherits (BC: the <i>Wills, Estates and Succession Act</i>, WESA), not your wishes. Common-law partners, friends and charities can be left out, and the courts appoint an administrator.</li>
+<li><k>Enduring power of attorney</k>: someone manages your finances if you become incapable while alive. In BC a <k>representation agreement</k> covers health and personal care. A will only works after death.</li></ul>
+<h4>Beneficiary designations & passing assets outside the estate</h4>
+<ul><li><k>Beneficiary designations</k> on RRSPs/RRIFs, TFSAs (successor holder), life insurance and pensions pass <b>directly</b> to the beneficiary, outside the estate, so there's no probate and it's faster and more private.</li>
+<li><k>Joint tenancy with right of survivorship (JTWROS)</k>: the survivor automatically owns the property and it skips probate (risks: loss of control, the joint owner's creditors, and family disputes).</li></ul>
+<h4>Taxes & costs at death</h4>
+<ul><li><k>Deemed disposition</k>: at death you're treated as having sold all capital property at fair market value, so capital gains are taxed on the final return. The full value of an RRSP/RRIF is income on the final return…</li>
+<li>…unless left to a spouse: a <k>spousal rollover</k> defers the tax (the RRSP rolls to the spouse's RRSP/RRIF; capital property rolls at cost). Your principal residence is exempt from capital gains.</li>
+<li>BC <k>probate fees</k>: about $6 per $1,000 of estate value from $25,000–$50,000, and $14 per $1,000 (1.4%) above $50,000.</li>
+<li>Other strategies: name beneficiaries, give to charity (donation credits), use trusts, and buy life insurance to pay taxes at death.</li></ul>
+<h4>How planners identify estate planning needs</h4>
+<ul><li>Gather data on family structure (spouse, children, blended family, dependants with special needs), existing will and POA, beneficiary designations, how assets are owned, business interests, and estimated taxes at death. Then compare this with the client's wishes and look for gaps.</li></ul>`,
+  summary:"Estate planning makes sure your assets go where you want, with the least tax, cost and delay. A will covers death, and a power of attorney covers incapacity. Beneficiary designations and joint ownership pass assets outside the estate, avoiding probate, and naming a spouse lets RRSPs and capital property roll over tax-deferred."},
+
+{ id:"formulas", title:"9. Formula & Numbers Sheet", focus:false,
+  outline:["Exam cheat-sheet",[["Formulas"],["2026 numbers"],["Calculator checklist"]]],
+  cues:["Can you write each formula from memory?","Can you recall each 2026 limit?","What is your pre-question calculator checklist?"],
+  notes:`
+<h4>Formulas from the hint sheet</h4>
+<div class="tablewrap"><table><tr><th>Concept</th><th>Formula</th></tr>
+<tr><td><k>Net worth</k></td><td>Total Assets − Total Liabilities</td></tr>
+<tr><td><k>Net cash flow</k></td><td>Cash Inflows − Cash Outflows</td></tr>
+<tr><td><k>Savings rate</k></td><td>Annual Savings ÷ Annual Income × 100</td></tr>
+<tr><td>RRSP tax savings</td><td>Deductible Contribution × Marginal Tax Rate</td></tr>
+<tr><td>Taxable capital gain</td><td>Capital Gain × Inclusion Rate (50%)</td></tr>
+<tr><td><k>Home equity</k></td><td>Property Value − Outstanding Secured Debt</td></tr>
+<tr><td><k>Loan-to-value ratio</k></td><td>Mortgage Amount ÷ Property Value × 100</td></tr>
+<tr><td><k>GDS ratio</k></td><td>Qualifying Housing Costs ÷ Gross Income × 100</td></tr>
+<tr><td><k>TDS ratio</k></td><td>(Housing Costs + Other Debt Payments) ÷ Gross Income × 100</td></tr>
+<tr><td><k>Effective annual rate (EAR)</k></td><td>(1 + j/m)^m − 1</td></tr>
+<tr><td><k>Compound annual return</k></td><td>(Ending Value ÷ Beginning Value)^(1/n) − 1</td></tr>
+<tr><td>OAS recovery tax</td><td>15% × (Net Income − $95,323)</td></tr>
+<tr><td>Months of emergency fund</td><td>Liquid Assets ÷ Monthly Expenses</td></tr>
+<tr><td>Total interest on a loan</td><td>PMT × N − Principal</td></tr>
+<tr><td>ACV</td><td>Replacement Cost − Depreciation</td></tr></table></div>
+<h4>Extra formulas from the class slides</h4>
+<div class="tablewrap"><table><tr><th>Concept</th><th>Formula</th></tr>
+<tr><td><k>Simple interest</k></td><td>I = P × r × t</td></tr>
+<tr><td><k>Current ratio</k></td><td>Liquid Assets ÷ Current Liabilities</td></tr>
+<tr><td><k>Liquidity ratio</k></td><td>Liquid Assets ÷ Monthly Living Expenses</td></tr>
+<tr><td><k>Debt-to-asset ratio</k></td><td>Total Liabilities ÷ Total Assets</td></tr>
+<tr><td><k>Savings ratio</k></td><td>Savings ÷ Disposable (after-tax) Income</td></tr>
+<tr><td>Accelerated bi-weekly / weekly</td><td>Monthly ÷ 2 / Monthly ÷ 4</td></tr>
+<tr><td>Late-filing penalty</td><td>5% + 1% × full months late (max 12)</td></tr>
+<tr><td>Insurer profit</td><td>(Premiums + Investment Earnings) − (Claims + Expenses)</td></tr></table></div>
+<h4>2026 numbers to memorize</h4>
+<div class="tablewrap"><table>
+<tr><td>Federal brackets</td><td>14% / 20.5% / 26% / 29% / 33% at $58,523 / $117,045 / $181,440 / $258,482</td></tr>
+<tr><td>BC brackets</td><td>5.60% / 7.70% / 10.50% / 12.29% / 14.70% / 16.80% / 20.50%</td></tr>
+<tr><td>Federal BPA</td><td>$16,452</td></tr>
+<tr><td>RRSP max</td><td>18% of earned income, up to $33,810</td></tr>
+<tr><td>TFSA</td><td>$7,000/yr; $109,000 cumulative</td></tr>
+<tr><td>RESP / CESG</td><td>$50,000 lifetime; CESG 20% of $2,500 = $500/yr; $7,200 lifetime</td></tr>
+<tr><td>HBP</td><td>$60,000 per person; repay over 15 years</td></tr>
+<tr><td>OAS threshold</td><td>$95,323 (15% clawback)</td></tr>
+<tr><td>Capital gains inclusion</td><td>50%</td></tr>
+<tr><td>GDS / TDS limits</td><td>39% / 44%</td></tr>
+<tr><td>Default insurance</td><td>Required if LTV > 80% (down payment < 20%)</td></tr>
+<tr><td>HELOC</td><td>≤ 65% of value; mortgage + HELOC ≤ 80%</td></tr>
+<tr><td>Consumer proposal</td><td>≤ $250,000 unsecured debt; ≤ 5 years; via LIT; creditors have 45 days to object</td></tr>
+<tr><td>Credit score</td><td>300–900; 600+ good, 750+ very good</td></tr>
+<tr><td>Bankruptcy</td><td>Insolvent = owe ≥ $1,000 and can't pay; stays on report 6–7 yrs</td></tr>
+<tr><td>Tax filing</td><td>April 30 (self-employed file by June 15)</td></tr></table></div>
+<h4>Where the class slides use different numbers</h4>
+<div class="tablewrap"><table><tr><th>Item</th><th>2026 / current (these notes)</th><th>Class slides</th></tr>
+<tr><td>Lowest federal rate (credit rate)</td><td>14%</td><td>15% (2017)</td></tr>
+<tr><td>Federal brackets</td><td>$58,523 / $117,045 / $181,440 / $258,482</td><td>$45,282 / $90,563 / $140,388 / $200,000</td></tr>
+<tr><td>Basic personal amount</td><td>$16,452</td><td>$11,635</td></tr>
+<tr><td>TFSA</td><td>$7,000/yr; $109,000 cumulative</td><td>$5,500/yr; $52,000</td></tr>
+<tr><td>Home Buyers' Plan</td><td>$60,000 per person</td><td>$35,000 per person</td></tr>
+<tr><td>GDS / TDS limits</td><td>39% / 44%</td><td>32% / 40% (CMHC 35% / 42% from July 2020)</td></tr>
+<tr><td>Max amortization</td><td>25 yrs (30 for some insured buyers)</td><td>25 yrs</td></tr>
+<tr><td>HELOC</td><td>≤ 65% of value; ≤ 80% combined</td><td>"up to 80% or more"</td></tr>
+<tr><td>Grace period</td><td>at least 21 days</td><td>about 20 days</td></tr>
+<tr><td>SMART</td><td>Attainable, Relevant, Time-bound</td><td>Actionable, Realistic, Timely</td></tr>
+<tr><td>Savings rate/ratio</td><td>÷ annual income (hint sheet)</td><td>÷ disposable income</td></tr>
+<tr><td>EI sickness benefit</td><td>26 weeks</td><td>15 weeks</td></tr>
+<tr><td>Max consumer loan rate</td><td>35% APR (2025)</td><td>60%/yr</td></tr>
+<tr><td>Keep tax records</td><td>6 years (CRA)</td><td>7 years</td></tr>
+<tr><td>Calculator</td><td>HP 10bII+ (P/YR only)</td><td>TI BA II Plus (P/Y and C/Y)</td></tr></table></div>
+<div class="tip"><b>Exam tip:</b> if the right answer isn't among the options using the 2026 figure, try the class-slide figure. Multiple-choice options often reveal which set the question was written with.</div>
+<h4>HP 10bII+ checklist (every question)</h4>
+<div class="keys">1. [■][C ALL]                       clear
+2. Check P/YR: 1? 2? 12? 26?        match the PAYMENT frequency
+   (hint sheet's "P/Y and C/Y" = TI wording; HP has P/YR only)
+3. BEGIN on screen?                 BGN only for payments at the START
+4. Mortgage? Convert semi-annual    NOM% → EFF% → NOM%
+5. Signs: money out = negative
+6. Answer N in periods → ÷ P/YR for years</div>
+<div class="tip"><b>Exam strategy:</b> 75 questions, about 1.6 min each, no penalty for guessing, so answer everything. Do the 6 RM bonus questions too; they can only add marks.</div>`,
+  summary:"Everything on one page: the hint-sheet formulas, the 2026 limits and the calculator checklist. Rewrite the formulas and limits from memory the night before the exam."}
+];
+
+const GLOSSARY = [
+["Actual cash value (ACV)","Replacement cost minus depreciation; what a used item is worth when it's lost.","risk"],
+["Agreed-value insurance","Coverage where insurer and insured fix the item's value in advance; paid in full on a total loss.","risk"],
+["Amortization period","Total time to pay a mortgage off completely (e.g., 25 years).","mort"],
+["Annuity due","Equal payments at the BEGINNING of each period (rent, leases); use BGN mode.","math"],
+["Assets","Everything you own that has value.","fund"],
+["Average tax rate","Total tax ÷ taxable income.","tax"],
+["Accelerated bi-weekly","Monthly payment ÷ 2, paid 26 times a year; one extra monthly payment a year.","mort"],
+["Budget","A plan for future income and spending.","fund"],
+["Canada Education Savings Grant (CESG)","20% grant on the first $2,500 of yearly RESP contributions ($500/yr; $7,200 lifetime).","reg"],
+["Canada Learning Bond (CLB)","Up to $2,000 RESP bond for low-income families; no contribution needed.","reg"],
+["Capital gains","Profit from selling capital property; 50% is taxable.","tax"],
+["Cash advances","Cash borrowed on a credit card; interest starts immediately.","credit"],
+["CFP","Certified Financial Planner, the professional designation granted by FP Canada.","fund"],
+["Closed mortgage","Lower rate, limited prepayment; penalty to break.","mort"],
+["Compound annual return","(Ending ÷ Beginning)^(1/n) − 1.","math"],
+["Consumer proposal","Legal offer through an LIT to repay part of unsecured debts (≤ $250,000) over ≤ 5 years.","credit"],
+["Debt avalanche","Paying extra on the highest-rate debt first to minimize total interest.","credit"],
+["Debt snowball","Paying the smallest balance first for motivation.","credit"],
+["Deductible","The part of an insured loss the policyholder pays first.","risk"],
+["Deemed disposition","At death, capital property is treated as sold at fair market value.","estate"],
+["Effective annual rate (EAR)","The true annual rate after compounding: (1 + j/m)^m − 1.","math"],
+["Emergency fund","3–6 months of expenses kept in liquid savings.","fund"],
+["Enduring power of attorney","A document letting someone manage your finances if you become incapable.","estate"],
+["Educational Assistance Payments (EAPs)","RESP withdrawals of grants and growth; taxed to the student.","reg"],
+["FP Canada","National professional body setting financial planning standards; certifies CFP and QAFP.","fund"],
+["GDS ratio","Housing costs (P&I, taxes, heat, 50% condo fees) ÷ gross income; usually ≤ 39% (class slides: 32%).","mort"],
+["Grace period","Interest-free period on new purchases if the full balance is paid.","credit"],
+["HELOC","Home equity line of credit: revolving credit secured by the home (≤ 65% of value).","mort"],
+["Home Buyers' Plan (HBP)","Tax-free RRSP withdrawal up to $60,000 per first-time buyer (class slides: $35,000), repaid over 15 years.","reg"],
+["Home equity","Property value − all outstanding secured debt.","mort"],
+["Inclusion rate","Share of a capital gain that is taxable (50%).","tax"],
+["Interest income","Income from GICs, bonds and savings; 100% taxable.","tax"],
+["Intestate","Dying without a valid will; provincial law distributes the estate.","estate"],
+["Joint tenancy with right of survivorship (JTWROS)","Joint ownership in which the survivor automatically gets the property, outside probate.","estate"],
+["Liabilities","Everything you owe (debts).","fund"],
+["Licensed Insolvency Trustee (LIT)","Federally licensed professional who administers proposals and bankruptcies.","credit"],
+["Liquid assets","Cash or assets quickly convertible to cash without loss.","fund"],
+["Loan-to-value ratio","Mortgage ÷ property value × 100; above 80% requires default insurance.","mort"],
+["Marginal tax rate","Tax rate on the next dollar of income.","tax"],
+["Mortgage default insurance","Insurance protecting the LENDER on high-ratio (< 20% down) mortgages.","mort"],
+["Net cash flow","Cash inflows − cash outflows for a period.","fund"],
+["Net worth","Total assets − total liabilities.","fund"],
+["Nominal rate","The quoted annual rate, before considering compounding.","math"],
+["Non-refundable tax credit","Reduces tax payable (credit amount × lowest rate); not paid out if no tax is owed.","tax"],
+["OAS recovery tax","15% repayment of OAS on net income above $95,323 (2026).","tax"],
+["Open mortgage","Can be prepaid anytime without penalty; higher rate.","mort"],
+["Opportunity cost","The value of the next-best alternative given up.","fund"],
+["Ordinary annuity","Equal payments at the END of each period; use END mode.","math"],
+["Overland flood","Water entering from outside (rivers, heavy rain); needs a special endorsement.","risk"],
+["Pay yourself first","Saving automatically on payday before spending.","fund"],
+["Probate","Court validation of a will; BC fees about 1.4% of estate value over $50,000.","estate"],
+["QAFP","Qualified Associate Financial Planner, an FP Canada designation.","fund"],
+["Replacement cost","Insurance paying the cost of a new item, with no depreciation.","risk"],
+["RESP","Registered Education Savings Plan: tax-deferred growth plus government grants for education.","reg"],
+["RRSP","Registered Retirement Savings Plan: deductible contributions, taxable withdrawals.","reg"],
+["Scholarship exemption","Full-time students eligible for the education amount pay no tax on scholarships.","tax"],
+["Sewer backup","Water backing up through drains; needs an endorsement on a home policy.","risk"],
+["SMART goals","Specific, Measurable, Attainable, Realistic, Time-bound goals (class: Actionable, Realistic, Timely).","fund"],
+["Spousal rollover","Tax-deferred transfer of RRSPs and capital property to a spouse at death.","estate"],
+["Stress test","Qualifying at the higher of the contract rate + 2% or 5.25%.","mort"],
+["TDS ratio","(Housing costs + other debt payments) ÷ gross income; usually ≤ 44% (class slides: 40%).","mort"],
+["Tax deduction","Reduces taxable income; saves amount × marginal rate.","tax"],
+["Term","Length of the current mortgage contract (e.g., 5 years).","mort"],
+["Term life insurance","Low-cost protection for a set period with no cash value.","risk"],
+["TFSA","Tax-Free Savings Account: no deduction; growth and withdrawals tax-free.","reg"],
+["Treasury bills","Short-term government debt sold at a discount; the gain is interest income.","tax"],
+["Union dues","Deductible from income (line 21200).","tax"],
+["Accident benefits","Auto policy Section B: medical, funeral and income benefits for you and your passengers.","risk"],
+["All perils coverage","Covers every event except those specifically excluded.","risk"],
+["Average daily balance method","Card interest on the average balance over the billing period; the most common method.","credit"],
+["Bankruptcy","Legal process for an insolvent person (owes ≥ $1,000); the trustee sells non-exempt assets and pays creditors pro rata.","credit"],
+["Collateral","Assets that back a loan and can be seized on default.","credit"],
+["Collision insurance","Covers damage to your car from an accident where your driver is at fault.","risk"],
+["Comprehensive coverage (auto)","Covers non-collision damage: theft, fire, hail, flood, vandalism.","risk"],
+["Conventional mortgage","A mortgage with at least 20% down; no default insurance needed.","mort"],
+["Convertible mortgage","A variable mortgage you can lock into a fixed rate before the term ends without penalty.","mort"],
+["Credit bureau","Equifax Canada or TransUnion Canada; compiles your credit report.","credit"],
+["Creditor insurance","Term life where the lender is the beneficiary; coverage falls with the balance, premiums don't.","risk"],
+["Critical illness insurance","Lump-sum benefit on diagnosis of a covered illness (if you survive ~30 days).","risk"],
+["Current ratio","Liquid assets ÷ current liabilities; measures liquidity.","fund"],
+["Debt-to-asset ratio","Total liabilities ÷ total assets; high = too much debt.","fund"],
+["Disability insurance","Monthly income replacement if illness or injury stops you working.","risk"],
+["Envelope method","Budgeting with cash envelopes for hard-to-control spending categories.","fund"],
+["Facility Association","Insures high-risk drivers who can't get coverage elsewhere.","risk"],
+["GIC","Guaranteed Investment Certificate: fixed rate and term, penalty for early withdrawal (unless cashable).","fund"],
+["High-ratio mortgage","A mortgage with less than 20% down; default insurance required.","mort"],
+["Income method","Life insurance need = a multiple of annual income; ignores family situation.","risk"],
+["Budget method","Life insurance need based on future expenses and current finances; more accurate.","risk"],
+["Instalment loan","A loan for a specific purchase, repaid in regular payments.","credit"],
+["Liquidity ratio","Liquid assets ÷ monthly living expenses.","fund"],
+["Named perils coverage","Covers only the events listed in the policy.","risk"],
+["Prime rate","The interest rate a bank charges its best customers; variable loans are set at prime ± a margin.","mort"],
+["RDSP","Registered Disability Savings Plan; not deductible, $200,000 lifetime limit.","reg"],
+["Revolving open-end credit","A credit limit you can borrow up to repeatedly (credit cards, lines of credit).","credit"],
+["Simple interest","I = P × r × t; interest isn't reinvested.","math"],
+["Tax avoidance","Legal tax reduction that abuses the spirit of the Income Tax Act.","tax"],
+["Tax evasion","Knowingly under-reporting tax owed; illegal.","tax"],
+["Tenant's insurance","Covers a renter's possessions, liability and living expenses, not the building.","risk"],
+["Term to 100","Permanent life insurance with no cash value; priced between term and whole life.","risk"],
+["Third-party liability","Auto policy Section A: injury or damage you cause to others.","risk"],
+["Umbrella liability policy","Extra liability coverage on top of auto and home insurance.","risk"],
+["Universal life insurance","Permanent insurance with flexible premiums; the owner picks the investments.","risk"],
+["Vendor take-back mortgage","A mortgage in which the seller lends the buyer the money.","mort"],
+["Whole life insurance","Permanent insurance with a fixed premium and guaranteed cash value.","risk"]
+];
+
+const PRACTICE = {
+fund:[
+ ["Recall","What is the formula for net worth, and is it measured over a period or at a point in time?","Net worth = Total Assets − Total Liabilities. It's a snapshot at a single point in time (unlike cash flow, which covers a period)."],
+ ["Comprehension","Why doesn't paying off a credit card with savings change net worth?","Cash (an asset) and the card balance (a liability) both fall by the same amount, so assets − liabilities is unchanged. Cash flow improves because interest stops."],
+ ["Application","Monthly expenses are $2,800; liquid assets are $7,000. How many months are covered, and is that enough?","$7,000 ÷ $2,800 = 2.5 months, below the 3–6 month guideline. Build at least another $1,400 (to 3 months)."],
+ ["Application","Liquid assets $6,000; credit card $2,400; car loan $15,000 (4 years left). What is the current ratio?","6,000 ÷ 2,400 = 2.5. Only debts due within a year count as current liabilities."],
+ ["Recall","Name the 6 steps of developing a financial plan.","Establish goals → assess current position → identify & evaluate alternatives → select & implement → evaluate → revise."],
+ ["Application","Rewrite 'I want to save for a car' as a SMART goal.","e.g., 'Save $8,000 for a used-car down payment by June 2028 by depositing $400/month into my TFSA.' It's specific, measurable, attainable and time-bound."]],
+math:[
+ ["Recall","When do you use BEGIN mode on the HP 10bII+?","When payments happen at the start of each period (annuity due): rent, leases, insurance premiums, 'deposits at the beginning of each month'."],
+ ["Comprehension","Why does 5% compounded semi-annually need converting for a monthly-payment mortgage?","The payment frequency (12) doesn't match the compounding frequency (2). Convert: 2 P/YR, 5 NOM%, EFF% (5.0625), then 12 P/YR, NOM% = 4.9487% per year compounded monthly."],
+ ["Application","What's the EAR of 6% compounded quarterly?","(1 + 0.06/4)^4 − 1 = 6.136%."],
+ ["Application","$5,000 grows to $8,000 in 7 years. What is the compound annual return?","(8,000/5,000)^(1/7) − 1 = 6.94%. HP: 1 P/YR, 7 N, −5000 PV, 0 PMT, 8000 FV, I/YR."],
+ ["Application","$5,000 at 4% SIMPLE interest for 3 years. How much interest?","I = P × r × t = 5,000 × 0.04 × 3 = $600."],
+ ["Analysis","Your answer to an annual-compounding question looks far too small. What's the likely cause?","P/YR is still on the factory default of 12, so the calculator divided I/YR by 12. Set 1 [■][P/YR]."]],
+tax:[
+ ["Recall","What is the combined federal + BC marginal rate at $80,000 of taxable income?","20.5% federal + 7.70% BC = 28.20%."],
+ ["Comprehension","Why is a $1,000 deduction worth more to a high earner than a $1,000 non-refundable credit?","A deduction saves tax at the marginal rate (e.g., 38%), while a federal credit is always worth 14%, whatever the income."],
+ ["Application","A client in a 38.29% bracket contributes $10,000 to an RRSP. What is the tax saving?","$10,000 × 38.29% = $3,829 (if the full deduction stays within that bracket)."],
+ ["Application","Shares bought for $15,000 sell for $21,000. The client's marginal rate is 31%. What is the tax?","Gain $6,000 × 50% = $3,000 taxable × 31% = $930."],
+ ["Application","Tax owing $2,000; return filed 3 full months late. What is the penalty?","5% + 3 × 1% = 8% × $2,000 = $160."],
+ ["Comprehension","Tax avoidance vs. tax evasion?","Avoidance is legal but against the spirit of the Act (the CRA may challenge it); evasion is knowingly under-reporting and is illegal."],
+ ["Recall","How are a T-bill's discount, an inheritance and a full-time scholarship taxed?","T-bill discount = interest (100% taxable); inheritance = not taxable; full-time scholarship = exempt."]],
+reg:[
+ ["Recall","What is the 2026 RRSP contribution limit formula?","18% of 2025 earned income, up to $33,810, minus pension adjustment, plus unused room."],
+ ["Comprehension","When can a TFSA withdrawal be re-contributed?","January 1 of the following year. Re-contributing sooner without spare room triggers a 1%/month penalty."],
+ ["Application","A parent contributes $1,500 to an RESP this year. What CESG is paid?","20% × $1,500 = $300."],
+ ["Analysis","A 22-year-old earning $28,000 expects to earn $90,000 in five years. RRSP or TFSA now?","TFSA. Today's deduction would only be worth about 19.6%; RRSP room carries forward to use at 28%+ later, and the TFSA stays flexible."]],
+credit:[
+ ["Recall","What credit score range is 'good' and 'very good', and how long does a bankruptcy stay on your report?","600+ good, 750+ very good (range 300–900). A bankruptcy stays 6–7 years; other bad history 3–10 years."],
+ ["Comprehension","Which credit card balance method is most favourable to the cardholder?","The adjusted balance method (interest on the end-of-period balance). Previous balance is the least favourable."],
+ ["Recall","What professional must administer a consumer proposal?","A Licensed Insolvency Trustee (LIT), licensed by the federal Office of the Superintendent of Bankruptcy."],
+ ["Comprehension","Why can a loan with a higher quoted rate be cheaper?","Less frequent compounding means a lower effective annual rate. Compare EARs."],
+ ["Application","A $20,000 loan at 7.2% compounded monthly over 5 years. What is the total interest?","PMT = $397.91 (12 P/YR, 60 N, 7.2 I/YR, 20000 PV). Total = $23,874.83; interest = $3,874.83."],
+ ["Analysis","Give two reasons NOT to lease for someone who drives 35,000 km a year and keeps cars 10 years.","Excess-km charges would be large, and they'd never build equity, so buying and holding is cheaper over 10 years."]],
+mort:[
+ ["Recall","Above what LTV is mortgage default insurance required, and whom does it protect?","Above 80% (less than 20% down). It protects the lender."],
+ ["Comprehension","Why do accelerated bi-weekly payments shorten the amortization?","Paying half the monthly amount 26 times a year adds up to 13 monthly payments a year. The extra payment goes straight to principal."],
+ ["Application","Income $95,000; P&I $1,900/mo; property tax $3,600/yr; heat $120/mo; car $400/mo. What are GDS and TDS?","Housing = 1,900 + 300 + 120 = $2,320 → GDS = 27,840/95,000 = 29.3%. TDS = (2,320 + 400) × 12 / 95,000 = 34.4%."],
+ ["Application","What is the minimum down payment on a $650,000 home?","5% × 500,000 + 10% × 150,000 = $25,000 + $15,000 = $40,000."],
+ ["Application","Monthly payment $2,908.02. What are the accelerated bi-weekly and accelerated weekly payments?","Bi-weekly: ÷ 2 = $1,454.01. Weekly: ÷ 4 = $727.01."],
+ ["Application","A $400,000 mortgage at 90% LTV. What is the CMHC premium?","3.10% × $400,000 = $12,400, usually added to the mortgage."],
+ ["Application","Home $900,000, mortgage $500,000. What is the maximum HELOC?","80% × 900,000 = 720,000 − 500,000 = $220,000 (65% cap = $585,000, so $220,000 binds)."]],
+risk:[
+ ["Recall","What's the difference between ACV and replacement cost?","ACV = replacement cost − depreciation; replacement cost pays for a new item with no depreciation."],
+ ["Application","$1,500 bike, 5-year life, 2 years old, ACV policy, $250 deductible. What's the payout?","Depreciation 40% = $600 → ACV $900 − $250 = $650."],
+ ["Recall","What are the three sections of an auto policy?","A: third-party liability; B: accident benefits; C: loss of or damage to your own car (collision, comprehensive)."],
+ ["Comprehension","Comprehensive vs. broad vs. basic home policy?","Comprehensive = all perils on building and contents; broad = all perils on the building, named perils on contents; basic = named perils on both."],
+ ["Comprehension","Whole life vs. universal life?","Whole: fixed premium, insurer picks investments, guaranteed cash value. Universal: flexible premium, owner picks investments, no guarantee."],
+ ["Comprehension","Why doesn't term life insurance appear as an asset on a net worth statement?","It has no cash surrender value, only a death benefit, so it's an expense, not an asset."]],
+estate:[
+ ["Recall","Name three objectives of estate planning.","Carry out the client's wishes, provide for dependants, and minimize taxes, probate and delays."],
+ ["Comprehension","How does naming a beneficiary on an RRSP reduce estate costs?","The RRSP passes directly to the beneficiary outside the will, avoiding probate fees (about 1.4% in BC) and delays."],
+ ["Application","Which strategy defers tax on an RRSP at death?","Naming the spouse as beneficiary or successor annuitant, which allows a tax-deferred spousal rollover."],
+ ["Analysis","A client has no will, a common-law partner and two children from a prior marriage. Why is this a planning red flag?","Intestacy rules may not divide assets the way the client wants. Blended families raise the risk of conflict, so a will, beneficiary updates and a POA are urgent."]],
+formulas:[
+ ["Recall","Write the GDS and TDS formulas and their usual limits.","GDS = (P&I + tax + heat + 50% condo) ÷ gross income ≤ 39%; TDS = (GDS costs + other debts) ÷ gross income ≤ 44%."],
+ ["Recall","What are the 2026 TFSA annual limit, cumulative room, and the HBP limit?","$7,000; $109,000; $60,000 per person."],
+ ["Application","What is the EAR of 4.8% compounded semi-annually?","(1 + 0.024)^2 − 1 = 4.858%."]]
+};
+
+/* ---------- render ---------- */
+const kt = s => s.replace(/<k>(.*?)<\/k>/g,'<span class="key-term">$1</span>');
+function tree(node){ // node = [label, children?]
+  const [label, kids] = node; const has = kids && kids.length;
+  return `<li class="${has?'open':''}"><span class="node ${has?'open':'leaf'}"><span class="car">▶</span><span>${label}</span></span>${has?'<ul>'+kids.map(tree).join('')+'</ul>':''}</li>`;
+}
+const tabs = document.getElementById('tabs'), main = document.getElementById('main');
+let html = `<h1>Financial Planning Midterm: Study Notes</h1><p class="lead">Built from the exam hint sheet + class slides (Ch. 1–9) and insurance readings · 2026 federal + BC figures · <span style="color:#2c5aa0;font-weight:600">blue boxes = where the class slides use different numbers</span> · HP 10bII+ keystrokes · ★ = your extra-depth topics (tax, registered accounts, credit, mortgages)</p>`;
+SECTIONS.forEach(s=>{
+  html += `<section class="section" id="sec-${s.id}">
+   <h2>${s.title}</h2>
+   <div class="box"><h3>Concept Outline</h3><div class="tree"><ul>${tree(s.outline)}</ul></div></div>
+   <div class="cornell"><div class="cues"><h3>Cues</h3><ol>${s.cues.map(c=>`<li>${c}</li>`).join('')}</ol></div>
+   <div class="notes"><h3>Notes</h3>${kt(s.notes)}</div></div>
+   <div class="summary"><b>Summary:</b> ${s.summary}</div></section>`;
+});
+const secName = Object.fromEntries(SECTIONS.map(s=>[s.id,s.title.replace(/^\d+\.\s*/,'')]));
+html += `<section class="section" id="sec-glossary"><h2>Glossary (${GLOSSARY.length} terms)</h2>
+ <input class="gsearch" id="gs" placeholder="Search terms…"><div class="ggrid" id="gg">${
+ GLOSSARY.slice().sort((a,b)=>a[0].localeCompare(b[0])).map(g=>`<div class="gcard"><div class="t">${g[0]}</div><div>${g[1]}</div><div class="s">(${secName[g[2]]})</div></div>`).join('')}</div></section>`;
+let qn=0, pqHtml='';
+SECTIONS.forEach(s=>{ const list = PRACTICE[s.id]||[]; if(!list.length) return;
+  pqHtml += `<h2>${s.title}</h2>` + list.map(([t,q,a])=>{qn++; return `<div class="pq"><div class="pq-head"><input type="checkbox" class="pqc" data-k="pq${qn}"><div><div class="pq-type">${t}</div>${q}</div></div><button class="ans-btn">Show Answer</button><div class="ans">${a}</div></div>`}).join('');
+});
+html += `<section class="section" id="sec-practice"><h2>Practice Questions</h2><div class="progress" id="prog"></div>${pqHtml}
+ <p class="lead" style="margin-top:16px">For the full 75-question timed version, open <b>Midterm Mock Exam.html</b> in this folder.</p></section>`;
+main.innerHTML = html;
+
+[...SECTIONS.map(s=>[s.id,s.title.replace(/^(\d+)\.\s*/,'$1 · '),s.focus]),["glossary","Glossary",false],["practice","Practice Qs",false]].forEach(([id,t,f],i)=>{
+  const b=document.createElement('button'); b.className='tab'+(f?' focus':''); b.textContent=t; b.dataset.id=id;
+  b.onclick=()=>show(id); tabs.appendChild(b);
+});
+function show(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.toggle('show',s.id==='sec-'+id));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.id===id));
+  window.scrollTo({top:0}); try{localStorage.setItem('fpTab',id)}catch(e){}
+}
+let start='fund'; try{start=localStorage.getItem('fpTab')||'fund'}catch(e){}
+show(document.getElementById('sec-'+start)?start:'fund');
+
+document.addEventListener('click',e=>{
+  const n=e.target.closest('.node:not(.leaf)'); if(n){n.classList.toggle('open');n.parentElement.classList.toggle('open');}
+  if(e.target.classList.contains('ans-btn')){const a=e.target.nextElementSibling;a.classList.toggle('show');e.target.textContent=a.classList.contains('show')?'Hide Answer':'Show Answer';}
+});
+document.getElementById('gs').addEventListener('input',e=>{const v=e.target.value.toLowerCase();document.querySelectorAll('.gcard').forEach(c=>c.style.display=c.textContent.toLowerCase().includes(v)?'':'none');});
+let done={}; try{done=JSON.parse(localStorage.getItem('fpDone')||'{}')}catch(e){}
+const prog=()=>{const all=document.querySelectorAll('.pqc'),c=[...all].filter(x=>x.checked).length;document.getElementById('prog').textContent=`Progress: ${c} / ${all.length} marked done`;};
+document.querySelectorAll('.pqc').forEach(cb=>{cb.checked=!!done[cb.dataset.k];cb.onchange=()=>{done[cb.dataset.k]=cb.checked;try{localStorage.setItem('fpDone',JSON.stringify(done))}catch(e){};prog();};});
+prog();
+const tb=document.getElementById('topBtn'); window.addEventListener('scroll',()=>tb.classList.toggle('show',window.scrollY>200));
+</script>
+</body>
+</html>

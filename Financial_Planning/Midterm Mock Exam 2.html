@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FP Midterm Mock Exam 2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 24px 16px 32px;
+        }
+
+        .quiz-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: none;
+            max-width: 520px;
+            width: 100%;
+            padding: 18px 16px 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 640px;
+        }
+
+        .quiz-header {
+            text-align: left;
+            margin-bottom: 16px;
+        }
+
+        .quiz-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #232323;
+            margin-bottom: 4px;
+        }
+
+        .quiz-subtitle {
+            font-size: 13px;
+            color: #9d9d9d;
+        }
+
+        .progress-text {
+            text-align: left;
+            font-size: 13px;
+            color: #9d9d9d;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .question-text {
+            font-size: 16px;
+            font-weight: 500;
+            color: #2a2a2a;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .options::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .options::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 3px;
+        }
+
+        .options::-webkit-scrollbar-thumb {
+            background: #c0c0c0;
+            border-radius: 3px;
+        }
+
+        .options::-webkit-scrollbar-thumb:hover {
+            background: #a0a0a0;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            border: 1px solid #f0f0f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #f8f8f8;
+        }
+
+        .option:hover:not(.selected):not(.disabled) {
+            border-color: #e6e6e6;
+            background: #f6f6f6;
+        }
+
+        .option.selected {
+            border-color: #d0d0d0;
+            background: #dedede;
+        }
+
+        .option.correct,
+        .option.wrong {
+            border-color: #f0f0f0;
+            background: #f8f8f8;
+        }
+
+        .option.disabled {
+            cursor: default;
+        }
+
+        .option-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            margin-right: 10px;
+            flex-shrink: 0;
+            color: #9d9d9d;
+            width: 22px;
+        }
+
+        .option.selected .option-label {
+            color: #3a3a3a;
+        }
+
+        .option.disabled .option-text {
+            color: #bdbdbd;
+        }
+
+        .option.disabled .option-label {
+            color: #bdbdbd;
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 15px;
+            color: #3a3a3a;
+        }
+
+
+        .feedback-card {
+            padding: 14px 16px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .feedback-card.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feedback-card.correct {
+            background: #bfeacb;
+        }
+
+        .feedback-card.wrong {
+            background: #fff7f7;
+        }
+
+        .feedback-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .feedback-header.correct {
+            color: #697b6e;
+        }
+
+        .feedback-header.wrong {
+            color: #a42d22;
+        }
+
+        .feedback-icon {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .feedback-answer {
+            font-size: 15px;
+            color: #2a2a2a;
+        }
+
+        .feedback-text {
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .feedback-card.correct .feedback-text {
+            color: #444443;
+        }
+
+        .feedback-card.wrong .feedback-text {
+            color: #2e2e2f;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 24px;
+            min-height: 52px;
+        }
+
+        .btn {
+            padding: 10px 22px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            min-width: 120px;
+        }
+
+        .btn-secondary {
+            background: #ffffff;
+            color: #6b7280;
+            border: 1px solid #e2e2e2;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #e5e5e5;
+        }
+
+        .btn-secondary:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #424cf7;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            opacity: 0.95;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(66, 76, 247, 0.25);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+
+        .completion-container {
+            text-align: center;
+            display: none;
+        }
+
+        .completion-container.show {
+            display: block;
+        }
+
+        .completion-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .completion-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+
+        .completion-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .stat-card.score {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .stat-card.score .stat-label {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .stat-card.score .stat-value {
+            color: white;
+        }
+
+        .completion-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .hint-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #4e4e4e;
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .hint-toggle .chevron {
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+
+        .hint-toggle.open .chevron {
+            transform: rotate(180deg);
+        }
+
+        .hint-panel {
+            padding: 12px 14px;
+            background: #ebecf8;
+            border-radius: 12px;
+            display: none;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .hint-panel.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hint-title {
+            font-weight: 600;
+            font-size: 13px;
+            color: #4e4e4e;
+            margin-bottom: 6px;
+        }
+
+        .hint-text {
+            font-size: 13px;
+            color: #474749;
+            line-height: 1.5;
+        }
+
+        .hint-slot {
+            min-height: 72px;
+        }
+
+        .quiz-footer {
+            margin-top: auto;
+        }
+
+        .question-container {
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.18/dist/katex.min.css">
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <div class="quiz-title">Financial Planning Midterm: Mock Exam #2 (75 Q)</div>
+            <div class="quiz-subtitle">69 regular + 6 Risk Management bonus · new questions built from the Oct 11 hint sheet + class slides Ch. 1–9 · 2026 federal + BC figures (slide figures noted) · HP 10bII+ keystrokes</div>
+            <div id="exam-timer" style="margin-top:8px;font-size:14px;font-weight:600;color:#4b5563">⏱ 2:00:00 remaining <span style="font-weight:400;color:#9ca3af">(75 × 1.6 min)</span></div>
+        </div>
+
+        <div id="quiz-content">
+            <!-- Questions will be rendered here -->
+        </div>
+
+        <div id="completion-screen" class="completion-container">
+            <div class="completion-icon">🎉</div>
+            <div class="completion-title">You did it! Quiz Complete.</div>
+            <div class="completion-subtitle">Here's how you performed</div>
+
+            <div class="stats-grid">
+                <div class="stat-card score">
+                    <div class="stat-label">Score</div>
+                    <div class="stat-value" id="score-value">0/75</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Accuracy</div>
+                    <div class="stat-value" id="accuracy-value">0%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Right</div>
+                    <div class="stat-value" id="right-value">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Wrong</div>
+                    <div class="stat-value" id="wrong-value">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Skipped</div>
+                    <div class="stat-value" id="skipped-value">0</div>
+                </div>
+            </div>
+
+            <div id="topic-breakdown" style="text-align:left;font-size:14px;margin:16px 0;padding:12px;background:#f9fafb;border-radius:10px"></div>
+            <div class="completion-buttons">
+                <button class="btn btn-secondary" onclick="reviewQuiz()">Review Quiz</button>
+                <button class="btn btn-primary" onclick="retakeQuiz()">Retake Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.18/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.18/dist/contrib/auto-render.min.js"></script>
+    <script>
+        const questions = [{"question": "Which strategy would NOT help keep an asset out of the estate (and probate)?", "options": ["Leaving the asset to the estate in your will", "Naming a beneficiary on an RRSP or TFSA", "Naming a beneficiary on a life insurance policy", "Holding a bank account in joint tenancy with right of survivorship"], "correctIndex": 0, "hint": "Probate applies to assets that flow THROUGH the estate.", "correctExplanation": "Assets with a named beneficiary, and jointly-held assets with right of survivorship, pass directly and avoid probate (BC probate fees are about 1.4% of estate value over \\$50,000). Assets left through the will go through the estate and are subject to probate. [Topic: Estate Planning]", "wrongExplanation": "Assets with a named beneficiary, and jointly-held assets with right of survivorship, pass directly and avoid probate (BC probate fees are about 1.4% of estate value over \\$50,000). Assets left through the will go through the estate and are subject to probate. [Topic: Estate Planning]", "topic": "Estate Planning", "bonus": false}, {"question": "A \\$420,000 mortgage has a fixed rate of 4.6% compounded semi-annually, a 25-year amortization and monthly payments. What is the monthly payment?", "options": ["\\$2,347.99", "\\$1,400.00", "\\$2,669.96", "\\$2,358.40"], "correctIndex": 0, "hint": "Canadian fixed-rate mortgages compound semi-annually. Convert to an equivalent monthly rate first.", "correctExplanation": "Monthly rate = (1 + 0.046/2)^(2/12) − 1 = 0.37971%. HP 10bII+: 2 [■][P/YR], 4.6 [■][NOM%], [■][EFF%] (= 4.6529%); 12 [■][P/YR], [■][NOM%] (= 4.5565%) → this is now the I/YR; 300 [N], 420,000 [PV], 0 [FV], [PMT] = −\\$2,347.99. Treating 4.6% as monthly compounding gives \\$2,358.40. [Topic: Financial Math]", "wrongExplanation": "Monthly rate = (1 + 0.046/2)^(2/12) − 1 = 0.37971%. HP 10bII+: 2 [■][P/YR], 4.6 [■][NOM%], [■][EFF%] (= 4.6529%); 12 [■][P/YR], [■][NOM%] (= 4.5565%) → this is now the I/YR; 300 [N], 420,000 [PV], 0 [FV], [PMT] = −\\$2,347.99. Treating 4.6% as monthly compounding gives \\$2,358.40. [Topic: Financial Math]", "topic": "Financial Math", "bonus": false}, {"question": "For the same mortgage (\\$420,000, 4.6% compounded semi-annually, 25-year amortization, monthly payment from the previous question), what is the outstanding balance at the end of a 5-year term?", "options": ["\\$305,773.81", "\\$279,120.46", "\\$336,000.00", "\\$369,352.68"], "correctIndex": 3, "hint": "After finding PMT, set N = 60 and solve for FV.", "correctExplanation": "Keep I/YR and PMT, enter 60 [N], [FV] = \\$369,352.68. Principal repaid in 5 years = \\$50,647.32. Subtracting all 60 payments (\\$279,120.46) wrongly treats every dollar paid as principal. [Topic: Financial Math]", "wrongExplanation": "Keep I/YR and PMT, enter 60 [N], [FV] = \\$369,352.68. Principal repaid in 5 years = \\$50,647.32. Subtracting all 60 payments (\\$279,120.46) wrongly treats every dollar paid as principal. [Topic: Financial Math]", "topic": "Financial Math", "bonus": false}, {"question": "For the same \\$420,000 mortgage, how much INTEREST is paid in the first 12 months?", "options": ["\\$19,320.00", "\\$18,946.24", "\\$28,175.91", "\\$9,229.67"], "correctIndex": 1, "hint": "Interest = total payments − principal repaid. Find the balance after 12 payments first.", "correctExplanation": "Balance after 12 payments = \\$410,770.33, so principal repaid = \\$9,229.67. Total paid = 12 × \\$2,347.99 = \\$28,175.91. Interest = \\$18,946.24. (HP 10bII+ AMORT: 1 [INPUT] 12 [■][AMORT], then [=] to see principal and interest.) [Topic: Financial Math]", "wrongExplanation": "Balance after 12 payments = \\$410,770.33, so principal repaid = \\$9,229.67. Total paid = 12 × \\$2,347.99 = \\$28,175.91. Interest = \\$18,946.24. (HP 10bII+ AMORT: 1 [INPUT] 12 [■][AMORT], then [=] to see principal and interest.) [Topic: Financial Math]", "topic": "Financial Math", "bonus": false}, {"question": "The same borrower (\\$420,000, 4.6% compounded semi-annually, regular monthly payment from earlier) switches to ACCELERATED bi-weekly payments (monthly payment ÷ 2) from day one. About how long will it take to pay off the mortgage?", "options": ["25.0 years", "21.6 years", "23.4 years", "17.6 years"], "correctIndex": 1, "hint": "Accelerated bi-weekly = monthly ÷ 2, paid 26 times a year. Convert the rate to a bi-weekly equivalent and solve for N.", "correctExplanation": "Bi-weekly payment = \\$1,174.00. Bi-weekly rate = (1.023)^(2/26) − 1. HP 10bII+: 26 [■][P/YR] with the converted rate, 420,000 [PV], −1,174.00 [PMT], 0 [FV], [N] = 563 payments = 21.6 years. The extra half-payment each month (one extra monthly payment a year) cuts several years off. [Topic: Financial Math]", "wrongExplanation": "Bi-weekly payment = \\$1,174.00. Bi-weekly rate = (1.023)^(2/26) − 1. HP 10bII+: 26 [■][P/YR] with the converted rate, 420,000 [PV], −1,174.00 [PMT], 0 [FV], [N] = 563 payments = 21.6 years. The extra half-payment each month (one extra monthly payment a year) cuts several years off. [Topic: Financial Math]", "topic": "Financial Math", "bonus": false}, {"question": "According to the class slides, which credit card interest calculation method is MOST favourable to the cardholder?", "options": ["Daily compounding method", "Previous balance method", "Average daily balance method", "Adjusted balance method"], "correctIndex": 3, "hint": "Which method uses the balance AFTER your payments during the billing period?", "correctExplanation": "Adjusted balance (most favourable) charges interest on the balance at the end of the billing period after payments. The previous balance method is least favourable, and average daily balance is the most common. (Class Ch. 6) [Topic: Credit, Debt & Mortgages]", "wrongExplanation": "Adjusted balance (most favourable) charges interest on the balance at the end of the billing period after payments. The previous balance method is least favourable, and average daily balance is the most common. (Class Ch. 6) [Topic: Credit, Debt & Mortgages]", "topic": "Credit, Debt & Mortgages", "bonus": false}, {"question": "A buyer purchases a \\$550,000 home with a \\$82,500 down payment. Using the CMHC premium schedule from class (85% LTV → 2.80%), what is the mortgage default insurance premium?", "options": ["\\$14,492", "\\$11,220", "\\$13,090", "\\$15,400"], "correctIndex": 2, "hint": "Find the mortgage amount and LTV first. The premium is a percentage of the MORTGAGE amount.", "correctExplanation": "Mortgage = \\$550,000 − \\$82,500 = \\$467,500. LTV = \\$467,500 ÷ \\$550,000 = 85% (high-ratio, so insurance is required). Premium = \\$467,500 × 2.80% = \\$13,090, usually added to the mortgage. (Class Ch. 7, Exhibit 7.1) [Topic: Credit, Debt & Mortgages]", "wrongExplanation": "Mortgage = \\$550,000 − \\$82,500 = \\$467,500. LTV = \\$467,500 ÷ \\$550,000 = 85% (high-ratio, so insurance is required). Premium = \\$467,500 × 2.80% = \\$13,090, usually added to the mortgage. (Class Ch. 7, Exhibit 7.1) [Topic: Credit, Debt & Mortgages]", "topic": "Credit, Debt & Mortgages", "bonus": false}, {"question": "Which is a PRIMARY objective of estate planning?", "options": ["Making sure all assets go through probate", "Distributing your assets according to your wishes while minimizing taxes and estate administration costs", "Reducing your income tax while you are working", "Maximizing your investment returns before retirement"], "correctIndex": 1, "hint": "Think about what happens to your assets at death.", "correctExplanation": "Estate planning makes sure assets go to the right people efficiently, minimizes taxes and costs (like probate fees), provides for dependants and names the right people to act for you. [Topic: Estate Planning]", "wrongExplanation": "Estate planning makes sure assets go to the right people efficiently, minimizes taxes and costs (like probate fees), provides for dependants and names the right people to act for you. [Topic: Estate Planning]", "topic": "Estate Planning", "bonus": false}, {"question": "A credit card and a savings account both quote 12%. Which statement is TRUE?", "options": ["Monthly compounding produces a lower effective rate than annual compounding", "With the same nominal rate, more frequent compounding produces a higher effective annual rate", "The effective rate is always lower than the nominal rate", "Compounding frequency does not affect the effective rate"], "correctIndex": 1, "hint": "Compare (1 + 0.12/12)^12 with (1 + 0.12/1)^1.", "correctExplanation": "12% compounded monthly → EAR 12.68%; compounded annually → 12.00%. More compounding periods = more interest on interest = higher EAR. That's why loan offers should be compared on EAR. [Topic: Financial Math]", "wrongExplanation": "12% compounded monthly → EAR 12.68%; compounded annually → 12.00%. More compounding periods = more interest on interest = higher EAR. That's why loan offers should be compared on EAR. [Topic: Financial Math]", "topic": "Financial Math", "bonus": false}, {"question": "Noor lives in BC and has \\$72,000 of taxable income in 2026. About how much tax will she save with a \\$5,000 deductible RRSP contribution?", "options": ["\\$1,410", "\\$1,085", "\\$5,000", "\\$700"], "correctIndex": 0, "hint": "RRSP tax savings = deductible contribution × marginal rate. Check her income stays in the same bracket after the deduction.", "correctExplanation": "At \\$72,000 (and still \\$67,000 after the deduction): federal 20.5% (over \\$58,523) + BC 7.70% (\\$50,363–\\$100,728) = 28.2%. \\$5,000 × 28.2% = \\$1,410. \\$700 uses only the 14% federal rate, and \\$1,085 uses the 21.7% bottom-bracket rate. [Topic: Tax & Registered Accounts]", "wrongExplanation": "At \\$72,000 (and still \\$67,000 after the deduction): federal 20.5% (over \\$58,523) + BC 7.70% (\\$50,363–\\$100,728) = 28.2%. \\$5,000 × 28.2% = \\$1,410. \\$700 uses only the 14% federal rate, and \\$1,085 uses the 21.7% bottom-bracket rate. [Topic: Tax & Registered Accounts]", "topic": "Tax & Registered Accounts", "bonus": false}, {"question": "Which of the following is a LIQUID asset?", "options": ["An RRSP invested in a 5-year locked GIC", "A home", "A high-interest savings account", "A vehicle"], "correctIndex": 2, "hint": "Liquid = can be turned into cash quickly with little or no loss of value.", "correctExplanation": "Liquid assets (cash, chequing, savings, money-market funds) can be accessed quickly without losing value. A car or home takes time to sell and may sell at a loss, and a locked-in GIC can't be cashed early. (Class Ch. 3) [Topic: Fundamentals]", "wrongExplanation": "Liquid assets (cash, chequing, savings, money-market funds) can be accessed quickly without losing value. A car or home takes time to sell and may sell at a loss, and a locked-in GIC can't be cashed early. (Class Ch. 3) [Topic: Fundamentals]", "topic": "Fundamentals", "bonus": false}, {"question": "Sam, who is single with no spouse or financially dependent children, dies with \\$200,000 in his RRSP. How is the RRSP generally taxed?", "options": ["It is taxed only when his beneficiary withdraws it years later", "It is tax-free because RRSPs are registered", "The full \\$200,000 is included as income on his final tax return", "Only 50% is taxable, like a capital gain"], "correctIndex": 2, "hint": "Without a spouse to roll it over to, what happens to tax-deferred money at death?", "correctExplanation": "At death the RRSP is deemed to be cashed in, and the full value is taxable on the final return unless it rolls over to a spouse (or a financially dependent child/grandchild). Planners look for this exposure when identifying estate needs. [Topic: Estate Planning]", "wrongExplanation": "At death the RRSP is deemed to be cashed in, and the full value is taxable on the final return unless it rolls over to a spouse (or a financially dependent child/grandchild). Planners look for this exposure when identifying estate needs. [Topic: Estate Planning]", "topic": "Estate Planning", "bonus": false}, {"question": "Kai gets a raise that adds \\$3,000 a year to his take-home pay, and he cancels a \\$50/month gym membership. What is the total effect on his ANNUAL net cash flow?", "options": ["+\\$2,400", "+\\$3,600", "+\\$3,050", "+\\$3,000"], "correctIndex": 1, "hint": "Higher inflows and lower outflows both increase net cash flow.", "correctExplanation": "Inflows rise by \\$3,000 and outflows fall by \\$50 × 12 = \\$600, so net cash flow increases by \\$3,600 a year. (Class Ch. 3) [Topic: Fundamentals]", "wrongExplanation": "Inflows rise by \\$3,000 and outflows fall by \\$50 × 12 = \\$600, so net cash flow increases by \\$3,600 a year. (Class Ch. 3) [Topic: Fundamentals]", "topic": "Fundamentals", "bonus": false}, {"question": "Twins each save \\$200 at the end of every month at 7% compounded monthly until age 65. Alex starts at 25 and Blair starts at 35. About how much MORE will Alex have at 65?", "options": ["\\$24,000.00", "\\$243,994.20", "\\$524,962.68", "\\$280,968.48"], "correctIndex": 3, "hint": "Find each FV (40 years vs 30 years of deposits), then subtract.", "correctExplanation": "Alex: N = 480 → FV = \\$524,962.68. Blair: N = 360 → FV = \\$243,994.20. Difference = \\$280,968.48, even though Alex only deposited \\$24,000 more. Starting early matters most because of compounding. [Topic: Financial Math]", "wrongExplanation": "Alex: N = 480 → FV = \\$524,962.68. Blair: N = 360 → FV = \\$243,994.20. Difference = \\$280,968.48, even though Alex only deposited \\$24,000 more. Starting early matters most because of compounding. [Topic: Financial Math]", "topic": "Financial Math", "bonus": false}, {"question": "Victor's 2025 earned income was \\$85,000 and his 2025 pension adjustment (PA) from his workplace pension was \\$6,000. He has no unused room. What is his NEW RRSP deduction room for 2026?", "options": ["\\$15,300", "\\$33,810", "\\$9,300", "\\$21,300"], "correctIndex": 2, "hint": "Room = 18% of last year's earned income (up to the annual max) − pension adjustment.", "correctExplanation": "18% × \\$85,000 = \\$15,300 (below the 2026 max of \\$33,810). Subtract the PA: \\$15,300 − \\$6,000 = \\$9,300. The PA reduces RRSP room because he is already saving for retirement through his pension. [Topic: Tax & Registered Accounts]", "wrongExplanation": "18% × \\$85,000 = \\$15,300 (below the 2026 max of \\$33,810). Subtract the PA: \\$15,300 − \\$6,000 = \\$9,300. The PA reduces RRSP room because he is already saving for retirement through his pension. [Topic: Tax & Registered Accounts]", "topic": "Tax & Registered Accounts", "bonus": false}, {"question": "A \\$36,000 truck can be financed with (1) dealer financing at 2.9% compounded monthly for 60 months, or (2) a \\$3,500 cash rebate plus a bank loan for \\$32,500 at 7.4% compounded monthly for 60 months. Which is cheaper in total payments, and by about how much?", "options": ["They cost exactly the same", "Rebate + bank loan, by about \\$3,500", "Rebate + bank loan, by about \\$265", "Dealer financing, by about \\$265"], "correctIndex": 3, "hint": "Find each monthly payment, multiply by 60, and compare total cost.", "correctExplanation": "Dealer: PMT = \\$645.27 × 60 = \\$38,716.46. Bank: PMT = \\$649.69 × 60 = \\$38,981.40. Difference ≈ \\$265. Always compare financing options on total cost, not just the sticker price or the rebate. [Topic: Credit, Debt & Mortgages]", "wrongExplanation": "Dealer: PMT = \\$645.27 × 60 = \\$38,716.46. Bank: PMT = \\$649.69 × 60 = \\$38,981.40. Difference ≈ \\$265. Always compare financing options on total cost, not just the sticker price or the rebate. [Topic: Credit, Debt & Mortgages]", "topic": "Credit, Debt & Mortgages", "bonus": false}, {"question": "Which statement about a consumer proposal is correct?", "options": ["It can be used for any amount of debt, including over \\$1 million of unsecured debt", "It is administered by the CRA", "It stays on your credit report permanently", "It is filed through a Licensed Insolvency Trustee, and creditors have 45 days to object"], "correctIndex": 3, "hint": "Who administers consumer proposals and bankruptcies?", "correctExplanation": "A consumer proposal is an offer to creditors to change your payments, filed through a Licensed Insolvency Trustee. It's available when debts (excluding the home mortgage) are under \\$250,000, and creditors have 45 days to object. It's the last resort before bankruptcy. (Class Ch. 6) [Topic: Credit, Debt & Mortgages]", "wrongExplanation": "A consumer proposal is an offer to creditors to change your payments, filed through a Licensed Insolvency Trustee. It's available when debts (excluding the home mortgage) are under \\$250,000, and creditors have 45 days to object. It's the last resort before bankruptcy. (Class Ch. 6) [Topic: Credit, Debt & Mortgages]", "topic": "Credit, Debt & Mortgages", "bonus": false}, {"question": "Which client would MOST likely benefit from an RRSP contribution rather than a TFSA contribution?", "options": ["Someone who may need the money within a year for an emergency", "A 20-year-old student earning \\$12,000 a year", "A retiree whose income will rise when pension payments start next year", "A 45-year-old earning \\$140,000 who expects a much lower income in retirement"], "correctIndex": 3, "hint": "An RRSP works best when your tax rate now is HIGHER than your tax rate when you withdraw.", "correctExplanation": "The RRSP deduction is worth the most at a high marginal rate, and withdrawals are taxed later at a lower rate. Low earners, people whose income will rise, and people who need flexible access usually prefer a TFSA. (Class Ch. 4) [Topic: Tax & Registered Accounts]", "wrongExplanation": "The RRSP deduction is worth the most at a high marginal rate, and withdrawals are taxed later at a lower rate. Low earners, people whose income will rise, and people who need flexible access usually prefer a TFSA. (Class Ch. 4) [Topic: Tax & Registered Accounts]", "topic": "Tax & Registered Accounts", "bonus": false}, {"question": "Rosa's annual gross income is \\$72,000 and she saves \\$540 per month. What is her savings rate?", "options": ["9.00%", "10.80%", "7.50%", "0.75%"], "correctIndex": 0, "hint": "Savings rate = annual savings ÷ annual income × 100. Convert the monthly savings to annual first.", "correctExplanation": "Annual savings = \\$540 × 12 = \\$6,480. Savings rate = \\$6,480 ÷ \\$72,000 × 100 = 9.00%. (0.75% uses the monthly savings by mistake.) (Hint sheet formula) [Topic: Fundamentals]", "wrongExplanation": "Annual savings = \\$540 × 12 = \\$6,480. Savings rate = \\$6,480 ÷ \\$72,000 × 100 = 9.00%. (0.75% uses the monthly savings by mistake.) (Hint sheet formula) [Topic: Fundamentals]", "topic": "Fundamentals", "bonus": false}, {"question": "A lottery prize pays \\$50,000 at the BEGINNING of each year for 20 years. At a 4.5% annual discount rate, what is the prize worth today?", "options": ["\\$650,396.82", "\\$1,000,000.00", "\\$679,664.68", "\\$414,642.86"], "correctIndex": 2, "hint": "Payments start immediately = annuity due (BGN).", "correctExplanation": "HP 10bII+: BGN, 1 [■][P/YR], 20 [N], 4.5 [I/YR], 50,000 [PMT], 0 [FV], [PV] = −\\$679,664.68. END mode gives \\$650,396.82. [Topic: Financial Math]", "wrongExplanation": "HP 10bII+: BGN, 1 [■][P/YR], 20 [N], 4.5 [I/YR], 50,000 [PMT], 0 [FV], [PV] = −\\$679,664.68. END mode gives \\$650,396.82. [Topic: Financial Math]", "topic": "Financial Math", "bonus": false}, {"question": "Lucas sold one stock at a \\$6,000 capital LOSS this year and had no capital gains. He also earned \\$55,000 of employment income. How can he use the loss?", "options": ["He can deduct \\$3,000 from his employment income this year", "The \\$3,000 allowable capital loss can only offset taxable capital gains, carried back 3 years or forward indefinitely", "He can deduct the full \\$6,000 from his employment income this year", "The loss is lost because he had no capital gains this year"], "correctIndex": 1, "hint": "Allowable capital losses are a special type of loss. What can they be applied against?", "correctExplanation": "Allowable capital loss = \\$6,000 × 50% = \\$3,000. It can only reduce taxable capital gains: carried back 3 years or forward indefinitely, not against employment income (except in the year of death). (Class Ch. 4) [Topic: Tax & Registered Accounts]", "wrongExplanation": "Allowable capital loss = \\$6,000 × 50% = \\$3,000. It can only reduce taxable capital gains: carried back 3 years or forward indefinitely, not against employment income (except in the year of death). (Class Ch. 4) [Topic: Tax & Registered Accounts]", "topic": "Tax & Registered Accounts", "bonus": false}, {"question": "Jasmine has: chequing \\$3,200, high-interest savings \\$5,500, RRSP \\$18,000, car (market value) \\$12,000 and furniture \\$4,000. She owes \\$14,500 on a student loan, \\$1,900 on a credit card and \\$7,600 on her car loan. What is her net worth?", "options": ["\\$20,600", "\\$6,700", "\\$42,700", "\\$18,700"], "correctIndex": 3, "hint": "Net worth = total assets − total liabilities. Include every asset at market value and every debt.", "correctExplanation": "Total assets = \\$42,700; total liabilities = \\$24,000. Net worth = \\$42,700 − \\$24,000 = \\$18,700. (Class Ch. 3) [Topic: Fundamentals]", "wrongExplanation": "Total assets = \\$42,700; total liabilities = \\$24,000. Net worth = \\$42,700 − \\$24,000 = \\$18,700. (Class Ch. 3) [Topic: Fundamentals]", "topic": "Fundamentals", "bonus": false}, {"question": "Diana's monthly living expenses are \\$3,400. She wants an emergency fund equal to 6 months of expenses and already has \\$9,000 in liquid assets. How much MORE does she need?", "options": ["\\$20,400", "\\$1,200", "\\$29,400", "\\$11,400"], "correctIndex": 3, "hint": "Target = monthly expenses × number of months. Then subtract what she already has.", "correctExplanation": "Target = \\$3,400 × 6 = \\$20,400. Shortfall = \\$20,400 − \\$9,000 = \\$11,400. (A 3-month target would be \\$10,200, so she would only need \\$1,200.) (Class Ch. 1 & 3) [Topic: Fundamentals]", "wrongExplanation": "Target = \\$3,400 × 6 = \\$20,400. Shortfall = \\$20,400 − \\$9,000 = \\$11,400. (A 3-month target would be \\$10,200, so she would only need \\$1,200.) (Class Ch. 1 & 3) [Topic: Fundamentals]", "topic": "Fundamentals", "bonus": false}, {"question": "Jun buys a \\$25,000 car with a 5-year loan for the full amount (no down payment). Right after the purchase, what is the effect on his personal financial statements?", "options": ["Net worth increases by \\$25,000 because he gained an asset", "Net worth decreases by \\$25,000 because he took on debt", "Net worth and cash flow are both unchanged", "Net worth is unchanged, but monthly net cash flow decreases because of the loan payments"], "correctIndex": 3, "hint": "An asset and a liability of the same size are added at the same moment. What about the monthly payment?", "correctExplanation": "The car (asset +\\$25,000) and the loan (liability +\\$25,000) offset, so net worth is unchanged at first. The loan payments are a new cash outflow, so net cash flow falls. Over time the car depreciates faster than the loan is paid down, so net worth usually drops. (Class Ch. 3) [Topic: Fundamentals]", "wrongExplanation": "The car (asset +\\$25,000) and the loan (liability +\\$25,000) offset, so net worth is unchanged at first. The loan payments are a new cash outflow, so net cash flow falls. Over time the car depreciates faster than the loan is paid down, so net worth usually drops. (Class Ch. 3) [Topic: Fundamentals]", "topic": "Fundamentals", "bonus": false}, {"question": "Which is a DISADVANTAGE of leasing a car compared with buying it with a loan?", "options": ["You usually need a much larger down payment", "You must find a buyer for the car at the end of the term", "You build no equity, and there are usually kilometre limits and charges for excess wear", "Monthly payments are usually higher than loan payments"], "correctIndex": 2, "hint": "At the end of a lease, what do you own?", "correctExplanation": "Leasing usually means a lower down payment, lower monthly payments, and simply returning the car. The downsides: no ownership or equity, kilometre limits, and fees for excess wear. (Class Ch. 6) [Topic: Credit, Debt & Mortgages]", "wrongExplanation": "Leasing usually means a lower down payment, lower monthly payments, and simply returning the car. The downsides: no ownership or equity, kilometre limits, and fees for excess wear. (Class Ch. 6) [Topic: Credit, Debt & Mortgages]", "topic": "Credit, Debt & Mortgages", "bonus": false}, {"question": "Which of the following amounts is received TAX-FREE?", "options": ["Interest from a savings account", "A withdrawal from a TFSA", "A withdrawal from an RRSP", "An Educational Assistance Payment (EAP) from an RESP to the student"], "correctIndex": 1, "hint": "Contributions to this account are made with after-tax dollars and growth is never taxed.", "correctExplanation": "TFSA withdrawals (contributions and growth) are tax-free. RRSP withdrawals are fully taxable, interest is fully taxable, and EAPs are taxable to the student (though often at little or no tax). (Class Ch. 4) [Topic: Tax & Registered Accounts]", "wrongExplanation": "TFSA withdrawals (contributions and growth) are tax-free. RRSP withdrawals are fully taxable, interest is fully taxable, and EAPs are taxable to the student (though often at little or no tax). (Class Ch. 4) [Topic: Tax & Registered Accounts]", "topic": "Tax & Registered Accounts", "bonus": false}, {"question": "Why is a credit card cash advance usually an expensive way to borrow?", "options": ["It has a 21-day interest-free grace period like purchases", "It's only charged interest if you miss the minimum payment", "Interest starts immediately (no grace period), usually at a higher rate, plus a transaction fee", "It's capped at the prime rate by law"], "correctIndex": 2, "hint": "Compare it with a normal purchase, which has a grace period.", "correctExplanation": "Cash advances have no grace period: interest is charged from the day you take the cash, often at a higher rate than purchases, plus a fee. Use them only as a last resort. (Class Ch. 6) [Topic: Credit, Debt & Mortgages]", "wrongExplanation": "Cash advances have no grace period: interest is charged from the day you take the cash, often at a higher rate than purchases, plus a fee. Use them only as a last resort. (Class Ch. 6) [Topic: Credit, Debt & Mortgages]", "topic": "Credit, Debt & Mortgages", "bonus": false}, {"question": "Maya turned 18 in 2020 and has lived in Canada ever since. She has contributed a total of \\$20,000 to her TFSA and withdrew \\$5,000 in 2025. What is her available TFSA room in 2026?", "options": ["\\$45,500", "\\$35,500", "\\$30,500", "\\$25,500"], "correctIndex": 2, "hint": "Cumulative limits since 2020 − contributions + withdrawals from previous years.", "correctExplanation": "Limits: 2020–22 \\$6,000 × 3 = \\$18,000; 2023 \\$6,500; 2024–26 \\$7,000 × 3 = \\$21,000 → \\$45,500. Room = \\$45,500 − \\$20,000 + \\$5,000 (2025 withdrawal added back Jan 1, 2026) = \\$30,500. [Topic: Tax & Registered Accounts]", "wrongExplanation": "Limits: 2020–22 \\$6,000 × 3 = \\$18,000; 2023 \\$6,500; 2024–26 \\$7,000 × 3 = \\$21,000 → \\$45,500. Room = \\$45,500 − \\$20,000 + \\$5,000 (2025 withdrawal added back Jan 1, 2026) = \\$30,500. [Topic: Tax & Registered Accounts]", "topic": "Tax & Registered Accounts", "bonus": false}, {"question": "Why is a will especially important for a couple with young children?", "options": ["It avoids all tax at death", "It eliminates the need for life insurance", "It names an executor and a guardian for the children and sets out how assets will be distributed", "It is only needed if the estate is worth more than \\$1 million"], "correctIndex": 2, "hint": "Who looks after the kids if both parents die?", "correctExplanation": "Without a will, provincial intestacy rules decide who inherits and a court appoints the administrator and guardian. A will lets parents choose those people. It does not remove the tax on a deemed disposition at death. [Topic: Estate Planning]", "wrongExplanation": "Without a will, provincial intestacy rules decide who inherits and a court appoints the administrator and guardian. A will lets parents choose those people. It does not remove the tax on a deemed disposition at death. [Topic: Estate Planning]", "topic": "Estate Planning", "bonus": false}, {"question": "Which of the following is a non-refundable tax CREDIT rather than a tax deduction?", "options": ["RRSP contribution", "Tuition amount", "Union dues", "Child care expenses"], "correctIndex": 1, "hint": "Deductions reduce net income; credits reduce tax payable directly.", "correctExplanation": "Tuition is a non-refundable credit (federal value = eligible amount × 14% in 2026). RRSP contributions, union/professional dues, and child care expenses are deductions that reduce net income. (Class Ch. 4) [Topic: Tax & Registered Accounts]", "wrongExplanation": "Tuition is a non-refundable credit (federal value = eligible amount × 14% in 2026). RRSP contributions, union/professional dues, and child care expenses are deductions that reduce net income. (Class Ch. 4) [Topic: Tax & Registered Accounts]", "topic": "Tax & Registered Accounts", "bonus": false}, {"question": "Hana has employment income of \\$58,000. During the year she contributed \\$3,000 to her RRSP, paid \\$720 in union dues and donated \\$500 to a registered charity. What is her NET income?", "options": ["\\$55,000", "\\$54,280", "\\$57,280", "\\$53,780"], "correctIndex": 1, "hint": "Which of these items are deductions and which are credits?", "correctExplanation": "RRSP contributions and union dues are deductions: \\$58,000 − \\$3,000 − \\$720 = \\$54,280. Charitable donations give a non-refundable tax CREDIT, so they don't reduce net income. (Class Ch. 4) [Topic: Tax & Registered Accounts]", "wrongExplanation": "RRSP contributions and union dues are deductions: \\$58,000 − \\$3,000 − \\$720 = \\$54,280. Charitable donations give a non-refundable tax CREDIT, so they don't reduce net income. (Class Ch. 4) [Topic: Tax & Registered Accounts]", "topic": "Tax & Registered Accounts", "bonus": false}, {"question": "Liam deposits \\$400 at the END of every month for 25 years into an account earning 6.5% compounded monthly. How much will he have?", "options": ["\\$282,660.86", "\\$299,534.61", "\\$301,157.09", "\\$120,000.00"], "correctIndex": 1, "hint": "Ordinary annuity (END mode), N = 25 × 12.", "correctExplanation": "HP 10bII+: END, 12 [■][P/YR], 300 [N], 6.5 [I/YR], 0 [PV], −400 [PMT], [FV] = \\$299,534.61. BGN mode would give \\$301,157.09. Total deposits were only \\$120,000; the rest is compound growth. [Topic: Financial Math]", "wrongExplanation": "HP 10bII+: END, 12 [■][P/YR], 300 [N], 6.5 [I/YR], 0 [PV], −400 [PMT], [FV] = \\$299,534.61. BGN mode would give \\$301,157.09. Total deposits were only \\$120,000; the rest is compound growth. [Topic: Financial Math]", "topic": "Financial Math", "bonus": false}, {"question": "Which action BEST shows the principle of \"paying yourself first\"?", "options": ["Buying something for yourself each month as a reward for budgeting", "Setting up an automatic \\$300 transfer to a TFSA on every payday", "Paying all bills first, then deciding whether to save", "Saving whatever is left in chequing at the end of each month"], "correctIndex": 1, "hint": "The savings come out BEFORE spending, not after.", "correctExplanation": "Paying yourself first means treating savings like a fixed bill and setting it aside before discretionary spending. Automating it makes it happen. Saving \"what's left over\" usually means saving nothing. (Class Ch. 1) [Topic: Fundamentals]", "wrongExplanation": "Paying yourself first means treating savings like a fixed bill and setting it aside before discretionary spending. Automating it makes it happen. Saving \"what's left over\" usually means saving nothing. (Class Ch. 1) [Topic: Fundamentals]", "topic": "Fundamentals", "bonus": false}, {"question": "Marco buys shares for \\$8,000 and sells them for \\$14,500 in a non-registered account. His combined marginal rate is 28.2%. Using a 50% inclusion rate, how much tax does he owe on the sale?", "options": ["\\$3,250.00", "\\$2,044.50", "\\$916.50", "\\$1,833.00"], "correctIndex": 2, "hint": "Capital gain → taxable capital gain (× 50%) → × marginal rate.", "correctExplanation": "Capital gain = \\$14,500 − \\$8,000 = \\$6,500. Taxable capital gain = \\$6,500 × 50% = \\$3,250. Tax = \\$3,250 × 28.2% = \\$916.50. Taxing the full gain would give \\$1,833.00. (Class Ch. 4) [Topic: Tax & Registered Accounts]", "wrongExplanation": "Capital gain = \\$14,500 − \\$8,000 = \\$6,500. Taxable capital gain = \\$6,500 × 50% = \\$3,250. Tax = \\$3,250 × 28.2% = \\$916.50. Taxing the full gain would give \\$1,833.00. (Class Ch. 4) [Topic: Tax & Registered Accounts]", "topic": "Tax & Registered Accounts", "bonus": false}, {"question": "Which statement about a home equity line of credit (HELOC) is TRUE?", "options": ["It always has a fixed rate for 5 years", "It usually has a variable rate tied to prime and may allow interest-only payments", "The funds can only be used for home renovations", "It is unsecured, so defaulting cannot put your home at risk"], "correctIndex": 1, "hint": "The slides describe HELOC rates and payments.", "correctExplanation": "A HELOC is secured by your home (default can cost you the home), usually has a variable rate (prime + a margin), can be used for any purpose, and often only requires interest payments. Always have a plan for repaying the principal. (Class Ch. 6) [Topic: Credit, Debt & Mortgages]", "wrongExplanation": "A HELOC is secured by your home (default can cost you the home), usually has a variable rate (prime + a margin), can be used for any purpose, and often only requires interest payments. Always have a plan for repaying the principal. (Class Ch. 6) [Topic: Credit, Debt & Mortgages]", "topic": "Credit, Debt & Mortgages", "bonus": false}, {"question": "According to the class slides, about how long does a personal bankruptcy remain on a credit report?", "options": ["Permanently", "Only until the trustee is discharged", "1 year", "6 to 7 years"], "correctIndex": 3, "hint": "It's different from how long other poor credit history remains.", "correctExplanation": "The slides say a bankruptcy remains on your report for 6–7 years, and other poor credit history remains for 3–10 years. A consumer proposal is removed once its terms are met. (Class Ch. 6) [Topic: Credit, Debt & Mortgages]", "wrongExplanation": "The slides say a bankruptcy remains on your report for 6–7 years, and other poor credit history remains for 3–10 years. A consumer proposal is removed once its terms are met. (Class Ch. 6) [Topic: Credit, Debt & Mortgages]", "topic": "Credit, Debt & Mortgages", "bonus": false}, {"question": "You invest \\$15,000 today at 5.5% compounded quarterly. What will it be worth in 12 years?", "options": ["\\$28,978.16", "\\$24,900.00", "\\$28,518.11", "\\$28,891.69"], "correctIndex": 3, "hint": "Match P/YR to the compounding: quarterly = 4 periods a year, so N = 48.", "correctExplanation": "HP 10bII+: 4 [■][P/YR], 48 [N], 5.5 [I/YR], −15,000 [PV], 0 [PMT], [FV] = \\$28,891.69. Using annual compounding gives \\$28,518.11; simple interest gives \\$24,900.00. [Topic: Financial Math]", "wrongExplanation": "HP 10bII+: 4 [■][P/YR], 48 [N], 5.5 [I/YR], −15,000 [PV], 0 [PMT], [FV] = \\$28,891.69. Using annual compounding gives \\$28,518.11; simple interest gives \\$24,900.00. [Topic: Financial Math]", "topic": "Financial Math", "bonus": false}, {"question": "How much must a retiree have today to withdraw \\$2,000 at the END of each month for 15 years, if the money earns 5% compounded monthly?", "options": ["\\$360,000.00", "\\$253,964.28", "\\$252,910.49", "\\$249,111.79"], "correctIndex": 2, "hint": "Present value of an ordinary annuity. FV = 0 because the fund runs out.", "correctExplanation": "HP 10bII+: END, 12 [■][P/YR], 180 [N], 5 [I/YR], 2,000 [PMT], 0 [FV], [PV] = −\\$252,910.49. Simply adding the payments (\\$360,000) ignores the interest earned while waiting. [Topic: Financial Math]", "wrongExplanation": "HP 10bII+: END, 12 [■][P/YR], 180 [N], 5 [I/YR], 2,000 [PMT], 0 [FV], [PV] = −\\$252,910.49. Simply adding the payments (\\$360,000) ignores the interest earned while waiting. [Topic: Financial Math]", "topic": "Financial Math", "bonus": false}, {"question": "Ahmed has a 3-year compound GIC that pays all interest at maturity. When is the interest taxed?", "options": ["Never, because GIC interest is tax-free", "Only in the year the GIC matures", "Each year as it is earned (accrued), even though it is not received until maturity", "50% each year, like a capital gain"], "correctIndex": 2, "hint": "The slides say tax is due when interest is earned, not when it's received.", "correctExplanation": "Interest income is fully taxable in the year it is EARNED, not when it's received, so compound GIC interest is reported every year (on a T5). (Class Ch. 4) [Topic: Tax & Registered Accounts]", "wrongExplanation": "Interest income is fully taxable in the year it is EARNED, not when it's received, so compound GIC interest is reported every year (on a T5). (Class Ch. 4) [Topic: Tax & Registered Accounts]", "topic": "Tax & Registered Accounts", "bonus": false}, {"question": "Under 2026 federal and BC tax brackets, what is the combined MARGINAL tax rate on ordinary income for someone with \\$125,000 of taxable income?", "options": ["38.29%", "41.70%", "31.00%", "32.79%"], "correctIndex": 0, "hint": "At \\$125,000 you are above the 2nd federal threshold (\\$117,045) and in BC's \\$115,648–\\$140,430 bracket.", "correctExplanation": "Federal 26% (over \\$117,045) + BC 12.29% (\\$115,648–\\$140,430) = 38.29%. 31.00% = 20.5% + 10.50% (the bracket just below). 2026 BC rates: 5.60%, 7.70%, 10.50%, 12.29%, 14.70%, 16.80%, 20.50%. [Topic: Tax & Registered Accounts]", "wrongExplanation": "Federal 26% (over \\$117,045) + BC 12.29% (\\$115,648–\\$140,430) = 38.29%. 31.00% = 20.5% + 10.50% (the bracket just below). 2026 BC rates: 5.60%, 7.70%, 10.50%, 12.29%, 14.70%, 16.80%, 20.50%. [Topic: Tax & Registered Accounts]", "topic": "Tax & Registered Accounts", "bonus": false}, {"question": "Which statement correctly describes the difference between a mortgage TERM and the AMORTIZATION period?", "options": ["Amortization is the period during which the rate cannot change", "They mean the same thing", "The term is always longer than the amortization period", "The term is how long the rate and conditions are locked in; amortization is how long it would take to pay off the whole loan"], "correctIndex": 3, "hint": "A 5-year term on a 25-year amortization is a typical example.", "correctExplanation": "Term = the length of the current contract (e.g. 6 months to 10 years), after which you renew. Amortization = the total time to repay the loan at the current payment (typically 25 years). A longer amortization lowers payments but increases total interest. (Class Ch. 7) [Topic: Credit, Debt & Mortgages]", "wrongExplanation": "Term = the length of the current contract (e.g. 6 months to 10 years), after which you renew. Amortization = the total time to repay the loan at the current payment (typically 25 years). A longer amortization lowers payments but increases total interest. (Class Ch. 7) [Topic: Credit, Debt & Mortgages]", "topic": "Credit, Debt & Mortgages", "bonus": false}, {"question": "How much must you save at the END of each month to have \\$30,000 in 4 years, earning 4% compounded monthly?", "options": ["\\$677.37", "\\$577.37", "\\$625.00", "\\$575.45"], "correctIndex": 1, "hint": "Solve for PMT with FV = 30,000 and PV = 0.", "correctExplanation": "HP 10bII+: END, 12 [■][P/YR], 48 [N], 4 [I/YR], 0 [PV], 30,000 [FV], [PMT] = −\\$577.37. \\$625 ignores interest. \\$677.37 is the payment on a \\$30,000 LOAN (PV = 30,000), which is a different question. [Topic: Financial Math]", "wrongExplanation": "HP 10bII+: END, 12 [■][P/YR], 48 [N], 4 [I/YR], 0 [PV], 30,000 [FV], [PMT] = −\\$577.37. \\$625 ignores interest. \\$677.37 is the payment on a \\$30,000 LOAN (PV = 30,000), which is a different question. [Topic: Financial Math]", "topic": "Financial Math", "bonus": false}, {"question": "Which loan offer is CHEAPEST based on its effective annual rate?", "options": ["Loan C: 9.10% compounded annually", "Loan D: 8.85% compounded daily (365)", "Loan A: 8.90% compounded monthly", "Loan B: 9.00% compounded semi-annually"], "correctIndex": 0, "hint": "Convert each one to EAR = (1 + j/m)^m − 1. The lowest EAR wins.", "correctExplanation": "EARs: Loan A = 9.272%; Loan B = 9.202%; Loan C = 9.100%; Loan D = 9.252%. Cheapest: Loan C. [Topic: Credit, Debt & Mortgages]", "wrongExplanation": "EARs: Loan A = 9.272%; Loan B = 9.202%; Loan C = 9.100%; Loan D = 9.252%. Cheapest: Loan C. [Topic: Credit, Debt & Mortgages]", "topic": "Credit, Debt & Mortgages", "bonus": false}, {"question": "Which savings account pays the HIGHEST effective annual rate?", "options": ["5.85% compounded daily (365)", "5.95% compounded semi-annually", "5.90% compounded monthly", "6.00% compounded annually"], "correctIndex": 2, "hint": "Convert each one to an EAR before comparing.", "correctExplanation": "EARs: 5.90% compounded monthly = 6.062%; 6.00% compounded annually = 6.000%; 5.95% compounded semi-annually = 6.039%; 5.85% compounded daily (365) = 6.024%. Highest: 5.90% compounded monthly. A higher nominal rate does not always mean a higher effective rate. [Topic: Financial Math]", "wrongExplanation": "EARs: 5.90% compounded monthly = 6.062%; 6.00% compounded annually = 6.000%; 5.95% compounded semi-annually = 6.039%; 5.85% compounded daily (365) = 6.024%. Highest: 5.90% compounded monthly. A higher nominal rate does not always mean a higher effective rate. [Topic: Financial Math]", "topic": "Financial Math", "bonus": false}, {"question": "\\$10,000 grows to \\$18,000 in 9 years. What NOMINAL annual rate, compounded quarterly, was earned?", "options": ["7.37%", "6.75%", "8.89%", "6.58%"], "correctIndex": 3, "hint": "N = 9 × 4 = 36 quarters; P/YR = 4.", "correctExplanation": "HP 10bII+: 4 [■][P/YR], 36 [N], −10,000 [PV], 0 [PMT], 18,000 [FV], [I/YR] = 6.58%. 6.75% is the effective annual rate, not the nominal quarterly-compounded rate. [Topic: Financial Math]", "wrongExplanation": "HP 10bII+: 4 [■][P/YR], 36 [N], −10,000 [PV], 0 [PMT], 18,000 [FV], [I/YR] = 6.58%. 6.75% is the effective annual rate, not the nominal quarterly-compounded rate. [Topic: Financial Math]", "topic": "Financial Math", "bonus": false}, {"question": "Which of the following is TAX EVASION?", "options": ["Holding interest-earning investments inside a TFSA", "A server not reporting cash tips on her tax return", "Contributing to an RRSP to reduce taxable income", "Claiming moving expenses after moving 50 km closer to a new job"], "correctIndex": 1, "hint": "Evasion = knowingly deceiving the CRA. Tax planning = legally using the rules.", "correctExplanation": "Deliberately not reporting income is tax evasion, which is illegal. Using RRSPs, TFSAs and eligible deductions such as moving expenses (a move at least 40 km closer) is legitimate tax planning. (Class Ch. 4) [Topic: Tax & Registered Accounts]", "wrongExplanation": "Deliberately not reporting income is tax evasion, which is illegal. Using RRSPs, TFSAs and eligible deductions such as moving expenses (a move at least 40 km closer) is legitimate tax planning. (Class Ch. 4) [Topic: Tax & Registered Accounts]", "topic": "Tax & Registered Accounts", "bonus": false}, {"question": "A couple's gross household income is \\$114,000 a year. Their monthly mortgage payment would be \\$2,750, property taxes \\$360/month, heating \\$140/month and condo fees \\$400/month. What is their GDS ratio?", "options": ["39.9%", "36.3%", "34.2%", "38.4%"], "correctIndex": 1, "hint": "GDS = (P&I + property tax + heat + HALF of condo fees) ÷ gross monthly income.", "correctExplanation": "Housing = \\$2,750 + \\$360 + \\$140 + (\\$400 ÷ 2) = \\$3,450. Monthly income = \\$114,000 ÷ 12 = \\$9,500. GDS = \\$3,450 ÷ \\$9,500 = 36.3%. Using the full condo fee gives 38.4%. The class guideline is 32% (CMHC used 35% from July 2020). (Class Ch. 7) [Topic: Credit, Debt & Mortgages]", "wrongExplanation": "Housing = \\$2,750 + \\$360 + \\$140 + (\\$400 ÷ 2) = \\$3,450. Monthly income = \\$114,000 ÷ 12 = \\$9,500. GDS = \\$3,450 ÷ \\$9,500 = 36.3%. Using the full condo fee gives 38.4%. The class guideline is 32% (CMHC used 35% from July 2020). (Class Ch. 7) [Topic: Credit, Debt & Mortgages]", "topic": "Credit, Debt & Mortgages", "bonus": false}, {"question": "Same couple (housing costs from the previous question, \\$114,000 income). They also pay \\$480/month on a car loan and \\$250/month on a student loan. What is their TDS ratio?", "options": ["44.0%", "41.4%", "36.3%", "46.1%"], "correctIndex": 0, "hint": "TDS = (housing costs + all other debt payments) ÷ gross monthly income.", "correctExplanation": "(\\$3,450 + \\$480 + \\$250) ÷ \\$9,500 = 44.0%. This is above the class guideline of 40% (and the 42% CMHC limit from July 2020), so they may need a smaller mortgage or to pay down debt first. (Class Ch. 7) [Topic: Credit, Debt & Mortgages]", "wrongExplanation": "(\\$3,450 + \\$480 + \\$250) ÷ \\$9,500 = 44.0%. This is above the class guideline of 40% (and the 42% CMHC limit from July 2020), so they may need a smaller mortgage or to pay down debt first. (Class Ch. 7) [Topic: Credit, Debt & Mortgages]", "topic": "Credit, Debt & Mortgages", "bonus": false}, {"question": "Owen's monthly take-home pay is \\$3,850. His monthly outflows are rent \\$1,400, groceries \\$520, car payment \\$410, car insurance \\$160, phone \\$85, entertainment \\$380 and other \\$240. What is his monthly net cash flow?", "options": ["\\$3,195", "\\$415", "\\$655", "\\$1,065"], "correctIndex": 2, "hint": "Net cash flow = cash inflows − cash outflows.", "correctExplanation": "Outflows total \\$3,195. Net cash flow = \\$3,850 − \\$3,195 = \\$655. A surplus can go to savings or debt repayment. (Class Ch. 3) [Topic: Fundamentals]", "wrongExplanation": "Outflows total \\$3,195. Net cash flow = \\$3,850 − \\$3,195 = \\$655. A surplus can go to savings or debt repayment. (Class Ch. 3) [Topic: Fundamentals]", "topic": "Fundamentals", "bonus": false}, {"question": "A first-time home buyer withdraws \\$45,000 from her RRSP under the Home Buyers' Plan. What is her minimum annual repayment once repayments begin?", "options": ["\\$3,000", "\\$4,500", "\\$2,250", "\\$1,286"], "correctIndex": 0, "hint": "HBP withdrawals are repaid over 15 years.", "correctExplanation": "\\$45,000 ÷ 15 years = \\$3,000 per year. Any amount not repaid in a year is added to her taxable income. The HBP limit is \\$60,000 per person (the slides' older figure is \\$35,000). [Topic: Tax & Registered Accounts]", "wrongExplanation": "\\$45,000 ÷ 15 years = \\$3,000 per year. Any amount not repaid in a year is added to her taxable income. The HBP limit is \\$60,000 per person (the slides' older figure is \\$35,000). [Topic: Tax & Registered Accounts]", "topic": "Tax & Registered Accounts", "bonus": false}, {"question": "Ella paid \\$1,200 of interest on her Canada Student Loan in 2026. What is this credit worth in FEDERAL tax savings? (Lowest federal rate: 14%)", "options": ["\\$168", "\\$246", "\\$180", "\\$1,200"], "correctIndex": 0, "hint": "Federal non-refundable credits = eligible amount × lowest federal rate.", "correctExplanation": "\\$1,200 × 14% = \\$168. Student loan interest on government loans is a non-refundable credit and can be carried forward 5 years. Note: the class slides use 2017's 15% rate, which would give \\$180. [Topic: Tax & Registered Accounts]", "wrongExplanation": "\\$1,200 × 14% = \\$168. Student loan interest on government loans is a non-refundable credit and can be carried forward 5 years. Note: the class slides use 2017's 15% rate, which would give \\$180. [Topic: Tax & Registered Accounts]", "topic": "Tax & Registered Accounts", "bonus": false}, {"question": "What is the effective annual rate (EAR) of 8% compounded quarterly?", "options": ["8.00%", "8.16%", "8.24%", "8.30%"], "correctIndex": 2, "hint": "EAR = (1 + j/m)^m − 1, with m = 4.", "correctExplanation": "(1 + 0.08/4)^4 − 1 = 8.24%. HP 10bII+: 4 [■][P/YR], 8 [■][NOM%], [■][EFF%]. Monthly compounding would give 8.30%; semi-annual 8.16%. [Topic: Financial Math]", "wrongExplanation": "(1 + 0.08/4)^4 − 1 = 8.24%. HP 10bII+: 4 [■][P/YR], 8 [■][NOM%], [■][EFF%]. Monthly compounding would give 8.30%; semi-annual 8.16%. [Topic: Financial Math]", "topic": "Financial Math", "bonus": false}, {"question": "An investment grew from \\$8,500 to \\$14,200 over 7 years. What was its compound annual rate of return?", "options": ["7.61%", "8.61%", "9.58%", "67.06%"], "correctIndex": 0, "hint": "Compound annual return = (Ending ÷ Beginning)^(1/n) − 1.", "correctExplanation": "(14,200 ÷ 8,500)^(1/7) − 1 = 7.61%. HP 10bII+: 1 [■][P/YR], 7 [N], −8,500 [PV], 0 [PMT], 14,200 [FV], [I/YR]. Simple averaging gives 9.58%, which ignores compounding. [Topic: Financial Math]", "wrongExplanation": "(14,200 ÷ 8,500)^(1/7) − 1 = 7.61%. HP 10bII+: 1 [■][P/YR], 7 [N], −8,500 [PV], 0 [PMT], 14,200 [FV], [I/YR]. Simple averaging gives 9.58%, which ignores compounding. [Topic: Financial Math]", "topic": "Financial Math", "bonus": false}, {"question": "A mortgage has a regular monthly payment of \\$2,450. What is the REGULAR (non-accelerated) bi-weekly payment?", "options": ["\\$612.50", "\\$1,225.00", "\\$565.38", "\\$1,130.77"], "correctIndex": 3, "hint": "Regular bi-weekly = (monthly × 12) ÷ 26. Accelerated bi-weekly = monthly ÷ 2.", "correctExplanation": "Regular bi-weekly = \\$2,450 × 12 ÷ 26 = \\$1,130.77. Accelerated bi-weekly would be \\$2,450 ÷ 2 = \\$1,225, which adds one extra monthly payment a year. (Class Ch. 7, Exhibit 7.4) [Topic: Credit, Debt & Mortgages]", "wrongExplanation": "Regular bi-weekly = \\$2,450 × 12 ÷ 26 = \\$1,130.77. Accelerated bi-weekly would be \\$2,450 ÷ 2 = \\$1,225, which adds one extra monthly payment a year. (Class Ch. 7, Exhibit 7.4) [Topic: Credit, Debt & Mortgages]", "topic": "Credit, Debt & Mortgages", "bonus": false}, {"question": "Parents contribute \\$5,000 to an RESP this year for their 10-year-old, who has unused CESG room from earlier years. How much basic CESG will be paid this year?", "options": ["\\$1,000", "\\$7,200", "\\$500", "\\$2,500"], "correctIndex": 0, "hint": "With carry-forward room, the CESG can be paid on up to \\$5,000 of contributions per year.", "correctExplanation": "Basic CESG is 20% of contributions. With unused room, up to \\$5,000 per year qualifies, so 20% × \\$5,000 = \\$1,000 (the annual maximum with carry-forward). Without unused room it would be \\$500. Lifetime CESG maximum = \\$7,200 per child. [Topic: Tax & Registered Accounts]", "wrongExplanation": "Basic CESG is 20% of contributions. With unused room, up to \\$5,000 per year qualifies, so 20% × \\$5,000 = \\$1,000 (the annual maximum with carry-forward). Without unused room it would be \\$500. Lifetime CESG maximum = \\$7,200 per child. [Topic: Tax & Registered Accounts]", "topic": "Tax & Registered Accounts", "bonus": false}, {"question": "A client will receive \\$2,000 in 1 year, \\$4,000 in 3 years and \\$10,000 in 5 years. At a 7% annual discount rate, what are these cash flows worth today?", "options": ["\\$11,407.78", "\\$12,264.21", "\\$16,000.00", "\\$13,122.71"], "correctIndex": 1, "hint": "Discount each cash flow separately back to today, then add them.", "correctExplanation": "PV = 2,000/1.07 + 4,000/1.07³ + 10,000/1.07⁵ = \\$1,869.16 + \\$3,265.19 + \\$7,129.86 = \\$12,264.21. HP 10bII+: 1 [■][P/YR], 7 [I/YR], then 0 [CFj], 2,000 [CFj], 0 [CFj], 4,000 [CFj], 0 [CFj], 10,000 [CFj], [■][NPV]. Discounting all \\$16,000 from year 5 gives \\$11,407.78. [Topic: Financial Math]", "wrongExplanation": "PV = 2,000/1.07 + 4,000/1.07³ + 10,000/1.07⁵ = \\$1,869.16 + \\$3,265.19 + \\$7,129.86 = \\$12,264.21. HP 10bII+: 1 [■][P/YR], 7 [I/YR], then 0 [CFj], 2,000 [CFj], 0 [CFj], 4,000 [CFj], 0 [CFj], 10,000 [CFj], [■][NPV]. Discounting all \\$16,000 from year 5 gives \\$11,407.78. [Topic: Financial Math]", "topic": "Financial Math", "bonus": false}, {"question": "A home is worth \\$680,000. The owner owes \\$470,000 on the mortgage and \\$25,000 on a HELOC secured by the home. What is the home equity?", "options": ["\\$185,000", "\\$445,000", "\\$210,000", "\\$655,000"], "correctIndex": 0, "hint": "Home equity = property value − ALL outstanding secured debt on the home.", "correctExplanation": "\\$680,000 − (\\$470,000 + \\$25,000) = \\$185,000. Ignoring the HELOC gives \\$210,000. (Hint sheet formula) [Topic: Credit, Debt & Mortgages]", "wrongExplanation": "\\$680,000 − (\\$470,000 + \\$25,000) = \\$185,000. Ignoring the HELOC gives \\$210,000. (Hint sheet formula) [Topic: Credit, Debt & Mortgages]", "topic": "Credit, Debt & Mortgages", "bonus": false}, {"question": "What is the MINIMUM down payment for a \\$650,000 home in Canada?", "options": ["\\$40,000", "\\$130,000", "\\$32,500", "\\$65,000"], "correctIndex": 0, "hint": "5% on the first \\$500,000 + 10% on the portion above \\$500,000 (homes under \\$1.5M).", "correctExplanation": "5% × \\$500,000 = \\$25,000, plus 10% × \\$150,000 = \\$15,000, for a total of \\$40,000. Anything under 20% down (\\$130,000) is high-ratio and needs default insurance. [Topic: Credit, Debt & Mortgages]", "wrongExplanation": "5% × \\$500,000 = \\$25,000, plus 10% × \\$150,000 = \\$15,000, for a total of \\$40,000. Anything under 20% down (\\$130,000) is high-ratio and needs default insurance. [Topic: Credit, Debt & Mortgages]", "topic": "Credit, Debt & Mortgages", "bonus": false}, {"question": "You need \\$40,000 in 7 years. If you can earn 6% compounded semi-annually, how much must you invest today?", "options": ["\\$26,309.39", "\\$26,444.71", "\\$26,602.28", "\\$28,169.01"], "correctIndex": 1, "hint": "Present value of a lump sum. Semi-annual = 2 periods a year.", "correctExplanation": "HP 10bII+: 2 [■][P/YR], 14 [N], 6 [I/YR], 0 [PMT], 40,000 [FV], [PV] = −\\$26,444.71. Annual compounding gives \\$26,602.28. [Topic: Financial Math]", "wrongExplanation": "HP 10bII+: 2 [■][P/YR], 14 [N], 6 [I/YR], 0 [PMT], 40,000 [FV], [PV] = −\\$26,444.71. Annual compounding gives \\$26,602.28. [Topic: Financial Math]", "topic": "Financial Math", "bonus": false}, {"question": "Which borrower is BEST suited to an OPEN mortgage?", "options": ["Someone who wants the lowest possible interest rate for 5 years", "Someone who wants predictable payments and has no plans to prepay", "Someone expecting a large inheritance next year that they plan to use to pay off the mortgage", "Someone who expects interest rates to rise sharply"], "correctIndex": 2, "hint": "Open mortgages trade a higher rate for the right to prepay any amount without penalty.", "correctExplanation": "An open mortgage can be paid off at any time without penalty, but its rate is higher. It suits borrowers who expect to repay soon (inheritance, sale of the home). Most people choose closed mortgages because of the lower rates. (Class Ch. 7) [Topic: Credit, Debt & Mortgages]", "wrongExplanation": "An open mortgage can be paid off at any time without penalty, but its rate is higher. It suits borrowers who expect to repay soon (inheritance, sale of the home). Most people choose closed mortgages because of the lower rates. (Class Ch. 7) [Topic: Credit, Debt & Mortgages]", "topic": "Credit, Debt & Mortgages", "bonus": false}, {"question": "In 2026, a 70-year-old retiree has net income of \\$120,000. The OAS recovery tax threshold is \\$95,323. How much OAS must be repaid?", "options": ["\\$3,701.55", "\\$24,677.00", "\\$12,338.50", "\\$18,000.00"], "correctIndex": 0, "hint": "OAS recovery tax = 15% of net income above the threshold.", "correctExplanation": "(\\$120,000 − \\$95,323) × 15% = \\$3,701.55. It keeps rising until OAS is fully clawed back at about \\$155,000 of income. [Topic: Tax & Registered Accounts]", "wrongExplanation": "(\\$120,000 − \\$95,323) × 15% = \\$3,701.55. It keeps rising until OAS is fully clawed back at about \\$155,000 of income. [Topic: Tax & Registered Accounts]", "topic": "Tax & Registered Accounts", "bonus": false}, {"question": "On a financial calculator, which situation requires BGN (beginning) mode?", "options": ["Rent of \\$1,600 paid on the first day of each month", "Mortgage payments made one month after the loan is funded", "Year-end RRSP contributions made every December 31", "Car loan payments starting one month after purchase"], "correctIndex": 0, "hint": "Annuity due = the payment happens at the START of each period.", "correctExplanation": "Rent, lease payments and insurance premiums are paid in advance, so they are annuities due (BGN mode). Loan and mortgage payments are made at the end of each period (END mode). Always check the mode and set it back to END afterwards. [Topic: Financial Math]", "wrongExplanation": "Rent, lease payments and insurance premiums are paid in advance, so they are annuities due (BGN mode). Loan and mortgage payments are made at the end of each period (END mode). Always check the mode and set it back to END afterwards. [Topic: Financial Math]", "topic": "Financial Math", "bonus": false}, {"question": "Kira's credit score has dropped because of two missed payments and a high balance. What will help improve it MOST directly?", "options": ["Paying only cash for a few months without dealing with her balances", "Catching up on late payments, paying at least the minimum on time, and reducing her balances", "Applying for several new credit cards to increase available credit", "Closing her oldest credit card account"], "correctIndex": 1, "hint": "The slides list three ways to improve your score right away.", "correctExplanation": "Credit scores (300–900) are driven by payment history and credit utilization. Catching up, paying on time and reducing debt all help. Multiple new applications create hard inquiries, and closing old accounts shortens credit history. (Class Ch. 6) [Topic: Credit, Debt & Mortgages]", "wrongExplanation": "Credit scores (300–900) are driven by payment history and credit utilization. Catching up, paying on time and reducing debt all help. Multiple new applications create hard inquiries, and closing old accounts shortens credit history. (Class Ch. 6) [Topic: Credit, Debt & Mortgages]", "topic": "Credit, Debt & Mortgages", "bonus": false}, {"question": "Starting from \\$0, about how long will it take to accumulate \\$250,000 by saving \\$1,000 at the END of each month at 7% compounded monthly?", "options": ["12.9 years", "15.9 years", "9.4 years", "20.8 years"], "correctIndex": 0, "hint": "Solve for N (in months), then divide by 12.", "correctExplanation": "HP 10bII+: END, 12 [■][P/YR], 7 [I/YR], 0 [PV], −1,000 [PMT], 250,000 [FV], [N] = 154.6 months = 12.9 years. Without interest it would take 250 months (20.8 years). [Topic: Financial Math]", "wrongExplanation": "HP 10bII+: END, 12 [■][P/YR], 7 [I/YR], 0 [PV], −1,000 [PMT], 250,000 [FV], [N] = 154.6 months = 12.9 years. Without interest it would take 250 months (20.8 years). [Topic: Financial Math]", "topic": "Financial Math", "bonus": false}, {"question": "Ivan owes \\$3,500 of tax for 2025 and files his return 5 full months after the April 30 deadline. What is his late-filing penalty?", "options": ["\\$210", "\\$175", "\\$595", "\\$350"], "correctIndex": 3, "hint": "Penalty = 5% of the balance owing + 1% for each full month late (max 12 months).", "correctExplanation": "5% + (5 × 1%) = 10% × \\$3,500 = \\$350. Self-employed people may file by June 15, but any balance owing is still due April 30. (Class Ch. 4) [Topic: Tax & Registered Accounts]", "wrongExplanation": "5% + (5 × 1%) = 10% × \\$3,500 = \\$350. Self-employed people may file by June 15, but any balance owing is still due April 30. (Class Ch. 4) [Topic: Tax & Registered Accounts]", "topic": "Tax & Registered Accounts", "bonus": false}, {"question": "What is the main role of FP Canada?", "options": ["It insures eligible bank deposits up to \\$100,000 per category", "It sets the overnight interest rate that drives the prime rate", "It regulates chartered banks and sets their capital requirements", "It sets professional standards for financial planners and certifies CFP and QAFP professionals"], "correctIndex": 3, "hint": "Think about who grants the CFP designation.", "correctExplanation": "FP Canada is the national professional body that sets the standards for financial planning and certifies CFP and QAFP professionals. OSFI regulates banks, CDIC insures deposits, and the Bank of Canada sets the policy rate. (Class Ch. 1) [Topic: Fundamentals]", "wrongExplanation": "FP Canada is the national professional body that sets the standards for financial planning and certifies CFP and QAFP professionals. OSFI regulates banks, CDIC insures deposits, and the Bank of Canada sets the policy rate. (Class Ch. 1) [Topic: Fundamentals]", "topic": "Fundamentals", "bonus": false}, {"question": "The goal \"Save \\$12,000 for a down payment by putting \\$500 a month into my TFSA\" is missing which SMART element?", "options": ["Measurable", "Achievable", "Specific", "Time-bound"], "correctIndex": 3, "hint": "When does the goal need to be done?", "correctExplanation": "The goal has a specific amount, a measurable monthly action and seems achievable, but it has no deadline (e.g. \"by December 2028\"). SMART = Specific, Measurable, Achievable, Realistic, Time-bound. (Class Ch. 1) [Topic: Fundamentals]", "wrongExplanation": "The goal has a specific amount, a measurable monthly action and seems achievable, but it has no deadline (e.g. \"by December 2028\"). SMART = Specific, Measurable, Achievable, Realistic, Time-bound. (Class Ch. 1) [Topic: Fundamentals]", "topic": "Fundamentals", "bonus": false}, {"question": "A \\$22,000 car loan is at 6.5% compounded monthly. How much MORE total interest is paid with a 6-year term than with a 4-year term?", "options": ["\\$1,583.94", "\\$151.91", "\\$4,626.93", "\\$3,042.99"], "correctIndex": 0, "hint": "Total interest = (payment × number of payments) − amount borrowed. Do it for both terms.", "correctExplanation": "4 years: PMT = \\$521.73, interest = \\$3,042.99. 6 years: PMT = \\$369.82, interest = \\$4,626.93. Difference = \\$1,583.94. A longer term means lower payments but more interest. (Class Ch. 6, Exhibit 6.5) [Topic: Credit, Debt & Mortgages]", "wrongExplanation": "4 years: PMT = \\$521.73, interest = \\$3,042.99. 6 years: PMT = \\$369.82, interest = \\$4,626.93. Difference = \\$1,583.94. A longer term means lower payments but more interest. (Class Ch. 6, Exhibit 6.5) [Topic: Credit, Debt & Mortgages]", "topic": "Credit, Debt & Mortgages", "bonus": false}, {"question": "Sara contributes \\$3,000 at the BEGINNING of each year for 30 years to an RRSP earning 7% compounded annually. What will the RRSP be worth after 30 years?", "options": ["\\$283,382.36", "\\$306,771.87", "\\$303,219.12", "\\$90,000.00"], "correctIndex": 2, "hint": "Beginning-of-period payments = annuity due. Set BGN mode.", "correctExplanation": "HP 10bII+: [■][BEG/END] (BGN on), 1 [■][P/YR], 30 [N], 7 [I/YR], 0 [PV], −3,000 [PMT], [FV] = \\$303,219.12. END mode gives \\$283,382.36; the annuity due is larger by a factor of 1.07 because each deposit earns one extra year. [Topic: Financial Math]", "wrongExplanation": "HP 10bII+: [■][BEG/END] (BGN on), 1 [■][P/YR], 30 [N], 7 [I/YR], 0 [PV], −3,000 [PMT], [FV] = \\$303,219.12. END mode gives \\$283,382.36; the annuity due is larger by a factor of 1.07 because each deposit earns one extra year. [Topic: Financial Math]", "topic": "Financial Math", "bonus": false}, {"question": "[BONUS] Hail causes \\$2,800 of damage to Ava's parked car. Her policy has a \\$300 comprehensive deductible and a \\$1,000 collision deductible. Which coverage applies and what will the insurer pay?", "options": ["Third-party liability, \\$2,800", "Comprehensive, \\$1,800", "Comprehensive, \\$2,500", "Collision, \\$1,800"], "correctIndex": 2, "hint": "Collision covers accidents; non-collision events like hail, theft and fire fall under another coverage.", "correctExplanation": "Hail is a non-collision peril, so comprehensive coverage applies: \\$2,800 − \\$300 = \\$2,500. (Class Ch. 8) [Topic: Risk Management (BONUS)]", "wrongExplanation": "Hail is a non-collision peril, so comprehensive coverage applies: \\$2,800 − \\$300 = \\$2,500. (Class Ch. 8) [Topic: Risk Management (BONUS)]", "topic": "Risk Management (BONUS)", "bonus": true}, {"question": "[BONUS] Under a BROAD homeowner's policy, how are the building and its contents covered?", "options": ["Building on an all-perils basis; contents on a named-perils basis", "Building on a named-perils basis; contents on an all-perils basis", "Building and contents both on an all-perils basis", "Building and contents both on a named-perils basis"], "correctIndex": 0, "hint": "Comprehensive = all/all, Basic = named/named. Broad is in between.", "correctExplanation": "Exhibit 8.6: Comprehensive = all perils on both; Basic = named perils on both; Broad = all perils on the building, named perils on contents. (Class Ch. 8) [Topic: Risk Management (BONUS)]", "wrongExplanation": "Exhibit 8.6: Comprehensive = all perils on both; Basic = named perils on both; Broad = all perils on the building, named perils on contents. (Class Ch. 8) [Topic: Risk Management (BONUS)]", "topic": "Risk Management (BONUS)", "bonus": true}, {"question": "[BONUS] Why would a collector insure a restored classic car under an AGREED-VALUE policy?", "options": ["It removes the need for liability coverage", "It pays the car's original sticker price from the year it was built", "It pays the depreciated actual cash value at the time of the loss", "If the car is a total loss, the insurer pays the pre-agreed amount without deducting depreciation"], "correctIndex": 3, "hint": "A standard policy depreciates the car. What does \"agreed\" mean?", "correctExplanation": "Under agreed value, the insurer and owner agree on the car's value when the policy is written, and that amount is paid on a total loss. Actual cash value would subtract depreciation, which doesn't fit appreciating collectibles. [Topic: Risk Management (BONUS)]", "wrongExplanation": "Under agreed value, the insurer and owner agree on the car's value when the policy is written, and that amount is paid on a total loss. Actual cash value would subtract depreciation, which doesn't fit appreciating collectibles. [Topic: Risk Management (BONUS)]", "topic": "Risk Management (BONUS)", "bonus": true}, {"question": "[BONUS] A stolen laptop would cost \\$1,800 to replace new. It has a 6-year useful life and was 3 years old. The contents policy pays ACTUAL CASH VALUE with a \\$250 deductible. What will the insurer pay?", "options": ["\\$1,550", "\\$650", "\\$750", "\\$900"], "correctIndex": 1, "hint": "ACV = replacement cost − depreciation. Then subtract the deductible.", "correctExplanation": "Depreciation = 3/6 × \\$1,800 = \\$900, so ACV = \\$900. Payout = \\$900 − \\$250 = \\$650. A replacement-cost policy would pay \\$1,800 − \\$250 = \\$1,550. (Class Ch. 8: cash-value vs replacement-cost policies) [Topic: Risk Management (BONUS)]", "wrongExplanation": "Depreciation = 3/6 × \\$1,800 = \\$900, so ACV = \\$900. Payout = \\$900 − \\$250 = \\$650. A replacement-cost policy would pay \\$1,800 − \\$250 = \\$1,550. (Class Ch. 8: cash-value vs replacement-cost policies) [Topic: Risk Management (BONUS)]", "topic": "Risk Management (BONUS)", "bonus": true}, {"question": "[BONUS] Which life insurance item would appear as an ASSET on the policy owner's personal net worth statement?", "options": ["The death benefit of a group term policy through work", "The face amount of a term life policy", "The cash surrender value of a whole life policy", "The premiums paid on a term life policy"], "correctIndex": 2, "hint": "Term insurance builds no cash value.", "correctExplanation": "Only cash value you could access today counts as an asset. Term insurance has no cash value, so it adds nothing to net worth; its premiums are an expense on the cash flow statement. Whole life and universal life build a cash value. (Class Ch. 9) [Topic: Risk Management (BONUS)]", "wrongExplanation": "Only cash value you could access today counts as an asset. Term insurance has no cash value, so it adds nothing to net worth; its premiums are an expense on the cash flow statement. Whole life and universal life build a cash value. (Class Ch. 9) [Topic: Risk Management (BONUS)]", "topic": "Risk Management (BONUS)", "bonus": true}, {"question": "[BONUS] Using the budget (needs) method, a family needs \\$40,000 at the BEGINNING of each year for 15 years, discounted at 5%. They also need \\$250,000 to pay off the mortgage and \\$20,000 for final expenses. They have \\$60,000 of savings and \\$100,000 of group life insurance. How much additional life insurance is needed?", "options": ["\\$545,945.64", "\\$710,000.00", "\\$705,945.64", "\\$525,186.32"], "correctIndex": 0, "hint": "PV of an annuity due (BGN) + lump-sum needs − existing resources.", "correctExplanation": "PV (BGN, 15 [N], 5 [I/YR], 40,000 [PMT]) = \\$435,945.64. + \\$250,000 + \\$20,000 − \\$60,000 − \\$100,000 = \\$545,945.64. END mode would understate the need. The class slides prefer this method over the income-multiple method. (Class Ch. 9) [Topic: Risk Management (BONUS)]", "wrongExplanation": "PV (BGN, 15 [N], 5 [I/YR], 40,000 [PMT]) = \\$435,945.64. + \\$250,000 + \\$20,000 − \\$60,000 − \\$100,000 = \\$545,945.64. END mode would understate the need. The class slides prefer this method over the income-multiple method. (Class Ch. 9) [Topic: Risk Management (BONUS)]", "topic": "Risk Management (BONUS)", "bonus": true}];
+        const totalQuestions = questions.length;
+        let currentQuestionIndex = 0;
+        let userAnswers = []; // Store user's answers {questionIndex, selectedIndex, isCorrect}
+        let isReviewMode = false;
+
+        function renderMath(target) {
+            if (!target || typeof renderMathInElement !== 'function') return;
+            renderMathInElement(target, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\(', right: '\)', display: false},
+                    {left: '\[', right: '\]', display: true}
+                ],
+                throwOnError: false
+            });
+        }
+
+
+        (function () {
+            let left = 120 * 60;
+            const el = document.getElementById('exam-timer');
+            window.__examTimer = setInterval(() => {
+                left--;
+                const hh = Math.floor(left / 3600), mm = Math.floor(left % 3600 / 60), ss = left % 60;
+                el.innerHTML = left > 0
+                    ? `⏱ ${hh}:${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')} remaining`
+                    : '⏱ Time is up! Finish the questions you are on, then press Finish.';
+                el.style.color = left < 600 ? '#dc2626' : '#4b5563';
+                if (left <= 0) clearInterval(window.__examTimer);
+            }, 1000);
+        })();
+
+        function initQuiz() {
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const quizContent = document.getElementById('quiz-content');
+            const question = questions[currentQuestionIndex];
+            const userAnswer = userAnswers[currentQuestionIndex];
+
+            const isAnswered = userAnswer !== undefined;
+
+            // Determine button states
+            const showPrevious = currentQuestionIndex > 0;
+            const showNext = isAnswered && currentQuestionIndex < totalQuestions - 1;
+            const showFinish = isAnswered && currentQuestionIndex === totalQuestions - 1 && !isReviewMode;
+            const showFinishReview = isReviewMode && currentQuestionIndex === totalQuestions - 1;
+            const showHint = !!question.hint;
+
+            let optionsHtml = '';
+            question.options.forEach((option, index) => {
+                const letter = String.fromCharCode(65 + index); // A, B, C, D
+
+                if (isAnswered) {
+                    if (index === question.correctIndex) {
+                        const correctExplain = question.correctExplanation || question.explanation || '';
+                        optionsHtml += `
+                            <div class="feedback-card correct show">
+                                <div class="feedback-answer">${letter}. ${option}</div>
+                                <div class="feedback-header correct">
+                                    <span class="feedback-icon">✓</span>
+                                    <span>Right answer</span>
+                                </div>
+                                <div class="feedback-text">${correctExplain}</div>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    if (!userAnswer.isCorrect && index === userAnswer.selectedIndex) {
+                        const wrongExplain = question.wrongExplanation || question.explanation || '';
+                        optionsHtml += `
+                            <div class="feedback-card wrong show">
+                                <div class="feedback-answer">${letter}. ${option}</div>
+                                <div class="feedback-header wrong">
+                                    <span class="feedback-icon">✕</span>
+                                    <span>Not quite</span>
+                                </div>
+                                <div class="feedback-text">${wrongExplain}</div>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    optionsHtml += `
+                        <div class="option disabled" data-index="${index}">
+                            <span class="option-label">${letter}.</span>
+                            <span class="option-text">${option}</span>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const optionClass = index === (userAnswer ? userAnswer.selectedIndex : -1) ? 'option selected' : 'option';
+                optionsHtml += `
+                    <div class="${optionClass}" onclick="selectAnswer(${index})" data-index="${index}">
+                        <span class="option-label">${letter}.</span>
+                        <span class="option-text">${option}</span>
+                    </div>
+                `;
+            });
+
+            let hintHtml = '';
+            if (showHint) {
+                hintHtml = `
+                    <button class="hint-toggle" id="hint-toggle" onclick="toggleHint()">
+                        <span>Hint</span>
+                        <span class="chevron">⌃</span>
+                    </button>
+                    <div id="hint-panel" class="hint-panel">
+                        <div class="hint-title">Hint</div>
+                        <div class="hint-text">${question.hint}</div>
+                    </div>
+                `;
+            }
+
+            let buttonsHtml = `
+                <div class="quiz-footer">
+                    <div class="buttons">
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn btn-secondary" onclick="previousQuestion()" ${showPrevious ? '' : 'disabled'}>
+                                Previous
+                            </button>
+                        </div>
+                        <div>
+                            ${showNext ? '<button class="btn btn-primary" onclick="nextQuestion()">Next</button>' : ''}
+                            ${showFinish ? '<button class="btn btn-primary" onclick="finishQuiz()">Finish Quiz</button>' : ''}
+                            ${showFinishReview ? '<button class="btn btn-primary" onclick="finishReview()">Finish Review</button>' : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            quizContent.innerHTML = `
+                <div class="progress-text">${currentQuestionIndex + 1} / ${totalQuestions}</div>
+                <div class="question-text">${question.question}</div>
+                <div class="options">
+                    ${optionsHtml}
+                </div>
+                <div class="hint-slot">
+                    ${hintHtml}
+                </div>
+                ${buttonsHtml}
+            `;
+            renderMath(quizContent);
+        }
+
+        function selectAnswer(selectedIndex) {
+            const question = questions[currentQuestionIndex];
+            const isCorrect = selectedIndex === question.correctIndex;
+
+            // Store the answer
+            userAnswers[currentQuestionIndex] = {
+                questionIndex: currentQuestionIndex,
+                selectedIndex: selectedIndex,
+                isCorrect: isCorrect
+            };
+
+            // Re-render to show feedback
+            renderQuestion();
+        }
+
+        function toggleHint() {
+            const hintPanel = document.getElementById('hint-panel');
+            const hintToggle = document.getElementById('hint-toggle');
+            if (hintPanel) {
+                hintPanel.classList.toggle('show');
+            }
+            if (hintToggle) {
+                hintToggle.classList.toggle('open');
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < totalQuestions - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion();
+            }
+        }
+
+        function finishQuiz() {
+            showCompletionScreen();
+        }
+
+        function showCompletionScreen() {
+            const quizContent = document.getElementById('quiz-content');
+            const completionScreen = document.getElementById('completion-screen');
+
+            // Calculate stats
+            const answeredQuestions = userAnswers.filter(a => a !== undefined);
+            const correctAnswers = userAnswers.filter(a => a && a.isCorrect).length;
+            const wrongAnswers = userAnswers.filter(a => a && !a.isCorrect).length;
+            const skipped = totalQuestions - answeredQuestions.length;
+            const accuracy = answeredQuestions.length > 0
+                ? Math.round((correctAnswers / answeredQuestions.length) * 100)
+                : 0;
+
+            // Update stats
+            const regCorrect = userAnswers.filter((a, i) => a && a.isCorrect && !questions[i].bonus).length;
+            const bonusCorrect = userAnswers.filter((a, i) => a && a.isCorrect && questions[i].bonus).length;
+            const regTotal = questions.filter(q => !q.bonus).length;
+            document.getElementById('score-value').textContent = `${regCorrect + bonusCorrect}/${regTotal}`;
+            const pct = Math.round((regCorrect + bonusCorrect) / regTotal * 1000) / 10;
+            const topics = {};
+            questions.forEach((q, i) => {
+                topics[q.topic] = topics[q.topic] || {r: 0, t: 0};
+                topics[q.topic].t++;
+                if (userAnswers[i] && userAnswers[i].isCorrect) topics[q.topic].r++;
+            });
+            document.getElementById('topic-breakdown').innerHTML =
+                `<div style="font-weight:600;margin-bottom:6px">Exam mark: ${regCorrect}/${regTotal} regular + ${bonusCorrect}/6 bonus = ${pct}%</div>` +
+                Object.entries(topics).map(([t, s]) =>
+                    `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #eee"><span>${t}</span><span style="font-weight:600;color:${s.r / s.t >= 0.7 ? '#16a34a' : '#dc2626'}">${s.r}/${s.t}</span></div>`
+                ).join('') +
+                `<div style="margin-top:6px;color:#6b7280;font-size:12px">Red = below 70%; review those sections in the study notes.</div>`;
+            clearInterval(window.__examTimer);
+            document.getElementById('accuracy-value').textContent = `${accuracy}%`;
+            document.getElementById('right-value').textContent = correctAnswers;
+            document.getElementById('wrong-value').textContent = wrongAnswers;
+            document.getElementById('skipped-value').textContent = skipped;
+
+            // Show completion screen
+            quizContent.style.display = 'none';
+            completionScreen.classList.add('show');
+        }
+
+        function reviewQuiz() {
+            isReviewMode = true;
+            currentQuestionIndex = 0;
+            const quizContent = document.getElementById('quiz-content');
+            const completionScreen = document.getElementById('completion-screen');
+
+            quizContent.style.display = 'block';
+            completionScreen.classList.remove('show');
+            renderQuestion();
+        }
+
+        function finishReview() {
+            showCompletionScreen();
+        }
+
+        function retakeQuiz() {
+            isReviewMode = false;
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            const quizContent = document.getElementById('quiz-content');
+            const completionScreen = document.getElementById('completion-screen');
+
+            quizContent.style.display = 'block';
+            completionScreen.classList.remove('show');
+            renderQuestion();
+        }
+
+        // Initialize quiz on page load
+        initQuiz();
+    </script>
+</body>
+</html>
